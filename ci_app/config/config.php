@@ -14,7 +14,9 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://'.$_SERVER['SERVER_NAME'].'/platform.rumahtiket.com/';
+if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == "on"){$ssl_set = "s";} else{$ssl_set = "";}
+$config['base_url'] = 'http'.$ssl_set.'://'.$_SERVER['HTTP_HOST'];
+
 
 /*
 |--------------------------------------------------------------------------
