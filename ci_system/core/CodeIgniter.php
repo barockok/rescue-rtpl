@@ -245,6 +245,8 @@
 		show_error('Unable to load your default controller. Please make sure the controller specified in your Routes.php file is valid.');
 	}
 
+	// BAROCK-HACK
+	$EXT->_call_hook('extends_controller');
 	include(APPPATH.'controllers/'.$RTR->fetch_directory().$RTR->fetch_class().'.php');
 
 	// Set a mark point for benchmarking

@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Welcome extends MX_Controller {
+class Welcome extends API_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -19,6 +19,7 @@ class Welcome extends MX_Controller {
 	 */
 	public function index()
 	{
+		echo PLATPATH;
 		$this->load->view('welcome_message');
 	}
 }
