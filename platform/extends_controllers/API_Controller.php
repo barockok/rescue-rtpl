@@ -7,7 +7,7 @@
  * 
  */
 
-class API_Controller extends CI_Controller {
+class API_Controller extends MX_Controller {
 
 	protected $rest_format = NULL; // Set this in a controller to use a default format
 	protected $methods = array(); // contains a list of method properties such as limit, log and level
