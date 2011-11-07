@@ -360,3 +360,7 @@ $config['proxy_ips'] = '';
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */
+
+// HACK BY Barock zidmubarock@gmail.com ///
+$config['modules_locations'] = array( './components/' => '../../components/',
+);
