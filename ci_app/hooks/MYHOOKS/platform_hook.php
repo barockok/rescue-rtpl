@@ -21,18 +21,25 @@ class Platform_hook
 	}
 	function extends_controller(){
 		include PLATPATH.'extends_controllers/API_Controller'.EXT;
+		
 	}
-	function segmented_component()
+	function post_router_construct(){
+		$this->segmented_component();
+	}
+	private function segmented_component()
 	{
-		global $CFG;
-		
-		
+		global $CFG;	
 		$subdomain_arr = explode('.', $_SERVER['HTTP_HOST'], 2); //creates the various parts  
 		$subdomain_name = $subdomain_arr[0]; //assigns the first part
 		if($subdomain_name == 'api'){
+		
 			Modules::set_location($CFG->item('api_component_locations'));
-			Modules::set_state('back');
-		} 
+			Modules::set_state('api');
+		}else{
+		
+			Modules::set_location($CFG->item('modules_locations'));
+			Modules::set_state('api');
+		}
 	}
 }
 

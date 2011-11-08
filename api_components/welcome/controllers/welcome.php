@@ -18,9 +18,7 @@ class Welcome extends MX_Controller {
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
 	function index(){
-		$subdomain_arr = explode('.', $_SERVER['HTTP_HOST'], 2); //creates the various parts  
-		        $subdomain_name = $subdomain_arr[0]; //assigns the first part  
-		        echo $subdomain_name; // for testing only 
+		echo 'from ai component';
 	}
 	function user_get()
     {

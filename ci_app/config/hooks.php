@@ -16,18 +16,18 @@ $hook['pre_system']	= array(
                                 'filename' => 'platform_hook.php',
                                 'filepath' => 'hooks/MYHOOKS'
                                 );
-$hook['extends_controller'][] 	= array(
+$hook['extends_controller']	= array(
                                 'class'    => 'Platform_hook',
                                 'function' => 'extends_controller',
                                 'filename' => 'platform_hook.php',
                                 'filepath' => 'hooks/MYHOOKS'
                                 );
-$hook['extends_controller'][]	= array(
-                                'class'    => 'Platform_hook',
-                                'function' => 'segmented_component',
-                                'filename' => 'platform_hook.php',
-                                'filepath' => 'hooks/MYHOOKS'
-                                );
+$hook['post_router_construct'] = 	array(
+	                                'class'    => 'Platform_hook',
+	                                'function' => 'post_router_construct',
+	                                'filename' => 'platform_hook.php',
+	                                'filepath' => 'hooks/MYHOOKS'
+	                                );
 
 
 /* End of file hooks.php */
