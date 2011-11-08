@@ -20,7 +20,11 @@ class Platform_hook
 	//	$this->segmented_component();
 	}
 	function extends_controller(){
-		include PLATPATH.'extends_controllers/API_Controller'.EXT;
+		$dir = PLATPATH.'extends_controllers/';
+		foreach(scandir($dir) as $file){
+			if(strpos($file, '_Controller'.EXT) === false) continue;
+			include $dir.$file;
+		}
 		
 	}
 	function post_router_construct(){
