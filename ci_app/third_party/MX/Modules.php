@@ -47,7 +47,7 @@ spl_autoload_register('Modules::autoload');
  **/
 class Modules
 {
-	public static $routes, $registry, $locations;
+	public static $routes, $registry, $locations, $state;
 	
 	/**
 	* Run a module controller method
@@ -224,5 +224,13 @@ class Modules
 				return explode('/', $module.'/'.$val);
 			}
 		}
+	}
+	public function set_location($loc = array())
+	{
+		self::$locations = $loc;
+	}
+	public function set_state($state)
+	{
+		self::$state = $state;
 	}
 }

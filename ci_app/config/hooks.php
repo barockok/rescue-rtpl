@@ -10,15 +10,21 @@
 |
 */
 
-$hook['pre_system'] 	= array(
+$hook['pre_system']	= array(
                                 'class'    => 'Platform_hook',
                                 'function' => 'pre_system',
                                 'filename' => 'platform_hook.php',
                                 'filepath' => 'hooks/MYHOOKS'
                                 );
-$hook['extends_controller'] 	= array(
+$hook['extends_controller'][] 	= array(
                                 'class'    => 'Platform_hook',
                                 'function' => 'extends_controller',
+                                'filename' => 'platform_hook.php',
+                                'filepath' => 'hooks/MYHOOKS'
+                                );
+$hook['extends_controller'][]	= array(
+                                'class'    => 'Platform_hook',
+                                'function' => 'segmented_component',
                                 'filename' => 'platform_hook.php',
                                 'filepath' => 'hooks/MYHOOKS'
                                 );

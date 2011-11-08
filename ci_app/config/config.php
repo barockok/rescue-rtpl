@@ -364,5 +364,4 @@ $config['proxy_ips'] = '';
 /* Location: ./application/config/config.php */
 
 // HACK BY Barock zidmubarock@gmail.com ///
-$config['modules_locations'] = array( './components/' => '../../components/',
-);
+include 'platform/config/config'.EXT;
