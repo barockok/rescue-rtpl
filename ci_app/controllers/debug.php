@@ -9,6 +9,7 @@ class Debug extends MX_Controller {
 	}
 	function index(){
 		echo 'playground here hayooo lagi';
+		echo 'playground here hayooo lagi';
 	}
 	function maskapai(){
 		$maskapai = $this->uri->segment(3);
