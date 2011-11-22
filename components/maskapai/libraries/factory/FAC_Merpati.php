@@ -22,13 +22,14 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 	function __construct() {
 		parent::__construct();
 		$this->_ci->load->library('my_curl');
-		$this->_cookies_file = './cookies/merpati_airline.txt';
+		$this->_cookies_file = "./components/maskapai/libraries/factory/cookies/merpati_airline.txt";
+		
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
 		);
 		
 		$this->_opt = new stdClass();
-		$this->_opt->date_depart = '2011-25-30';
+		$this->_opt->date_depart = '2011-11-30';
 		$this->_opt->passengers = 1;
 		$this->_opt->route_from = 'CGK';
 		$this->_opt->route_to = 'PLM';
@@ -101,7 +102,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 			'FareSelect'	=> '',
 			'dayRange'		=> '0', //default
 		);
-		
+		//echo $post_data['dateFrom'];
 		$conf = array(
 			'httpheader'		=> $this->_headerData,
 			'url'				=> $this->_search_url,
@@ -182,8 +183,8 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 
 				}
 			}
-			return array('b', 'm');
-			//print_r($dataPenerbanganBerangkat);
+			//return array('b', 'm');
+			return $dataPenerbanganBerangkat;
 		}
 	
 	//don't delete this

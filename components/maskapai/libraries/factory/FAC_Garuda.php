@@ -8,7 +8,7 @@ class Garuda extends Factory {
 	function __construct(){
 		parent::__construct();		
 		//define variable
-		$this->_cookies_file = realpath('./cookies/garuda.txt');
+		$this->_cookies_file = './components/maskapai/libraries/factory/cookies/garuda.txt';
 		$this->login_url = 'http://gos.garuda-indonesia.com/saci/client.php';
 		$this->_refer_url = 'http://gos.garuda-indonesia.com/sac/';
 		$this->src_url = 'http://gos.garuda-indonesia.com/saci/clientavail.php';
@@ -35,8 +35,7 @@ class Garuda extends Factory {
 			'username' => $this->username,
 			'password' => $this->password
 		);		
-		
-		//$dom = file_get_url('http://gos.garuda-indonesia.com/sac/script/ibeconef.js');		
+				
 		
 		$conf = array(
 			'url' 				=> $this->login_url,

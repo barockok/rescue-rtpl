@@ -48,9 +48,9 @@ class Citilink extends Factory {
 			$this->_opt->route_from = $this->_opt->route_to;
 			$this->_opt->route_to = $temp;
 			
-			$return_flight = $this->src('return');
+			print_r($return_flight = $this->src('return'));
 		}else{
-			$depart_flight = $this->src('depart');
+			print_r($depart_flight = $this->src('depart'));
 		}	
 		$this->addResFlight($return_flight);
 		$this->addResFlight($depart_flight);
@@ -80,15 +80,15 @@ class Citilink extends Factory {
 		);*/
 		
 		$file_arr = array(
-			'./citilink/ct_1/Citilink.htm',
-			'./citilink/ct_2/Citilink.htm',
-			'./citilink/ct_3/Citilink.htm',
-			'./citilink/ct_4/Citilink.htm'
+			'./components/maskapai/libraries/factory/citilink_html/ct_1/Citilink.htm',
+			'./components/maskapai/libraries/factory/citilink_html/ct_2/Citilink.htm',
+			'./components/maskapai/libraries/factory/citilink_html/ct_3/Citilink.htm',
+			'./components/maskapai/libraries/factory/citilink_html/ct_4/Citilink.htm'
 		);				
 		
 		shuffle($file_arr);		
-		
-		$dom = file_get_html(realpath($file_arr[1]));
+						
+		$dom = file_get_html($file_arr[1]);
 		if (!$html = $dom->find('table[id=FlightAvailability0] tbody',0)) return array(); 
 		
 		$total_flight = count($dom->find('table[id=FlightAvailability0] tbody tr')); //get total flight by count rows in table
@@ -125,12 +125,12 @@ class Citilink extends Factory {
 				'class' => str_replace(' ','',$dom->find('table[id=FlightAvailability0] tbody tr',$i)->find('td',6)->plaintext),
 				'price' => $price,
 				'route' => $this->_opt->route_from.",".$this->_opt->route_to,
-				'meta_data' => array(
+				'meta_data' => json_encode(array(
 					'seat_available' => $dom->find('table[id=FlightAvailability0] tbody tr',$i)->find('td',7)->plaintext,
 					'flight_number' => $flight_number,
 					'flight_number_transit' => '',
 					'passenger' => $this->_opt->passengers
-				)
+				))
 			);			
 			
 			if($final_data[$i-1]['meta_data']['seat_available']=='C') unset($final_data[$i-1]);

@@ -19,16 +19,16 @@ class Batavia extends Factory {
 	function __construct() {
 		parent::__construct();
 		$this->_ci->load->library('my_curl');
-		$this->_cookies_file 	= './cookies/batavia_airline.txt';
+		$this->_cookies_file 	= "./components/maskapai/libraries/factory/cookies/batavia_airline.txt";
 		$this->login();
 		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-12-25';
+		$this->_opt->date_depart =  '2011-12-30';
 		$this->_opt->passengers = 1;
 		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'AMQ';
+		$this->_opt->route_to = 'PLM';
 	}
 	function test(){
-		echo 'test';
+		echo 'tester';
 	}
 	function index() {
 		echo $this->route;
@@ -60,7 +60,7 @@ class Batavia extends Factory {
 	}
 	
 	function search(){
-		$roundTrip = true;
+		$roundTrip = false;
 		$dateExplode = explode('-',$this->_opt->date_depart);
 		$this->_ci->load->helper('array');
 		$year = str_split($dateExplode[0]);
@@ -92,6 +92,7 @@ class Batavia extends Factory {
 		);
 		$this->_ci->my_curl->setup($conf);
 		$html = $this->_ci->my_curl->exc();
+		echo $html;
 		$page = str_get_html($html);
 		$qty = $post_data['jmlPenumpang'];
 		if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return array();
@@ -152,6 +153,7 @@ class Batavia extends Factory {
 			
 		}
 		$data_dep = $data;
+		//print_r($data_dep);
 		return $data_dep;
 	}
 	
