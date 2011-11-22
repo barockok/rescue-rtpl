@@ -20,9 +20,10 @@ $config['rest_default_format'] = 'xml';
 | Should we enable emulation of the request (e.g. used in Mootools request)?
 |
 |	Default: false
-|
+|zz
 */
-$config['enable_emulate_request'] = TRUE;
+
+$config['enable_emulate_request'] = FALSE;
 
 
 /*

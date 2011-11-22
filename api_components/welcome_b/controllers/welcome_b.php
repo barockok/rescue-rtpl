@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Welcome extends MX_Controller {
+class Welcome_b extends API_Controller {
 
 	/**
 	 * Index Page for this controller.
@@ -46,6 +46,11 @@ class Welcome extends MX_Controller {
             $this->response(array('error' => 'User could not be found'), 404);
         }
     }
+	function test_get(){
+		$suh = $this->load->module('comp/welcome');
+		echo $this->welcome->test();
+		
+	}
 	
 }
 

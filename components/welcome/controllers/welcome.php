@@ -17,11 +17,11 @@ class Welcome extends MX_Controller {
 	 * map to /index.php/welcome/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
-	function index(){
-		echo PLATPATH;
+	function test(){
+		echo 'shu';
+//		echo $this->load->library('api/welcome/testlib')->test();
+	
+		
 	}
 	
 }
-
-/* End of file welcome.php */
-/* Location: ./application/controllers/welcome.php */

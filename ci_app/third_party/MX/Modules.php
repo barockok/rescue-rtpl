@@ -53,7 +53,7 @@ class Modules
 	* Run a module controller method
 	* Output from module is buffered and returned.
 	**/
-	public static function run($module) {
+	public static function run($module, $state = false) {
 		
 		$method = 'index';
 		
@@ -62,7 +62,7 @@ class Modules
 			$module = substr($module, 0, $pos);
 		}
 
-		if($class = self::load($module)) {
+		if($class = self::load($module, $state )) {
 			
 			if (method_exists($class, $method))	{
 				ob_start();
@@ -77,24 +77,26 @@ class Modules
 	}
 	
 	/** Load a module controller **/
-	public static function load($module) {
-
+	
+	public static function load($module, $state = null) {
+		
+		
 		(is_array($module)) ? list($module, $params) = each($module) : $params = NULL;	
 		
 		/* get the requested controller class name */
 		$alias = strtolower(end($segments = explode('/', $module)));
-
+	
 		/* create or return an existing controller from the registry */
 		if ( ! isset(self::$registry[$alias])) {
 			
+			$locate = CI::$APP->router->locate($segments, $state);
 			/* find the controller */
-			list($class) = CI::$APP->router->locate($segments);
+			list($class) = $locate->segments;
 	
 			/* controller cannot be located */
 			if (empty($class)) return;
-	
 			/* set the module directory */
-			$path = APPPATH.'controllers/'.CI::$APP->router->fetch_directory();
+			$path = APPPATH.'controllers/'.$locate->directory;
 			
 			/* load the controller class */
 			$class = $class.CI::$APP->config->item('controller_suffix');
@@ -166,6 +168,14 @@ class Modules
 	* Generates fatal error if file not found.
 	**/
 	public static function find($file, $module, $base) {
+		global $CFG;
+		$locMod = Modules::$locations;
+		$detect = detectState($file);
+		$file = $detect->module;
+		if($detect->state == 'api') $locMod = $CFG->item('api_component_locations');
+		if($detect->state == 'comp') $locMod = $CFG->item('modules_locations');
+		
+	
 	
 		$segments = explode('/', $file);
 
@@ -179,7 +189,7 @@ class Modules
 			$modules[array_shift($segments)] = ltrim(implode('/', $segments).'/','/');
 		}	
 
-		foreach (Modules::$locations as $location => $offset) {					
+		foreach ($locMod as $location => $offset) {					
 			foreach($modules as $module => $subpath) {			
 				$fullpath = $location.$module.'/'.$base.$subpath;
 				

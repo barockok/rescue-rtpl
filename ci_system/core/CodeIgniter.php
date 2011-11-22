@@ -168,6 +168,8 @@
  * ------------------------------------------------------
  */
 	$RTR =& load_class('Router', 'core');
+	
+	
 	// BAROCK-HACK
 	$EXT->_call_hook('post_router_construct');
 	

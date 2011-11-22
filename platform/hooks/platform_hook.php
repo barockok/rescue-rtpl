@@ -17,6 +17,7 @@ class Platform_hook
 	}
 	function pre_system(){
 		include 'platform/core/constant'.EXT;
+		include 'platform/core/common'.EXT;
 	//	$this->segmented_component();
 	}
 	function extends_controller(){
