@@ -25,6 +25,10 @@ class Debug extends MX_Controller {
 	function git_fetch(){
 		exec('git pull');
 	}
+	function test(){
+		$this->load->library('ssh');
+		$this->ssh->login();
+	}
 	
 
 }
