@@ -22,6 +22,9 @@ class Debug extends MX_Controller {
 		
 		
 	}
+	function git_fetch(){
+		exec('git pull');
+	}
 	
 
 }
