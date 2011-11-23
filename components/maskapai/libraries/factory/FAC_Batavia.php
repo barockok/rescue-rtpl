@@ -92,7 +92,6 @@ class Batavia extends Factory {
 		);
 		$this->_ci->my_curl->setup($conf);
 		$html = $this->_ci->my_curl->exc();
-		echo $html;
 		$page = str_get_html($html);
 		$qty = $post_data['jmlPenumpang'];
 		if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return array();

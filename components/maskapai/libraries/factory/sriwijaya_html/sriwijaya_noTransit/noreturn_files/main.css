@@ -1,0 +1,1784 @@
+
+/* 
+  Layout
+*/
+body {
+	background:#f3f2d3;
+	font-family:arial, helvetica, sans-serif;
+	margin:0;
+}
+
+* html body {
+	overflow:hidden;
+}
+
+#pagewrapper { 
+	background:#ffffff;
+	margin:0 auto 40px;
+	width: 1000px;
+}
+
+#header {
+	background:transparent url("images/sprites01.gif") no-repeat 0 0;
+	height:60px;	
+}
+
+#mainWrapper {
+	background:#ffffff;
+	border-left: 1px solid #c7bd92;
+    border-right: 1px solid #c7bd92;
+    min-height:250px;
+    padding: 8px 7px;
+}
+
+#footer {
+	background:transparent url("images/sprites01.gif") no-repeat 0 -60px;
+	color: #8E7D30;
+	font-size:11px;
+	height:20px;
+	margin-bottom:10px;	
+	padding:10px;
+	text-align:center;
+	*margin:0;
+}
+
+.clear {
+	clear: both;
+}
+
+/* 
+  Main Menu
+*/
+
+#mainMenu {
+	float:left;	
+}
+
+#mainMenu ul {
+	float:left;
+	/*list-style: none;*/
+	/*left:300px;*/
+	margin:20px 0 0 300px;;
+	padding:0;
+	/*position:absolute;*/
+	/*top:20px;*/
+}
+
+#mainMenu ul li {
+	/*border-left:1px solid #0b11de;*/
+	/*border-right:1px solid #000115;*/
+	display:block;
+	float: left;
+	line-height:14px;
+	padding:0;
+	text-align:center;
+	width:80px;
+}
+
+#mainMenu ul li a {
+	border-left:1px solid #0b11de;
+	border-right:1px solid #000115;
+	color:#ffffff;
+	display:block;
+	font-size:12px;
+	margin:0;
+	padding:11px 5px 10px;
+	text-decoration: none;
+	width:70px;
+}
+
+#mainMenu ul li a:hover,
+#mainMenu ul li a:active {
+	background:#0f13a5;
+	color:#fbf418;
+	text-decoration: none;
+}
+
+#mainMenu ul li ul.child {
+    background:#03066a;
+    border-top:5px solid #ff4d4d;
+	-moz-border-radius:0 0 3px 3px;
+	border-radius:0 0 3px 3px;
+    clear:both;
+    float:none;
+    margin:0;
+    overflow: visible;
+    padding:0;
+    position:absolute;
+    visibility:hidden;
+}
+
+#mainMenu ul li:hover ul.child {
+    display:block;
+    visibility:visible;
+}
+
+#mainMenu ul li ul.child li {
+	border-bottom:1px dotted #5154b7;
+	border-left:0;
+	border-right:0;
+	display:block;
+	float:none;
+	padding:0;
+	width:auto;
+}
+
+#mainMenu ul li ul.child li a {
+	border:0;
+	padding:5px;
+	text-align:left;
+	width:120px;	
+}
+
+#mainMenu ul li ul.child li a:hover {
+	background:transparent;	
+}
+
+#mainMenu ul li ul.child li.last {
+	border:0;	
+}
+
+#mainMenu ul li.menuparent a:hover ul {
+	border:0;	
+}
+
+
+
+/* 
+  Search Panel
+*/
+
+#searchPanelTop {
+	background:#B40909;
+	border:1px solid #e64c4c;
+	color:#F0E2A2;
+	font-size:11px;
+	margin:0 0 20px 0;
+	padding:5px;
+	*width:971px;
+	*overflow:hidden;
+	*margin:0px 0 0 0;
+}
+
+#searchPanelTop select  {
+	font-family:arial, helvetica, sans-serif;
+	font-size:11px;
+}
+
+#searchPanelTop select#selectOrigin,
+#searchPanelTop select#selectDestination {
+	width:125px;
+}
+
+#searchPanelTop .spRadioOW,
+#searchPanelTop .spRadioRT {
+	float:left;
+}
+
+#searchPanelTop #radioWrapper {
+    display: block;
+    float:left;	
+    width:80px;
+    *width:100px;
+}
+
+#searchPanelTop .spRadioOW input,
+#searchPanelTop .spRadioRT input {
+	margin:0 2px 0 0;	
+	*margin:-4px 0 0 0;
+}
+
+#searchPanelTop .spLabelOW,
+#searchPanelTop .spLabelRT {
+    clear: right;
+    margin-bottom:9px;
+    width: 70px;
+    *margin-bottom:9px;
+}
+
+#fromToWrapper {
+	float:left;
+	display:block;
+	width:180px;	
+}
+
+#fromToWrapper .labelPanel {
+	float:left;
+	padding-right:5px;
+	text-align:right;
+	width:35px;	
+}
+
+#fromToWrapper  .spSelectORIG {
+	margin-bottom:5px;	
+}
+
+#dateWrapperJSP {
+	display:block;
+	float:left;
+	width:180px;	
+}
+
+#dateWrapperJSP .labelPanel {
+	float:left;
+	padding-right:5px;
+	text-align:right;
+	width:45px;	
+}
+
+#dateWrapperJSP .spSelectDate1,
+#dateWrapperJSP .spSelectDate2 {
+	margin-bottom:5px;
+}
+
+#dateWrapperJSP .spSelectDate1 select,
+#dateWrapperJSP .spSelectDate2 select {
+	margin:0 3px 0 0;	
+}
+
+#dateWrapperJSP .spSelectDate1 a,
+#dateWrapperJSP .spSelectDate2 a {
+	float:right;	
+}
+
+.travelerLabelJSP {
+    margin:0;
+}
+
+.spGuestWrapJSP {
+	background:transparent;
+	float:left;	
+	margin-top:9px;
+	padding:0;
+	*margin-top:12px;
+}
+
+.spAdultWrap,
+.spChildWrap,
+.spInfantWrap {
+	float:left;	
+	margin-right:10px;
+}
+
+.spLabelAdult,
+.spLabelChild,
+.spLabelInfant {
+	float:left;	
+
+}
+
+.agesLabelJSP {
+	color:#A69C70;
+	font-size:10px;
+	font-style:italic;
+	margin:0 3px;
+}
+
+.spSubmitButton {
+	float:left;
+	margin:4px 0 0 30px;	
+	*margin:0;
+}
+
+.spSubmitButton input {
+	background: #03066A;
+    border: 1px solid #343AF7;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: normal;
+    padding: 3px;
+}
+
+/* 
+  Bottom Panel
+*/
+#userInfo {
+	background:#03066a;
+	border-top:2px solid #3136da;
+	bottom:0;
+	color:#fffdab;
+	font-size:12px;
+	font-weight:bold;
+	height:30px;
+	left:0;
+	position:fixed;
+	width:100%;	
+	z-index:100;
+}
+
+.username {
+	border-right: 1px solid #000115;
+	float:left;	
+	padding:8px;
+}
+
+.userNoID {
+	border-left: 1px solid #0B11DE;
+	border-right: 1px solid #000115;
+	float:left;	
+	padding:8px;
+}
+
+.userDeposit {
+	border-left: 1px solid #0B11DE;	
+	float:left;
+	padding:8px;
+}
+
+.logout {
+	font-style:italic;
+	font-weight:normal;
+}
+
+.logout a {
+	color:#c2b797;
+	padding:0 3px;
+	text-decoration:none;	
+}
+
+.logout a:hover {
+	text-decoration:underline;	
+}
+
+.voltras {
+	background:transparent url("images/sprites01.gif") no-repeat 0 -100px;
+	float:right;
+	height:28px;
+	margin:0 10px 0 0;
+	width:80px;	
+}
+
+.voltras a {
+	display:block;
+	height:28px;	
+	text-indent: -32500px;
+	width:80px;
+}
+
+.voltras a:hover {
+	background:transparent url("images/sprites01.gif") no-repeat -80px -100px;
+	float:right;
+	height:28px;
+	width:80px;	
+}
+
+.slogan {
+	color:#c2b797;
+	float:right;
+	font-size:14px;
+	font-weight:normal;
+	height:22px;
+	margin:6px 20px 0 0;
+	padding:0 0 0 0;	
+}
+
+.avTableLabel1 {
+	color:#8E7D30;
+	float:left;
+	font-size:14px;
+	font-weight:normal;	
+	margin:0 0 3px 0;
+}
+
+#departTableLabel,
+#returnTableLabel,
+#combiTableLabel {
+	margin-right:5px;	
+}
+
+#depCombiTableLabel {
+	margin-right:5px;	
+}
+
+#retCombiTableLabel {
+	margin-right:5px;	
+}
+
+#depIcon {
+	background:transparent url("images/sprites01.gif") no-repeat -160px -100px;
+	display:block;
+	height:15px;
+	float:left;
+	margin-right:5px;
+	width:15px;
+}
+
+#retIcon {
+	background:transparent url("images/sprites01.gif") no-repeat -175px -100px;
+	display:block;
+	height:15px;
+	float:left;
+	margin-right:5px;
+	width:15px;
+}
+
+#combIcon {
+	background:transparent url("images/sprites01.gif") no-repeat -190px -100px;
+	display:block;
+	height:21px;
+	float:left;
+	margin-right:5px;
+	width:21px;
+}
+
+.avTableLabel2 {
+	color:#8E7D30;
+	float:left;
+	font-size:14px;
+	font-weight:bold;	
+	margin:0 0 3px 0;
+}
+
+.avTableDiv2 {
+	color:red;
+	float:right;
+	font-size:11px;	
+	font-weight: bold;
+	margin-top:5px;
+}
+
+.flightDateInfoWrap {
+	float:left;
+	width:600px;	
+}
+
+.avPrev,
+.avNext {
+	float:left;
+	font-size:12px;	
+	line-height:10px;
+	margin: 3px 0 0;
+	padding:0 5px;
+}
+
+.avPrev {
+	border-right:1px solid #ccc5a8; 		
+}
+
+.avPrev a,
+.avNext a {
+	color:#8E7D30;	
+	text-decoration:none;
+}
+
+.avPrev a:hover,
+.avNext a:hover {
+	text-decoration:underline;
+}
+
+table.tableAvailability {
+	border-bottom: 1px solid #ffffff;
+	clear:both;	
+	font-size:11px;
+	margin-bottom:20px;
+	width:100%;
+}
+
+table.tableAvailability tr td.leftTD,
+table.tableAvailability tr td.leftTD_even {
+	background:none;
+	padding:0;
+	width:15%;
+}
+
+table#table_go tr td.leftTD {
+	background:#428bb9;	
+	border-bottom:1px solid #ffffff;
+}
+
+table#table_go tr td.leftTD_even {
+	background:#69b9ec;
+	border-bottom:1px solid #ffffff;
+	padding:0;
+}
+
+table#table_back tr td.leftTD   {
+	background:#7cb342;
+	border-bottom:1px solid #ffffff;
+	padding:0;
+}
+
+table#table_back tr td.leftTD_even  {
+	background:#97cf5b;
+	border-bottom:1px solid #ffffff;
+}
+
+
+table.tableAvailability tr td.rightTD {
+	background:#ffffff;
+	padding:0;
+	height:100%;
+	width:85%;
+}
+
+table.classTable tr td {
+	background:#c9ecff;	
+	border-left:1px solid #ffffff;
+	border-bottom:1px solid #ffffff;
+	padding:3px;
+	width:4.54%;
+	height:auto;
+}
+
+table.classTable tr td.avcellTd_even {
+	background:#ebf6fc;
+}
+
+table.classTable tr td.avcellTd_Select {
+	background:#ff66cc;
+}
+
+table#table_back tr td table.classTable tr td {
+	background:#b5e195;	
+}
+
+table#table_back tr td table.classTable tr td.avcellTd_even {
+	background:#ddfcc6;	
+}
+
+table#table_comb tr td.leftTD {
+	background:#d3418d;	
+}
+
+table#table_comb tr td table.classTable tr td {
+	background:#f7b9d9;	
+}
+
+table.classTable tr td.avcellTd_disable,
+table#table_back tr td.avcellTd_disable,
+table#table_comb tr td.avcellTd_disable {
+	background:#c8c7b6 !important;
+	color:#4d4d44 !important;	
+}
+
+table.classTable tr td.avcellTd_disable input.avcellRadio,
+table#table_back tr td.avcellTd_disable input.avcellRadio,
+table#table_comb tr td.avcellTd_disable input.avcellRadio {
+	display:none;
+}
+
+table.tableAvailability tr td table.classTable {
+	border:0;
+	height:100%;
+	width:100%;
+}
+
+table.flightInfo {
+	border:0;
+	color:#ffffff;
+	font-weight:bold;
+	height:100%;
+	width:100%;	
+}
+
+table.flightInfo tr td.arrInfo {
+	
+}
+
+.flightNum a {
+	color:#fffdab;	
+}
+
+.warningStop {
+	font-weight:normal;
+	font-style:italic;	
+}
+
+table.flightInfo tr td {
+	border-bottom:0px solid #ffffff;
+	padding:3px;
+	width:33.3%;	
+	vertical-align:text-top;
+}
+
+.classLetterCode {
+	float:left;
+	font-weight:bold;	
+}
+
+.availNumCode {
+	float:left;		
+}
+
+.avcell {
+	display:block;
+	float:left;
+	height:100%;
+	width:100%;
+}
+
+.avcell input.avcellRadio {
+	float:left;	
+	margin:0 2px;
+	padding:0;
+}
+
+.avcellFare {
+	clear:both;
+	float:left;
+}
+
+.input + div {
+    display: none;
+    position: relative;
+    top: -30px;
+    left: 200px;
+}
+
+.input:focus + div {
+        display: block;
+}
+
+/*
+  Pax Detail
+*/
+
+.asterisk {
+	color:red;
+	font-weight:bold;	
+}
+
+table.detailPax {
+	border:0;
+	font-size:11px;	
+	margin-bottom:3px;
+	width:100%;
+}
+
+table.detailPax select,
+table.detailPax input,
+table.detailContact select,
+table.detailContact input {
+	font-family:arial, helvetica, sans-serif;
+	font-size:11px;	
+}
+
+table.detailPax td.mainTitle {
+	background:#877866;
+	color:#ffffff;
+	font-weight:bold;
+	padding:5px;
+	text-align:center;
+	width:10%;
+}
+
+table#detailChild td.mainTitle {
+	background:#a89277;	
+}
+
+table#detailInfant td.mainTitle {
+	background:#caaf8d;	
+}
+
+table.detailPax td.detailFill {
+	background:#e4decf;
+	color:#333333;	
+	padding:5px;
+	width:90%;	
+}
+
+table#detailChild td.detailFill {
+	background:#f1ebda;	
+}
+
+table#detailInfant td.detailFill {
+	background:#f5f1e8;	
+}
+
+table.detailContact {
+	border:0;
+	font-size:11px;	
+	margin-bottom:10px;
+	margin-top:10px;
+	width:100%;
+}
+
+table.detailContact td.mainTitle {
+	background:#cb8745;
+	color:#ffffff;
+	font-weight:bold;
+	padding:5px;
+	text-align:center;
+	width:10%;
+}
+
+table.detailContact td.contactFill {
+	background:#f0c8a1;	
+}
+
+.contactInnerLabel {
+	font-weight:bold;
+	text-align:right;	
+}
+
+/*
+	Booking Summary
+*/
+
+#bookingSummary {
+	float: left;
+    margin-bottom: 10px;
+    width: 100%;	
+}
+
+table#selectedSummary {
+	font-size:11px;
+	width:100%;	
+}
+
+table#selectedSummary tr td.leftTD {
+	background:#FFFECD;
+	border: 1px solid #E2E19C;
+	width:70%;	
+}
+
+table#selectedSummary tr td.rightTD  {
+	background:#FFFECD;
+	border: 1px solid #E2E19C;
+	width:30%;	
+}
+
+table#selectedSummary .mainTitle {
+	background:#9a8364;
+	color:#ffffff;
+	font-weight:bold;
+	padding:3px;
+	text-align:left;
+}
+
+table#flightSummary {;
+	width:100%;	
+}
+
+table#fareSummary {
+	width:100%;	
+}
+
+table#flightSummary td {
+	padding:2px;	
+	text-align:center;
+}
+
+table#flightSummary td.thDate,
+table#flightSummary td.thSegment {
+	background:#d7cd94;
+	color:#555555;
+	font-weight:bold;
+	text-align:center;
+	width:20%;
+}
+
+table#flightSummary td.thFlightNo,
+table#flightSummary td.thClass,
+table#flightSummary td.thDepartTime,
+table#flightSummary td.thArrivalTime,
+table#flightSummary td.thStopOver {
+	background:#d7cd94;
+	color:#555555;
+	font-weight:bold;
+	text-align:center;
+	width:12%;	
+}
+
+table#flightSummary tr.selectedgo {
+	background:#c9ecff;	
+}
+
+table#flightSummary tr.selectedreturn {
+	background:#b5e195;	
+}
+
+table#flightSummary tr.selectedcomb {
+	background:#F7B9D9;	
+}
+
+.fareTotal {
+	color:red;
+	font-size:12px;
+	font-weight:bold;
+	text-transform:uppercase;	
+}
+
+#labelFareTotal,
+#labelFareNTA {
+	padding-right:5px;
+	text-align:right;
+	width:20%;	
+}
+
+#fareTotalAmount,
+#labelFareAmountNTA {
+	border-bottom: 1px solid #E2E19C;
+	width:40%;
+}
+
+#fareCurr {
+	
+	width:40%;
+}
+
+
+/* 
+	Bottom Buttons
+*/
+
+#buttonBottomContainer {
+	width:100%;	
+}
+#buttonBookContainer,
+#buttonIssueContainer {
+	float:right;
+	margin-right:10px;	
+}
+
+#buttonLeftContainer {
+	float:left;
+	margin-right:10px;	
+}
+
+#buttonIssueContainer .buttonStyle input,
+#buttonLeftContainer .buttonStyle input,
+.loginButtonWrapper input {
+	background:transparent url("images/sprites01.gif") no-repeat 0px -130px;
+	border:0;
+	color:#faf77d;
+	cursor:pointer;
+	float:left;
+	font-family:arial, helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	height:31px;
+	margin:0;
+	padding:3px 12px 7px 19px;	
+	text-transform: uppercase;
+	*padding:3px 7px 7px 14px;
+} 
+
+#buttonIssueContainer .buttonRightSide,
+#buttonLeftContainer .buttonRightSide,
+.loginButtonWrapper .buttonRightSide  {
+	background:transparent url("images/sprites01.gif") no-repeat 100% -160px;
+	clear:right;
+	float:left;
+	height:31px;
+	width:8px;
+}
+
+#buttonBookContainer .buttonStyle input,
+.registerButtonWrapper input {
+	background:transparent url("images/sprites01.gif") no-repeat 0px -190px;
+	border:0;
+	color:#faf77d;
+	cursor:pointer;
+	float:left;
+	font-family:arial, helvetica, sans-serif;
+	font-size:12px;
+	font-weight:bold;
+	height:31px;
+	margin:0;
+	padding:3px 12px 7px 19px;	
+	text-transform: uppercase;
+	*padding:3px 7px 7px 14px;
+}
+
+#buttonBookContainer .buttonRightSide,
+.registerButtonWrapper .buttonRightSide {
+	background:transparent url("images/sprites01.gif") no-repeat 100% -225px;
+	clear:right;
+	float:left;
+	height:31px;
+	width:8px;
+}
+
+#buttonIssueContainer .buttonStyle input:hover,
+#buttonBookContainer .buttonStyle input:hover,
+#buttonLeftContainer .buttonStyle input:hover,
+.loginButtonWrapper input:hover,
+.registerButtonWrapper input:hover {
+	color:#ffffff;	
+}
+
+#buttonIssueContainer .buttonStyle form {
+	float:left;	
+}
+
+
+/*
+	Page Home
+*/
+
+.leftPanel {
+	float:left;
+	width:220px;	
+}
+
+.panelTitle {
+	color:#F0E2A2;
+	display:none;
+	font-size:12px;	
+	font-weight:bold;
+	margin:0 0 5px 0;
+}
+
+.page_home .panelTitle {
+	 display:block;	
+}
+
+.page_home #searchPanelTop {
+	margin:0 0 10px 0;
+	width:200px;	
+	*margin:0 0 5px 0;
+}
+
+.page_home #searchPanelTop #radioWrapper {
+    float:none;
+    height:20px;
+    padding: 0 0 0 20px;
+    width:180px;
+}
+
+.page_home #fromToWrapper {
+    float:none;
+    height:60px;
+    width:190px;
+}
+
+.page_home #searchPanelTop select#selectOrigin,
+.page_home #searchPanelTop select#selectDestination {
+    width: 133px;
+}
+
+.page_home #dateWrapperJSP {
+    float:none;
+    height:50px;
+}
+
+.page_home #fromToWrapper .labelPanel {
+    width: 45px;
+}
+
+.page_home #searchPanelTop .spLabelOW,
+.page_home #searchPanelTop .spLabelRT {
+    float:left;
+}
+
+.page_home #dateWrapperJSP {
+	width:200px;	
+}
+
+.page_home #dateWrapperJSP .spSelectDate1 select#selectMonthYear1,
+.page_home #dateWrapperJSP .spSelectDate2 select#selectMonthYear2 {
+    width:88px;
+}
+
+.page_home .travelerLabelJSP {
+	margin-top: 5px;
+    padding-left:13px;
+}
+
+.page_home .spAdultWrap,
+.page_home .spChildWrap,
+.page_home .spInfantWrap {
+    float: left;
+    margin:0 10px 3px 0;
+    width: 170px;
+}
+
+.page_home .spGuestWrapJSP {
+    background: none repeat scroll 0 0 transparent;
+    float: left;
+    margin-top: 4px;
+    padding: 0 0 0 13px;
+}
+
+.page_home .spGuestWrapJSP .spSelectAdult,
+.page_home .spGuestWrapJSP .spSelectChild,
+.page_home .spGuestWrapJSP .spSelectInfant {
+	float:right;	
+}
+
+.page_home .spSubmitButton {
+    float: right;
+    margin: 8px 17px 0 0;
+    *margin: 7px 8px 0 0;
+}
+
+.page_home .newslist {
+	border-top:1px solid #e0d1be;
+	padding:3px 0;	
+}
+
+.page_home .newslink {
+	margin-top:10px;	
+}
+
+.page_home .newslink a {
+	color:#62584B;
+	text-decoration:none;
+}
+
+.page_home .newslink a:hover {
+	color:#cc0000;
+	text-decoration:none;
+}
+
+.page_home .newsDate {
+	color:#867764;
+	margin-right:10px;
+}
+
+.page_home .newsTitle {
+	font-weight:bold;
+}
+
+/*
+	Retrieve Booking Panel
+*/
+
+#retrievePanel {
+	background:#e3f0f8;
+	border:1px solid #c7e0f1;
+	font-size:11px;
+	color:#004e89;
+	padding:5px;
+	width:200px;	
+}
+
+#retrievePanel .panelTitle {
+	color:#004e89;	
+}
+
+#retrievePanel input {
+	font-size:11px;	
+}
+
+#retrievePanel .retPaxNameLabel {
+	margin:5px 0 0 0;	
+}
+
+.retSubmitButton input {
+    background: none repeat scroll 0 0 #03066A;
+    border: 1px solid #343AF7;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: normal;
+    margin:5px 0 0 0;
+    padding: 3px;
+}
+
+
+/*
+	Main Content with Left Panel
+*/
+
+.mainContentLeftPanel {
+	display:block;
+	float:left;
+	font-size:12px;
+	padding:0 5px;
+	width:749px;
+	overflow: visible;
+    word-wrap: break-word;
+}
+
+.contentTitle {
+	color:#03066a;
+	font-size:26px;
+	font-weight:normal;	
+	margin:0 0 20px 0;
+}
+
+.agentNewsHeader {
+	color:#AC9F8E;
+	font-size:18px;
+	font-weight:normal;	
+	margin:0 0 20px 0;
+}
+
+.agentNewsTitle {
+	color:#7f6747;
+	font-size:12px;
+	font-weight:bold;
+	margin:10px 0 10px 0;	
+}
+
+.agentNewsContent {
+	border-bottom:0px solid #7f6747;
+	color:#7f6747;
+	font-size:12px;
+	font-weight:normal;
+	line-height:18px;
+	padding:0 0 10px 0;
+}
+
+
+/***** Fare Detail *****/
+
+body.fareDetailPage {
+  background:#F3F2D3;
+  padding:10px;
+}
+
+#fareDetailDepart {
+
+}
+
+#fareDetailReturn {
+
+}
+
+.fareDetail h3 {
+  margin:0 0 10px 0;
+  font-size:14px;
+}
+
+#fareDetailAdult,
+#fareDetailChild,
+#fareDetailInfant {
+  display:block;
+  width:200px;
+  background:#f9f8e3;
+  border:1px solid #dddbae;
+  margin-bottom:10px;
+  font-size:11px;
+  float:left;
+  margin:0 10px 10px 0;
+}
+
+.clear {
+  clear:both;
+}
+
+#fareDetail dl {
+  margin:0;
+  padding:5px;
+}
+
+#fareDetail dt {
+  font-weight:bold;
+}
+
+#fareDetail dd {
+  margin:5px 0;
+}
+
+.priceDetail {
+  float:right;
+}
+
+.priceDetail.bold {
+  font-weight:bold;
+}
+
+#fareDetailAdminFee {
+  clear:both;
+  display:block;
+  width:300px;
+  background:#c3f0e4;
+  border:1px solid #94d6c4;
+  padding:5px;
+  margin-bottom:10px;
+}
+
+#fareDetailAmount {
+  background:#c1e9b9;
+  border:1px solid #79ca66;	
+  clear:both;
+  display:block;
+  font-size:14px;
+  padding:5px;
+  margin-bottom:10px;
+  width:300px;
+}
+
+.totalPax {
+  font-size:12px;
+  font-weight:bold;
+}
+
+/*
+	Login Page
+*/
+
+.login_header {
+	background:transparent url("images/login_header.gif") no-repeat center 0;
+	height:150px;
+}
+
+.login_page {
+	background:#F3F2D3;	
+	border-left: 1px solid #DED6B4;
+    border-right: 1px solid #DED6B4;
+    padding: 8px 7px;	
+}
+
+.login_page #pagewrapper {
+    background: none;
+    margin: 0 auto;
+    width: 1000px;
+}
+
+.loginWrapper {
+	font-size:12px;
+	font-weight:normal;	
+	margin:20px auto 0;
+	padding:0;
+	width:250px;	
+}
+
+.usernameWrapper,
+.passwordWrapper {
+	clear:both;
+	float:left;
+	margin:0 0 10px 0;
+	*clear:none;
+}
+
+.loginButtonWrapper {
+	float:right;
+	margin:0 14px 20px 0;
+	*clear:none;
+}
+
+.registerButtonWrapper {
+	float:left;
+	margin:0 14px 20px 0;
+	*clear:none;
+}
+
+.usernameLabel {
+	display:block;
+	float:left;
+	margin:0 10px 0 0;
+	text-align:right;
+	width:80px;	
+}
+
+.pageTitle {
+	color:#9f9154;
+	font-size:26px;
+	text-align:center;	
+}
+
+.voltras_loginpage {
+	background:transparent url("images/voltras_loginpage.gif") no-repeat 0 0;
+    height: 28px;
+    margin: 10px auto 0;
+    width: 80px;
+}
+
+.voltras_loginpage a {
+    display: block;
+    height: 28px;
+    text-indent: -32500px;
+    width: 80px;
+}
+
+.voltras_loginpage a:hover {
+	background:transparent url("images/voltras_loginpage.gif") no-repeat 0 -28px;
+}
+
+.invalidLogin {
+	color:red;
+	display:block;
+	font-weight:bold;
+	margin-bottom:10px;
+	text-align:center;	
+}
+
+/*
+	Flight Detail Popup Page
+*/
+
+body.flightDetail_page {
+	font-size:12px;
+	padding:10px;	
+}
+
+.flightDetAptCity {
+	color:#8e7d30;
+	font-weight:bold;	
+}
+
+/*
+	Flight Rule Detail Popup Page
+*/
+
+body.fareRulesDetailPage {  	
+	font-size:12px;	
+	padding:10px;
+}
+
+
+/*
+	PNR Retrieve
+*/
+
+#pnr {
+	font-size:12px;	
+}
+
+.pnrPageTitle {
+	border-bottom:0px solid #9f9154;
+	color:#9f9154;
+	font-size:20px;
+	margin-bottom:10px;
+}
+
+table.reservationDetail,
+table.passengerDetail,
+table.itineraryDetail,
+table.pnrPaymentDetail {
+	border: 1px solid #DAD5B1;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+#pnr table.reservationDetail th {
+    font-size: 12px;
+    font-weight: bold;
+    padding: 5px;
+    text-align: left;
+    width: 10%;
+}
+
+#pnr table th {
+    font-weight: bold;
+    text-align: left;
+}
+
+#pnr table td.subTitle {
+    font-size: 12px;
+    font-weight:bold;
+    padding: 5px;
+}
+
+.subTitle {
+    background: none repeat scroll 0 0 #AC9F8E;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: normal;
+    margin-bottom: 5px;
+    padding: 3px;
+}
+
+.bookingCode {
+    float: left;
+    font-size: 24px;
+    font-weight: bold;
+    width: 40%;
+}
+
+table.passengerDetail th,
+table.passengerDetail td {
+	font-size:12px;
+	padding:3px;	
+}
+
+#pnr table.itineraryDetail {
+	width:100%;	
+}
+
+#pnr table.itineraryDetail th.itineraryDate {
+	background-color:#f3f2d3;
+	color:#62584b;
+	font-size:12px;
+	padding:3px;
+}
+
+#pnr table.itineraryDetail td {
+	font-size:12px;
+	width:25%;	
+}
+
+#pnr table.pnrPaymentDetail th,
+#pnr table.pnrPaymentDetail td {
+	border-bottom:1px solid #f3f2d3;
+	font-size:12px;
+	padding:5px;
+	width:15%;	
+}
+
+#pnr table.pnrPaymentDetail th {
+	color:#62584B;	
+	font-size:12px;
+}
+
+#pnr table.pnrPaymentDetail .nta {
+	border:0;	
+}
+
+#pnr table.pnrPaymentDetail .pnrEmpty {
+	border:0;
+	width:70%;
+}
+#pnr table th.label {
+	color:#62584B;	
+	font-size:12px;
+}
+
+#pnr table.reservationDetail td.timeLimit {
+	font-size:14px;
+	font-weight:bold;
+	width:40%;	
+}
+
+#pnr table.reservationDetail td.status {
+	font-size:12px;	
+}
+
+table.reservationDetail .timeLimitLabel {
+	color:red;
+	font-weight:bold;	
+}
+
+table.reservationDetail .timeLimit {
+	color:red;
+	font-weight:normal;	
+}
+
+table.passengerDetail tr.head {
+	background:#F3F2D3;
+}
+
+table.tableNotice td.notice {
+	font-size:11px !important;
+}
+table.tableNotice ol {
+	margin:0;
+	padding:0 0 0 18px;
+}	
+
+.warningNoFlight {
+	float:left;
+	font-style: italic;
+	color:red;	
+	margin-bottom:30px;
+}
+
+
+
+/*
+	TOPUP Page
+*/
+
+.topupForm {
+	border: 1px solid #DAD5B1;
+	float:left;
+	font-size:12px;	
+	padding:10px;
+	width:500px;
+}
+
+.topupAmountWrap {
+	clear:both;	
+	margin-bottom: 10px;
+}
+
+.topupLabel {
+	color:#62584B;
+	float:left;
+	font-weight:bold;
+	line-height:20px;
+	margin:0 10px 0 0;
+	text-align:right;
+	width:140px;
+}
+
+.topupUIDWrap {
+	margin-bottom:20px;	
+}
+
+.topupInput {
+	font-size:12px;
+}
+
+.topupForm #buttonLeftContainer {
+	margin-left:212px;	
+}
+
+.topupResponseWrap,
+#salesReportWrap,
+#pnrList_page {
+	font-size:12px;	
+}
+
+.topupResData {
+		
+}
+
+.messageYellow {
+	background:#fffb8d;
+	border:1px solid #c5c272;
+	color:#62584B;
+	font-style:italic;	
+	font-weight:bold;
+	margin-bottom:10px;
+	padding:5px;
+}
+
+.topupResLabel {	
+	color:#62584B;
+	display:inline-block;
+	font-weight:bold;
+	margin:0 10px 0 0;
+	text-align:right;
+	width:160px;
+}
+
+.topupResponseWrap ul {
+	border: 1px solid #DAD5B1;
+	padding:10px;	
+}
+
+.topupResponseWrap li {
+	list-style:none;
+	margin-bottom:10px;
+}
+
+/*
+	SALES REPORT
+*/
+
+#datepickerWrap {
+	border: 1px solid #DAD5B1;
+	margin-bottom:10px;
+	padding:5px;	
+}
+.dateInput {
+	float:left;	
+	margin-right:10px;
+}
+
+.dateInput input {
+	margin-right:5px;	
+}
+
+#dateFrom {
+	margin-right:20px;	
+}
+
+.dateInputlabel {
+	color: #62584B;
+	margin-right:5px;	
+}
+
+#salesReportWrap table,
+#pnrList_page table {
+	border: 1px solid #DAD5B1;
+	margin-bottom:10px;	
+	width:100%;
+}
+
+#salesReportWrap th,
+#pnrList_page th {
+	background:#AC9F8E;
+	color:#ffffff;
+	font-weight:bold;
+	padding:3px;	
+}
+
+#salesReportWrap td,
+#pnrList_page td {
+	background:#F3F2D3;
+	color:#62584B;
+	padding:3px;
+}
+
+/*
+	INCOMPLETE WARNING
+*/
+
+#sessionTODesc {
+	background:#ffd7d7;
+	border:1px solid #cc0000;
+	color:#62584B;
+	font-size:12px;
+	font-style:italic;
+	font-weight:bold;
+	margin-bottom:10px;
+	padding:5px;	
+}
+
+/*
+	PRINT 
+*/
+
+body.print {
+	background:none;	
+}
+
+body.print .pnrPageTitle table td {
+	color:#000000;
+	font-size:20px;
+	font-weight:bold;	
+}
+
+body.print #pnr table td.subTitle,
+body.print #pnr table.pnrPaymentDetail td.subTitle  {
+	background:none;
+	border-bottom:0px solid #000000;
+	color:#000000;	
+	font-size:16px !important;
+	font-weight:bold;
+}
+
+body.print #pnr table th.label {
+	color:#000000;	
+}
+
+body.print table.passengerDetail tr.head {
+	background:none;	
+}
+
+body.print table.passengerDetail th {
+	padding:0;	
+}
+
+body.print table.reservationDetail,
+body.print table.passengerDetail,
+body.print table.itineraryDetail,
+body.print table.pnrPaymentDetail {
+	border: 1px solid #000000;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+body.print .bookingCode {
+	font-size:20px;
+}
+
+#pnr table.pnrPaymentDetail th {
+    color: #62584B;
+    font-size: 12px;
+}
+
+body.print #pnr table.pnrPaymentDetail th,
+body.print #pnr table.pnrPaymentDetail td {
+	border:0;
+    color:#000000;	
+    font-size: 12px;
+    padding: 5px;
+    width: 15%;
+}
+
+body.print #pnr table.pnrPaymentDetail .pnrEmpty {
+    border: 0 none;
+    width: 70%;
+}
+
+body.print #pnr table.itineraryDetail th.itineraryDate {
+    background:none;
+    border:0;
+    color: #000;
+    font-size: 12px;
+    padding: 3px;
+}
+
+body.print table.reservationDetail .timeLimit,
+body.print #pnr table.reservationDetail th,
+body.print .fareTotal {
+	color:#000000;	
+}
+
+.fareRuleAgg {
+  background:#FFFECD;
+  border:1px solid #E2E19C;
+  font-size:10px;
+  margin:10px 0 10px 0;
+  padding:3px;
+}
+
+.extraCoverAgg {
+  font-size:12px;
+  margin:10px 0 10px 0;
+  padding:3px;
+  
+}
+
+/*
+	Change Password Page
+*/
+
+#pageChgPass {
+	font-size:12px;	
+    border: 1px solid #DAD5B1;
+    float: left;
+    font-size: 12px;
+    padding: 10px;
+    width: 400px;
+}
+
+#pageChgPass .formWrapper {
+	margin:0 0 5px 0;	
+}
+
+#pageChgPass .formLabel {
+	color:#62584B;
+	font-weight:bold;
+	float:left;
+	line-height:20px;
+	margin:0 10px 0 0;
+	text-align:left;
+	width:150px;	
+}
+
+#pageChgPass #buttonLeftContainer {
+	margin:0 0 0 230px;	
+}
+
+#pageChgPass table.role {
+   font-size: 12px;
+}
+
+#pageChgPass table.role td.roleLabel {
+  color: #62584B;
+  font-weight: bold;
+  text-align: left;
+  width: 150px;
+}
+
+.errUserLogged {
+	border:1px solid red;
+	color:red;
+	font-family:arial, helvetica, sans-serif;
+	font-weight:normal;
+	padding:5px;
+}
+
+#paxCapWrap {
+  margin:10px 0 0 0;
+  padding:10px;
+  border:1px solid #e1dad2;
+}
+
+.capLabel {
+  color:#666;
+  float:left;
+  font-style:italic;
+  margin:0 5px 0 0;
+  text-align:left;
+  width:120px;
+}
+
+.capImg {
+  border:1px solid #E1DAD2;
+  float:left;
+  height:65px;
+  margin:0 10px 0 0;
+  padding:0;
+  width:130px;
+}
+
+.capInput {
+  margin:0 0 10px 0;
+}
+
+
+
+
+
+
+
