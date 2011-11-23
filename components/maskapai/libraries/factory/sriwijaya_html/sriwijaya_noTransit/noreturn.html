@@ -1,0 +1,2273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="shortcut icon" href="https://agent.sriwijayaair.co.id/b2b/images/favicon.ico" type="image/x-icon">
+<link href="noreturn_files/main.css" rel="stylesheet" type="text/css">
+<script src="noreturn_files/ga.js" async="" type="text/javascript"></script><script src="noreturn_files/main.js" type="text/javascript"></script>
+<title>Sriwijaya Agent Application</title>
+
+
+</head>
+<body onload="javascript:setEnableReturn();" onunload="closeApplication();"> 
+
+<div id="pagewrapper">
+
+<div id="header">
+	<div id="mainMenu">
+		<ul>
+			<li><a href="https://agent.sriwijayaair.co.id/b2b/secure/home.jsp">Home</a></li>
+			<li>
+				<a href="https://agent.sriwijayaair.co.id/b2b/secure/availability.jsp">Booking</a>
+			</li> 
+			<li>
+				<a href="https://agent.sriwijayaair.co.id/b2b/secure/changepassword.jsp">Profile</a>
+			</li>
+			
+			<li class="menuParent">
+				<a href="#">Help</a>
+				<ul class="child">
+					<li class="first"><a target="_blank" href="https://agent.sriwijayaair.co.id/b2b/secure//help/guide_klikbca.pdf">Payment Guide - KlikBCA</a></li>
+					<li class="first"><a target="_blank" href="https://agent.sriwijayaair.co.id/b2b/secure//help/guide_mandiri.pdf">Payment Guide - Mandiri</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="mainWrapper"><input id="daysDafaultDate" value="3" type="hidden">
+
+
+<form name="form1" class="searchFlight" method="post" action="./AvailabilityAction" onsubmit="return validate();">
+
+
+<div id="searchPanelTop">
+	<div class="panelTitle">Search Flight</div> 
+    <div id="radioWrapper">
+	<div class="spRadioOW">
+	<input name="isReturn" value="false" checked="checked" id="isReturn" onclick="javascript:setEnableReturn();" type="radio">
+	</div>
+	<div class="spLabelOW">One Way</div>
+	<div class="spRadioRT">
+	<input name="isReturn" value="true" id="isReturn" onclick="javascript:setEnableReturn();" type="radio">
+		</div>
+	
+	<div class="spLabelRT">Return</div></div>
+			<div id="fromToWrapper"> 
+			<div class="labelPanel">From</div>
+
+			<div class="spSelectORIG">
+				<select id="selectOrigin" name="from" size="1">
+					<option value="">Origin</option>
+					<option value="">---------------------------</option>
+					<option value="AMQ">
+								Ambon (AMQ)</option>
+						<option value="BPN">
+								Balikpapan (BPN)</option>
+						<option value="BTJ">
+								Banda Aceh (BTJ)</option>
+						<option value="BDO">
+								Bandung (BDO)</option>
+						<option value="BDJ">
+								Banjarmasin (BDJ)</option>
+						<option value="BTH">
+								Batam (BTH)</option>
+						<option value="BKS">
+								Bengkulu (BKS)</option>
+						<option value="BEJ">
+								Berau (BEJ)</option>
+						<option value="DPS">
+								Denpasar (DPS)</option>
+						<option value="GTO">
+								Gorontalo (GTO)</option>
+						<option value="CGK" selected="selected">
+								Jakarta (CGK)</option>
+						<option value="DJB">
+								Jambi (DJB)</option>
+						<option value="KDI">
+								Kendari (KDI)</option>
+						<option value="KOE">
+								Kupang (KOE)</option>
+						<option value="TKG">
+								Lampung (TKG)</option>
+						<option value="MLG">
+								Malang (MLG)</option>
+						<option value="MDC">
+								Manado (MDC)</option>
+						<option value="MKW">
+								Manokwari (MKW)</option>
+						<option value="MES">
+								Medan (MES)</option>
+						<option value="PDG">
+								Padang (PDG)</option>
+						<option value="PKY">
+								Palangkaraya (PKY)</option>
+						<option value="PLM">
+								Palembang (PLM)</option>
+						<option value="PLW">
+								Palu (PLW)</option>
+						<option value="PGK">
+								Pangkalpinang (PGK)</option>
+						<option value="PKU">
+								Pekanbaru (PKU)</option>
+						<option value="PEN">
+								Penang (PEN)</option>
+						<option value="PNK">
+								Pontianak (PNK)</option>
+						<option value="SRG">
+								Semarang (SRG)</option>
+						<option value="SIN">
+								Singapore (SIN)</option>
+						<option value="SOC">
+								Solo (SOC)</option>
+						<option value="SOQ">
+								Sorong (SOQ)</option>
+						<option value="SUB">
+								Surabaya (SUB)</option>
+						<option value="TJQ">
+								Tanjung Pandan (TJQ)</option>
+						<option value="TNJ">
+								Tanjung Pinang (TNJ)</option>
+						<option value="TRK">
+								Tarakan (TRK)</option>
+						<option value="TTE">
+								Ternate (TTE)</option>
+						<option value="UPG">
+								Ujung Pandang (UPG)</option>
+						<option value="JOG">
+								Yogyakarta (JOG)</option>
+						</select>
+			</div>
+
+			
+			<div class="labelPanel">To</div>
+			<div class="spSelectDEST">
+			<select id="selectDestination" name="to" size="1">
+				<option value="">Destination</option>
+				<option value="">---------------------------</option>
+
+				<option value="AMQ">
+								Ambon (AMQ)</option>
+						<option value="BPN">
+								Balikpapan (BPN)</option>
+						<option value="BTJ">
+								Banda Aceh (BTJ)</option>
+						<option value="BDO">
+								Bandung (BDO)</option>
+						<option value="BDJ">
+								Banjarmasin (BDJ)</option>
+						<option value="BTH">
+								Batam (BTH)</option>
+						<option value="BKS">
+								Bengkulu (BKS)</option>
+						<option value="BEJ">
+								Berau (BEJ)</option>
+						<option value="DPS">
+								Denpasar (DPS)</option>
+						<option value="GTO">
+								Gorontalo (GTO)</option>
+						<option value="CGK">
+								Jakarta (CGK)</option>
+						<option value="DJB">
+								Jambi (DJB)</option>
+						<option value="KDI">
+								Kendari (KDI)</option>
+						<option value="KOE">
+								Kupang (KOE)</option>
+						<option value="TKG" selected="selected">
+								Lampung (TKG)</option>
+						<option value="MLG">
+								Malang (MLG)</option>
+						<option value="MDC">
+								Manado (MDC)</option>
+						<option value="MKW">
+								Manokwari (MKW)</option>
+						<option value="MES">
+								Medan (MES)</option>
+						<option value="PDG">
+								Padang (PDG)</option>
+						<option value="PKY">
+								Palangkaraya (PKY)</option>
+						<option value="PLM">
+								Palembang (PLM)</option>
+						<option value="PLW">
+								Palu (PLW)</option>
+						<option value="PGK">
+								Pangkalpinang (PGK)</option>
+						<option value="PKU">
+								Pekanbaru (PKU)</option>
+						<option value="PEN">
+								Penang (PEN)</option>
+						<option value="PNK">
+								Pontianak (PNK)</option>
+						<option value="SRG">
+								Semarang (SRG)</option>
+						<option value="SIN">
+								Singapore (SIN)</option>
+						<option value="SOC">
+								Solo (SOC)</option>
+						<option value="SOQ">
+								Sorong (SOQ)</option>
+						<option value="SUB">
+								Surabaya (SUB)</option>
+						<option value="TJQ">
+								Tanjung Pandan (TJQ)</option>
+						<option value="TNJ">
+								Tanjung Pinang (TNJ)</option>
+						<option value="TRK">
+								Tarakan (TRK)</option>
+						<option value="TTE">
+								Ternate (TTE)</option>
+						<option value="UPG">
+								Ujung Pandang (UPG)</option>
+						<option value="JOG">
+								Yogyakarta (JOG)</option>
+						</select>
+			</div>
+			</div>
+
+			<div id="dateWrapperJSP"> 
+			<div class="labelPanel">Depart</div>
+			<div class="spSelectDate1">
+			
+		 	<select id="selectDate1" name="departDate1" size="1" onchange="setReturnDate();"> 
+				<option value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30" selected="selected">30</option>	
+						<option value="31">31</option>
+						</select>
+			
+						
+			<select id="selectMonthYear1" name="departDate2" size="1" onchange="setReturnDate();">
+			
+			<option value="10-2011" selected="selected">Nov2011</option>
+						
+						<option value="11-2011">Dec2011</option>						
+						<option value="0-2012">Jan2012</option>						
+						<option value="1-2012">Feb2012</option>						
+						<option value="2-2012">Mar  2012</option>						
+						<option value="3-2012">Apr  2012</option>						
+						<option value="4-2012">May    2012</option>						
+						<option value="5-2012">Jun   2012</option>						
+						<option value="6-2012">Jul   2012</option>						
+						<option value="7-2012">Aug 2012</option>						
+						<option value="8-2012">Sep2012</option>						
+						<option value="9-2012">Oct2012</option>						
+						</select>
+			
+			</div>
+
+			<div class="labelPanel">Return</div>
+			<div class="spSelectDate2">
+			<select disabled="disabled" id="selectDate2" name="returnDate1" size="1">
+				<option selected="selected" value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						<option value="31">31</option>
+						</select>
+			<select disabled="disabled" id="selectMonthYear2" name="returnDate2" size="1">
+		
+			<option selected="selected" value="10-2011">Nov2011</option>						
+					<option value="11-2011">Dec2011</option>						
+					<option value="0-2012">Jan2012</option>						
+					<option value="1-2012">Feb2012</option>						
+					<option value="2-2012">Mar  2012</option>						
+					<option value="3-2012">Apr  2012</option>						
+					<option value="4-2012">May    2012</option>						
+					<option value="5-2012">Jun   2012</option>						
+					<option value="6-2012">Jul   2012</option>						
+					<option value="7-2012">Aug 2012</option>						
+					<option value="8-2012">Sep2012</option>						
+					<option value="9-2012">Oct2012</option>						
+					</select>
+
+			</div>
+			</div>
+		
+			<div class="travelerLabelJSP">
+				Number of Passenger</div>
+		
+			<div class="spGuestWrapJSP">
+			<div class="spAdultWrap">  
+			<span class="spLabelAdult">Adult<span class="agesLabelJSP">( &gt;12years)</span></span>
+
+			<span class="spSelectAdult">
+			<select id="adult" name="adult">
+				<option value="1">1</option>
+							<option value="2" selected="selected">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div>
+
+
+			<div class="spChildWrap"> 
+ 			<span class="spLabelChild">Child<span class="agesLabelJSP">(2-12years)</span></span>
+
+			<span class="spSelectChild">
+			<select id="child" name="child">
+				<option value="0" selected="selected">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div>
+
+			<div class="spInfantWrap">
+ 			<span class="spLabelInfant">Infant<span class="agesLabelJSP">(2month - 2years)</span></span>
+
+			<span class="spSelectInfant">
+			<select id="infant" name="infant">
+				<option value="0" selected="selected">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div> 
+			</div> <!--GuestWrapper-->
+
+			<div class="spReturnDate"><input name="returndaterange" value="0" id="returndaterange" type="hidden"></div>
+		    
+			<div class="spSubmitButton">
+			<input class="searchPanelSubmitButton" name="Submit" value="Search" onclick="" type="Submit">
+			</div>
+			
+			<div class="clear"></div>
+
+</div>
+<div class="clear"></div>
+
+
+</form>
+
+<input id="validatororigin" value="Please choose origin" type="hidden">  
+<input id="validatordestination" value="Please choose destination" type="hidden">
+<input id="validatorinvalidItinerary" value="Invalid origin &amp; destination" type="hidden">
+<input id="validatorfillDepartureDate" value="Please enter a valid departure date" type="hidden">
+<input id="validatorinvalidDepartureDate" value="Invalid departure date because it is  smaller than todays date" type="hidden">
+<input id="validatorfillReturnDate" value="Please enter a valid return date" type="hidden">
+<input id="validatorinvalidReturnDate" value="Invalid return date because it is smaller than the departure date" type="hidden">
+<input id="validatorinfantAndAdult" value="Every infant must be accompanied by an adult" type="hidden"> 
+<input id="validatorinvalidReturnDate1" value="Invalid return date because it must be" type="hidden">
+<input id="validatorinvalidReturnDateDays" value="days after departure date" type="hidden">
+<input id="validatorinvalidReturnDateDay" value="day after departure date" type="hidden">
+ 
+
+
+<form action="./PNRAction" method="post">
+			
+<div class="avTableDiv1">
+<span>
+<div class="flightDateInfoWrap">
+			<span id="depIcon"></span><span id="departTableLabel" class="avTableLabel1">Departure</span>
+			<span class="avTableLabel2">30-Nov-11</span>
+		</div>
+		<span class="avPrev"><a href="https://agent.sriwijayaair.co.id/b2b/secure/AvailabilityAction?step=prev&amp;type=dep">&lt; prev day</a> </span>
+		<span class="avNext"><a href="https://agent.sriwijayaair.co.id/b2b/secure/AvailabilityAction?step=next&amp;type=dep">next day &gt;</a> </span>
+		</span>
+</div>
+<div class="avTableDiv2">
+
+
+<span>
+
+Fare is shown in thousand </span> <span>IDR</span>
+</div>
+<table id="table_go" class="tableAvailability" cellspacing="0">
+<tbody><tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 088&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 088</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>07:45</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>08:25</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|7e125d17-5a47-492f-add0-960af9d7cd7e" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|7e125d17-5a47-492f-add0-960af9d7cd7e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|5774b935-46af-454e-97d4-20e2423e973c" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|5774b935-46af-454e-97d4-20e2423e973c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|b7f5feb7-3876-43eb-bf7c-990f79ab9ae6" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|b7f5feb7-3876-43eb-bf7c-990f79ab9ae6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|2a9bbb79-b131-486a-bb1b-79295d2119a1" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|2a9bbb79-b131-486a-bb1b-79295d2119a1" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(4)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|a9b582c3-d893-4f77-bb5b-24b816ea82a1" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|a9b582c3-d893-4f77-bb5b-24b816ea82a1" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|a5e53444-6f7d-4a9d-ba75-a747c5feb5cd" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|a5e53444-6f7d-4a9d-ba75-a747c5feb5cd" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ff61bc9e-6342-4cdd-baa8-8d557f083f44" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ff61bc9e-6342-4cdd-baa8-8d557f083f44" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|506eace0-f75d-46d5-9ff0-0099f5999c86" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|506eace0-f75d-46d5-9ff0-0099f5999c86" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|db5db4d9-a0b0-4433-91e3-1be676a7f46a" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|db5db4d9-a0b0-4433-91e3-1be676a7f46a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ef5a51cc-6b79-4def-9fdc-4e859bc863f6" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ef5a51cc-6b79-4def-9fdc-4e859bc863f6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|58709a3a-9cdb-4ba0-8e4b-8403692dd66e" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|58709a3a-9cdb-4ba0-8e4b-8403692dd66e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|7f35b6a1-0d0e-4329-ab81-c2530a464372" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|7f35b6a1-0d0e-4329-ab81-c2530a464372" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|bdef6899-a874-414e-a112-b7399b9ad3e5" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|bdef6899-a874-414e-a112-b7399b9ad3e5" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|9d1fe5d3-e8bb-4f04-a744-9edeb7587bc9" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|9d1fe5d3-e8bb-4f04-a744-9edeb7587bc9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|0c3b3e9c-a2cb-41ee-9f8c-89a6856cf3a5" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|0c3b3e9c-a2cb-41ee-9f8c-89a6856cf3a5" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|d09f9ce6-27dc-4e90-8cee-7004f17e433e" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|d09f9ce6-27dc-4e90-8cee-7004f17e433e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="99b59d71-e34b-4ebf-a292-d12646e2c0f2" id="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ae8708cb-966d-4fcd-a395-b2f2073d30b9" value="31ea7dbd-1941-44b3-8b9e-2c7f277416be|99b59d71-e34b-4ebf-a292-d12646e2c0f2|ae8708cb-966d-4fcd-a395-b2f2073d30b9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD_even">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 096&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 096</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>10:25</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>11:05</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|d31ca8fd-aa52-4af1-a31f-4d6c107a91be" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|d31ca8fd-aa52-4af1-a31f-4d6c107a91be" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|cd30d211-20ef-4966-bb20-ab97411035fc" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|cd30d211-20ef-4966-bb20-ab97411035fc" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|5ab2a77e-3894-4027-804b-399510422796" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|5ab2a77e-3894-4027-804b-399510422796" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|22045f7a-b065-430d-92b9-c5db25de37b4" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|22045f7a-b065-430d-92b9-c5db25de37b4" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(2)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|1025b401-7691-43d5-9d7f-24e678dcfb25" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|1025b401-7691-43d5-9d7f-24e678dcfb25" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(7)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|70db33cf-c656-4fef-aa34-b862f4206989" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|70db33cf-c656-4fef-aa34-b862f4206989" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|98e12f2b-7470-41bd-855b-9a6c755f6fc9" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|98e12f2b-7470-41bd-855b-9a6c755f6fc9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|cd0c1aa6-8ecd-4e75-94ad-540da05d05a5" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|cd0c1aa6-8ecd-4e75-94ad-540da05d05a5" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|412f490e-48fd-4fa8-8162-ca2e94d58b77" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|412f490e-48fd-4fa8-8162-ca2e94d58b77" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|bdc794a6-a6ac-4f23-9614-4d15f63484e9" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|bdc794a6-a6ac-4f23-9614-4d15f63484e9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|40c3294e-a69f-4737-873d-7b8309bf1e38" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|40c3294e-a69f-4737-873d-7b8309bf1e38" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|3ce524a4-a660-4ef9-b745-d2a427178616" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|3ce524a4-a660-4ef9-b745-d2a427178616" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|3f86693d-64c3-4764-b9b4-7131d0f77d9c" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|3f86693d-64c3-4764-b9b4-7131d0f77d9c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|1894d514-a75f-4263-ac7d-77e0a3bf7c4a" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|1894d514-a75f-4263-ac7d-77e0a3bf7c4a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|07a8ee05-1eba-4d35-b51e-56310efee677" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|07a8ee05-1eba-4d35-b51e-56310efee677" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|f6788eba-9507-4752-b2af-1414aceaf4ed" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|f6788eba-9507-4752-b2af-1414aceaf4ed" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="b0842815-acf2-4d0b-88a7-b191010048a4" id="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|c0df8088-084e-4ab1-8dbb-66588d3c9d03" value="9fde8af9-d63f-44a2-aa51-6cb145348583|b0842815-acf2-4d0b-88a7-b191010048a4|c0df8088-084e-4ab1-8dbb-66588d3c9d03" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 058&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 058</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>11:00</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>11:40</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">A</span>  
+		<input class="avcellRadio" disabled="disabled" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6791b646-6a67-4171-b9bb-13b0d2e6eecf" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6791b646-6a67-4171-b9bb-13b0d2e6eecf" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">220</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d62a6d96-6338-45fc-ae13-704b56aac828" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d62a6d96-6338-45fc-ae13-704b56aac828" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|fc440ca4-ff8d-402d-9f2c-4d6ad69c52f9" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|fc440ca4-ff8d-402d-9f2c-4d6ad69c52f9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|55ee80ef-289e-465e-9b6d-03bb3599d57b" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|55ee80ef-289e-465e-9b6d-03bb3599d57b" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(1)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6577bb96-da38-46fe-b14a-bb218a99463f" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6577bb96-da38-46fe-b14a-bb218a99463f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(6)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d8602961-25a0-443a-9497-a7aa26b19147" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d8602961-25a0-443a-9497-a7aa26b19147" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|1e4892a1-28be-4ad7-b159-b82e1aba545e" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|1e4892a1-28be-4ad7-b159-b82e1aba545e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|b6884dc1-4705-4893-a76d-0179e36a1898" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|b6884dc1-4705-4893-a76d-0179e36a1898" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|cd310028-5765-49f5-baf3-3b12c4c5a8ee" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|cd310028-5765-49f5-baf3-3b12c4c5a8ee" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|e46d2ced-a988-447e-ab23-2dd7646ce551" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|e46d2ced-a988-447e-ab23-2dd7646ce551" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|ab5a55ef-67c2-499c-adb3-cf8885c1c7c7" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|ab5a55ef-67c2-499c-adb3-cf8885c1c7c7" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|8985baaf-48ab-45cf-8641-dc2d19d747c2" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|8985baaf-48ab-45cf-8641-dc2d19d747c2" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|3e670d14-0db7-48d9-b428-46c91966363e" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|3e670d14-0db7-48d9-b428-46c91966363e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6a12c40e-4f20-4b25-bd72-8c7e1bc6c1cf" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|6a12c40e-4f20-4b25-bd72-8c7e1bc6c1cf" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|e1216929-d3c4-4c1c-816a-eb417d569aa1" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|e1216929-d3c4-4c1c-816a-eb417d569aa1" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|36996805-62ca-49d4-af03-2f1a20680e86" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|36996805-62ca-49d4-af03-2f1a20680e86" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d4906b21-a3af-4f44-bb48-279e3742c478" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|d4906b21-a3af-4f44-bb48-279e3742c478" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="01ac7ca8-cdb6-4754-a398-c3890d7ff290" id="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|ce258d8e-0b78-4edf-a78b-d4423b599dcb" value="a0cd7c2d-6b07-408b-8d98-99a6a1069e35|01ac7ca8-cdb6-4754-a398-c3890d7ff290|ce258d8e-0b78-4edf-a78b-d4423b599dcb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD_even">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 960&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 960</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>11:45</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>12:25</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|6a9a6343-206a-4519-a727-4bb23b49ee06" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|6a9a6343-206a-4519-a727-4bb23b49ee06" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|b845727b-4d8a-45d6-a187-505923d6783f" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|b845727b-4d8a-45d6-a187-505923d6783f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|6d5b199c-9668-4115-8e15-69c4fe515e65" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|6d5b199c-9668-4115-8e15-69c4fe515e65" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2e073445-14ca-4e77-a228-e7b1c5b2784d" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2e073445-14ca-4e77-a228-e7b1c5b2784d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|74a3e4bc-9649-4c3b-b7b3-bd1b5237641b" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|74a3e4bc-9649-4c3b-b7b3-bd1b5237641b" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|c609772b-19c9-4409-a59c-d1854516ecc6" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|c609772b-19c9-4409-a59c-d1854516ecc6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2c86a6bf-b6cf-47bd-b613-c5e3f325d95d" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2c86a6bf-b6cf-47bd-b613-c5e3f325d95d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|edaaab8b-eca1-4b33-abf5-cbd6e5825dd9" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|edaaab8b-eca1-4b33-abf5-cbd6e5825dd9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|d08174d2-a335-4f14-af55-36c42950bd61" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|d08174d2-a335-4f14-af55-36c42950bd61" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|db0dbb00-1158-4919-bbfd-56e89c52bb08" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|db0dbb00-1158-4919-bbfd-56e89c52bb08" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|19e295e7-d709-4fa4-be33-62ef677cf4c0" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|19e295e7-d709-4fa4-be33-62ef677cf4c0" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2eb589a1-e639-42b5-bc90-1c749ba4786e" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|2eb589a1-e639-42b5-bc90-1c749ba4786e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|02a85fc2-653d-4237-8f63-bf592ad8ee14" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|02a85fc2-653d-4237-8f63-bf592ad8ee14" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|076dfadd-65b4-44be-bf41-35c051a593fb" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|076dfadd-65b4-44be-bf41-35c051a593fb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|5e1407f6-7420-42a1-add4-6f977f37a0b6" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|5e1407f6-7420-42a1-add4-6f977f37a0b6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|1b1196e3-ca58-4062-8db4-63749ed99a3f" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|1b1196e3-ca58-4062-8db4-63749ed99a3f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" disabled="disabled" name="c3045cc9-dac8-4f0b-b301-9804b6bc9d5d" id="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|26dd242a-a264-4128-8268-e5529dbe0bbe" value="24d2c8e0-d9d8-49b9-8f2a-fe978d46482e|c3045cc9-dac8-4f0b-b301-9804b6bc9d5d|26dd242a-a264-4128-8268-e5529dbe0bbe" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 962&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 962</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>12:00</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>12:40</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|968163cd-c620-4635-9b16-9671ff7e2aaa" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|968163cd-c620-4635-9b16-9671ff7e2aaa" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|cdea3256-2de5-4c32-81a6-f79854e77521" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|cdea3256-2de5-4c32-81a6-f79854e77521" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|260e5dc7-ade6-4909-88a0-7f1216551509" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|260e5dc7-ade6-4909-88a0-7f1216551509" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|42171535-1609-4172-acd9-23cb6a349d66" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|42171535-1609-4172-acd9-23cb6a349d66" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|e6646d3d-7478-40ea-9cf9-fce2d0055830" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|e6646d3d-7478-40ea-9cf9-fce2d0055830" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|3a6e06a3-3a0e-449e-8fac-e293ed669974" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|3a6e06a3-3a0e-449e-8fac-e293ed669974" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|f6ea76e9-4c23-40ef-823c-b8f29d83765e" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|f6ea76e9-4c23-40ef-823c-b8f29d83765e" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c83698b7-6075-4362-a135-eca008884644" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c83698b7-6075-4362-a135-eca008884644" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|04ed77c2-13a1-45cf-98b0-3793396486a3" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|04ed77c2-13a1-45cf-98b0-3793396486a3" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|8783d353-117c-4145-a7a8-d2642ce7e03d" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|8783d353-117c-4145-a7a8-d2642ce7e03d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|db9385da-b831-4acc-aa60-87b9cb12db44" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|db9385da-b831-4acc-aa60-87b9cb12db44" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|22c55900-1853-4259-8d16-31bebf7416f0" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|22c55900-1853-4259-8d16-31bebf7416f0" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c46b51da-0409-4dee-8ee8-7cd523d7fa7c" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c46b51da-0409-4dee-8ee8-7cd523d7fa7c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c9fe9e97-40ce-4f6f-a603-402d2d89662c" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|c9fe9e97-40ce-4f6f-a603-402d2d89662c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|736569a3-85b6-4c9f-a33c-4d7d9d764301" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|736569a3-85b6-4c9f-a33c-4d7d9d764301" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|ca4e22b4-3ab0-4960-9445-80cabb1727a3" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|ca4e22b4-3ab0-4960-9445-80cabb1727a3" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" disabled="disabled" name="9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8" id="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|008a0397-149d-4108-8e67-9f58438191b4" value="d1a3c4f4-da26-4311-9982-f1b6ad5ac16d|9f3bef49-32c8-4942-bfe9-f2b18ce8f6f8|008a0397-149d-4108-8e67-9f58438191b4" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD_even">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 964&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 964</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>12:15</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>12:55</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|af5ef234-91e8-4974-b9cb-ca58cff3417a" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|af5ef234-91e8-4974-b9cb-ca58cff3417a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|ef05b3fe-6150-413b-b92f-4e3535513a3a" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|ef05b3fe-6150-413b-b92f-4e3535513a3a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|3dc3da18-6c5b-4b8d-9302-ff0a80e8a3df" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|3dc3da18-6c5b-4b8d-9302-ff0a80e8a3df" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|9c656427-85d6-4f1d-84d7-f29bd289ec96" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|9c656427-85d6-4f1d-84d7-f29bd289ec96" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|0ff0519a-f046-49a9-8237-9dd34f9acd64" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|0ff0519a-f046-49a9-8237-9dd34f9acd64" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|b8a5f6f6-362e-4741-89f3-a2d38c4e9215" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|b8a5f6f6-362e-4741-89f3-a2d38c4e9215" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d0cc6e09-ee83-4a34-82b2-30b2a2492e30" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d0cc6e09-ee83-4a34-82b2-30b2a2492e30" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|37cbd330-7f04-4d2d-abc8-848ba0f50c54" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|37cbd330-7f04-4d2d-abc8-848ba0f50c54" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|caf57c1a-42e6-4f7a-ac8e-81fb4680edcb" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|caf57c1a-42e6-4f7a-ac8e-81fb4680edcb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|883d3e4d-53f9-4341-a433-1714c25f6d36" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|883d3e4d-53f9-4341-a433-1714c25f6d36" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|bef30f27-02bb-44d0-aa14-67f1edc9447a" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|bef30f27-02bb-44d0-aa14-67f1edc9447a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d011ca65-190a-4dad-ad5b-8acb1e6a85f6" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d011ca65-190a-4dad-ad5b-8acb1e6a85f6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|c2c60944-ef04-4ec5-8149-36327100eecc" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|c2c60944-ef04-4ec5-8149-36327100eecc" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d7dcb35f-853c-4620-8d7c-8f7a7c6dc77b" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|d7dcb35f-853c-4620-8d7c-8f7a7c6dc77b" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|3a06821e-38c9-4b3d-984a-e46150e5b880" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|3a06821e-38c9-4b3d-984a-e46150e5b880" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|ed3384ed-1b24-497c-9fe7-cc56d334e9cf" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|ed3384ed-1b24-497c-9fe7-cc56d334e9cf" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" disabled="disabled" name="8107bda7-16ae-4366-8458-884f726f535a" id="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|27232c26-4be9-4730-9c6d-1b48d4af18af" value="e2f8686f-c88c-43c0-a745-4fd3ed4d3565|8107bda7-16ae-4366-8458-884f726f535a|27232c26-4be9-4730-9c6d-1b48d4af18af" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 094&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 094</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>13:00</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>13:40</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|709137e0-7116-4a1d-ae83-84469406b1a6" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|709137e0-7116-4a1d-ae83-84469406b1a6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|f0100f64-3d46-41fe-adee-0ef86ca62e31" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|f0100f64-3d46-41fe-adee-0ef86ca62e31" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|f40bc6d3-a865-49e7-a707-13323449046d" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|f40bc6d3-a865-49e7-a707-13323449046d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|0cbe7410-a85c-4919-b6e5-526c0234a168" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|0cbe7410-a85c-4919-b6e5-526c0234a168" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|8caa74f9-7e5b-45b5-99e5-46ee956792ca" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|8caa74f9-7e5b-45b5-99e5-46ee956792ca" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|fd31fab3-8f14-4b89-9780-3e215d8faed7" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|fd31fab3-8f14-4b89-9780-3e215d8faed7" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|3d255a37-7732-4e99-a3ac-003ec97b4b34" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|3d255a37-7732-4e99-a3ac-003ec97b4b34" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|fca9690e-ab50-4984-a218-63a796df9b11" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|fca9690e-ab50-4984-a218-63a796df9b11" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(5)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|3b10d5f1-1863-4075-9b14-385fc1071b77" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|3b10d5f1-1863-4075-9b14-385fc1071b77" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|88cc0bbc-d5c5-427d-9614-6004f53834be" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|88cc0bbc-d5c5-427d-9614-6004f53834be" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|5d40a73a-808f-491e-928e-8b12bafed0b8" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|5d40a73a-808f-491e-928e-8b12bafed0b8" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|6c7f469c-ea68-489e-af6b-975d71a6d0b3" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|6c7f469c-ea68-489e-af6b-975d71a6d0b3" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|42778afc-a3a5-45b4-9355-4dd5df536b99" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|42778afc-a3a5-45b4-9355-4dd5df536b99" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|441a6ca9-690c-4702-83f7-c766f42ac36a" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|441a6ca9-690c-4702-83f7-c766f42ac36a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|7117fbf8-4516-487b-a448-9d54dd2fb1c6" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|7117fbf8-4516-487b-a448-9d54dd2fb1c6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|d6c7bb6e-38f1-40a2-968f-71066f992fbc" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|d6c7bb6e-38f1-40a2-968f-71066f992fbc" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="8d8a26e9-7100-4675-9347-2f84c8bb0fe8" id="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|9799e22a-d763-4675-b62c-bf6fac5beaef" value="5c28c62a-3b45-4d21-aeec-b00acd2b8529|8d8a26e9-7100-4675-9347-2f84c8bb0fe8|9799e22a-d763-4675-b62c-bf6fac5beaef" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD_even">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 098&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 098</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>15:30</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>16:10</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">A</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|ac19921e-b574-4ac7-b8e7-8a55949a9161" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|ac19921e-b574-4ac7-b8e7-8a55949a9161" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">220</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|47b93393-2d28-4143-bab5-c2fe9be5da12" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|47b93393-2d28-4143-bab5-c2fe9be5da12" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|8e22b746-0540-4dde-8ce4-99eff23b7287" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|8e22b746-0540-4dde-8ce4-99eff23b7287" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|e8807e10-6652-4667-b52b-b3f32288408f" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|e8807e10-6652-4667-b52b-b3f32288408f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|a2c221ac-14af-44c3-976b-ddfba439174f" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|a2c221ac-14af-44c3-976b-ddfba439174f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|7db35a36-f92a-45b1-b2a2-e39a5d26242c" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|7db35a36-f92a-45b1-b2a2-e39a5d26242c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|a88dc151-7ff4-4a45-8476-79ee224b4d08" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|a88dc151-7ff4-4a45-8476-79ee224b4d08" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(3)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|79def545-d624-45c3-af22-b88c2411bc22" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|79def545-d624-45c3-af22-b88c2411bc22" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(8)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|7818fb7b-2675-426c-a4c6-83c939f6a2a5" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|7818fb7b-2675-426c-a4c6-83c939f6a2a5" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|fd82a9fc-ec61-483a-bcd0-14672ff071bb" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|fd82a9fc-ec61-483a-bcd0-14672ff071bb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|11dc7460-e02a-4da0-ba0a-36df1268d2a9" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|11dc7460-e02a-4da0-ba0a-36df1268d2a9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|f75319ba-0f4f-4c35-b173-6ec484ab5b66" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|f75319ba-0f4f-4c35-b173-6ec484ab5b66" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|91a193b8-9cd1-447d-ac79-6041c921fb57" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|91a193b8-9cd1-447d-ac79-6041c921fb57" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|bf055def-fafd-4c6e-bb78-b29869a0a376" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|bf055def-fafd-4c6e-bb78-b29869a0a376" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|926d1f9b-f2ea-4fe1-975a-844549f74e21" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|926d1f9b-f2ea-4fe1-975a-844549f74e21" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|3e8d6ffe-7d98-4374-a785-80c102f0fbd9" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|3e8d6ffe-7d98-4374-a785-80c102f0fbd9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|bfe74193-270a-4a3b-8eae-9b37f2c2039c" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|bfe74193-270a-4a3b-8eae-9b37f2c2039c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="d4c68ab3-3ead-4ee2-9773-112a256cf82b" id="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|e78f2b18-4b1f-4201-be6d-0064af2107c0" value="234924f4-ef30-40b4-89ab-25ae275fd11f|d4c68ab3-3ead-4ee2-9773-112a256cf82b|e78f2b18-4b1f-4201-be6d-0064af2107c0" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	<tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 086&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=TKG">SJ 086</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>16:30</span>
+						</td>								
+						<td class="arrInfo">
+							<span>TKG</span>
+							<span>17:10</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+							 <table class="classTable" cellspacing="0">
+							 	<tbody><tr>
+							 					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">A</span>  
+		<input class="avcellRadio" disabled="disabled" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|be833470-243e-4407-9fbb-4aafe8245df8" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|be833470-243e-4407-9fbb-4aafe8245df8" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">220</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">P</span>  
+		<input class="avcellRadio" disabled="disabled" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|f5e46e86-6f29-4ab0-acab-ea84bb30e47b" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|f5e46e86-6f29-4ab0-acab-ea84bb30e47b" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">260</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">R</span>  
+		<input class="avcellRadio" disabled="disabled" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|97bd4f5b-0c59-44c7-a931-753a55705a7d" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|97bd4f5b-0c59-44c7-a931-753a55705a7d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">280</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|de469dd7-7cb4-4e27-9e2a-07d755504a31" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|de469dd7-7cb4-4e27-9e2a-07d755504a31" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|84130750-baca-402f-a0ec-5e74684d3fea" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|84130750-baca-402f-a0ec-5e74684d3fea" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(5)</span>
+		<span class="avcellFare">320</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|28286845-d3d1-493c-8d45-a9affc4ac580" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|28286845-d3d1-493c-8d45-a9affc4ac580" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">340</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|8f955407-0925-4e06-b2ae-06ab944b4279" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|8f955407-0925-4e06-b2ae-06ab944b4279" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">360</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|610602b0-c1bc-4fc6-b32a-57b5a98c246c" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|610602b0-c1bc-4fc6-b32a-57b5a98c246c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">380</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|255b07ec-5f55-408c-9ff0-ee807f16bae6" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|255b07ec-5f55-408c-9ff0-ee807f16bae6" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">400</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|29d9919b-fd8e-4ad5-ac5f-5b112263ece5" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|29d9919b-fd8e-4ad5-ac5f-5b112263ece5" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">420</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|48159704-bd0e-4729-9b48-3f973b9eaeaf" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|48159704-bd0e-4729-9b48-3f973b9eaeaf" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">450</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|bf2ad6ba-bba1-4b5d-9cf0-e2f305ca9c1c" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|bf2ad6ba-bba1-4b5d-9cf0-e2f305ca9c1c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">480</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|420e6c25-5945-4d0e-8e6b-263fd7493108" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|420e6c25-5945-4d0e-8e6b-263fd7493108" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">510</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|9ed09b52-8a7f-4c6b-8a6a-bc15ae209067" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|9ed09b52-8a7f-4c6b-8a6a-bc15ae209067" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">540</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|e5a18da1-67e4-4dec-9596-de6c0a7194b9" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|e5a18da1-67e4-4dec-9596-de6c0a7194b9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">570</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|79ace7d2-2c5c-4dda-941f-805dcf0b8f11" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|79ace7d2-2c5c-4dda-941f-805dcf0b8f11" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">600</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|fb5bac5a-b0cb-47c8-b59c-f4c860de6920" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|fb5bac5a-b0cb-47c8-b59c-f4c860de6920" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">630</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="4e9926be-2508-4512-ad32-baa8442090ce" id="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|70b6f2e3-bafa-4668-b8d0-88ffee64e5e9" value="67dea46d-d43e-48c9-92cc-9aac7f4b7e9f|4e9926be-2508-4512-ad32-baa8442090ce|70b6f2e3-bafa-4668-b8d0-88ffee64e5e9" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">660</span>
+
+		</div>
+		</td>
+	</tr>
+							 			</tbody></table>
+						</td>
+					</tr>
+	</tbody></table>
+<div id="bookingSummary"></div>
+	<table id="detailAdult" class="detailPax">
+	<tbody><tr>
+	<td class="mainTitle">Adult</td>
+	<td class="detailFill">	
+	<table>	
+
+	<tbody><tr>
+			<td>1</td>
+    		<td>
+    		<select name="adult.title.1">
+				<option selected="selected" value="">&lt;Title&gt;</option>
+    			<option value="" disabled="disabled">---</option>
+    			<option value="Mr">Mr</option>
+				<option value="Mrs">Mrs</option>
+				<option value="Ms">Ms</option>    		
+				<option value="Dr">Dr</option>
+    		</select><span class="asterisk">*</span>
+    		
+    		</td>
+    		<td>
+    			<input size="55" name="adult.name.1" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Full Name&gt;" type="text"><span class="asterisk">*</span>
+    		</td>
+    		<td><input name="adult.id.1" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Identity No&gt;" type="text"></td>
+    		<td>
+    		<select name="adult.specialRequestSelect.1">
+				<option selected="selected" value="">&lt;NO SSR&gt;</option>
+				<option value="" disabled="disabled">---</option>
+			<option value="WCHR">SSR:Wheelchair</option>
+				</select>
+    		</td>
+</tr>	
+		<tr>
+			<td>2</td>
+    		<td>
+    		<select name="adult.title.2">
+				<option selected="selected" value="">&lt;Title&gt;</option>
+    			<option value="" disabled="disabled">---</option>
+    			<option value="Mr">Mr</option>
+				<option value="Mrs">Mrs</option>
+				<option value="Ms">Ms</option>    		
+				<option value="Dr">Dr</option>
+    		</select><span class="asterisk">*</span>
+    		
+    		</td>
+    		<td>
+    			<input size="55" name="adult.name.2" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Full Name&gt;" type="text"><span class="asterisk">*</span>
+    		</td>
+    		<td><input name="adult.id.2" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Identity No&gt;" type="text"></td>
+    		<td>
+    		<select name="adult.specialRequestSelect.2">
+				<option selected="selected" value="">&lt;NO SSR&gt;</option>
+				<option value="" disabled="disabled">---</option>
+			<option value="WCHR">SSR:Wheelchair</option>
+				</select>
+    		</td>
+</tr>	
+		</tbody></table>
+	</td>
+	</tr>
+	</tbody></table>
+	<table class="detailContact">
+	<tbody><tr>
+	<td class="mainTitle">Contact</td>
+	<td class="contactFill">	
+	<table class="contactFillInner">	
+	<tbody><tr class="contactPax">
+		<td class="contactInnerLabel">
+	Customer</td>
+
+<td>
+	<input name="contactcustomer.name" size="50" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Full Name&gt;" type="text"><span class="asterisk">*</span>  
+</td>
+
+<td>
+	<input name="contactcustomer.phone" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Origin Phone&gt;" type="text"><span class="asterisk">*</span>
+	<input name="contactcustomer.otherphone" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Other Phone&gt;" type="text">
+</td>
+
+</tr>
+		
+	<tr class="contactAgent">
+		<td class="contactInnerLabel">
+	Agent</td>
+
+<td>
+	<input name="contactagent.name" size="50" value="PT. REA TOUR" type="text"><span class="asterisk">*</span>
+</td>
+
+<td>
+	<input name="contactagent.email" size="50" value="boyarie_zag@yahoo.com" type="text"><span class="asterisk">*</span>
+	 
+</td>
+
+<td>
+	<input name="contactagent.phone" value="081252676799" type="text"><span class="asterisk">*</span>
+</td></tr>
+	</tbody></table>
+	</td>
+	</tr>
+	</tbody></table>
+<!-- 	
+	<div class="fareRuleAgg">
+		<input type="checkbox" name="extracover"  id="farerulesAgreement" checked="checked">
+		<label>
+		Customer agree to use the extra cover insurance.     
+		</label>
+		<a href="https://booking.sriwijayaair.co.id/b2c/insurance_term_id.html" id="carrierpolicy_en.html" target="_blank">
+			Term and Condition   </a>
+	</div>
+ -->
+	<div class="extraCoverAgg" align="right">
+		<input name="extracover" checked="checked" value="extracover" onclick="selectCell('0','extracover')" type="checkbox">
+		<label>I agree to use the extra cover insurance     . </label><a href="https://booking.sriwijayaair.co.id/b2c/insurance_term_id.html" target="_blank" id="carrierpolicy_en.html">Term and Condition   </a> 
+	</div>
+
+	<div class="fareRuleAgg">
+		<input name="term" id="farerulesAgreement" value="1" type="checkbox">
+		<label>I HAVE READ AND AGREED TO ALL<a href="https://agent.sriwijayaair.co.id/b2b/secure/term/term.html" target="_blank" id="carrierpolicy_en.html">TERMS AND CONDITIONS</a> TRANSPORTATION THAT ARE DETERMINED BY SRIWIJAYA AIR.</label>
+	</div>
+	
+	
+	
+	<div id="buttonBottomContainer">
+<div id="buttonBookContainer"><div class="buttonStyle"><input name="procceedType" value="Book" onclick="return promptAgreeTermAndCond()" type="submit"><span class="buttonRightSide"></span></div></div><div class="clear"> </div>
+
+</div>
+</form>
+</div>
+<div id="footer">
+	Copyright © 2011 Sriwijaya Air. All Rights Reserved.
+</div>
+</div>
+<div class="clear">
+</div>
+<div id="userInfo">
+
+	<div class="username">idbooking4<span class="logout">(<a href="https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp">logout</a>)</span></div>
+	<div class="userNoID">Agent ID: STRAG0069</div>
+	
+	<div class="voltras"><a href="http://www.voltras.co.id/" target="_blank">Powered by VOLTRAS</a></div>
+	<div class="slogan">ONE STEP BOOKING</div>
+</div>
+
+<script type="text/javascript">
+
+<!--//--><![CDATA[//><!--
+
+var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-6945713-5"]);_gaq.push(["_setDomainName", "sriwijayaair.co.id"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
+
+//--><!]]>
+
+</script>
+
+
+
+</body></html>
+<!--
+	for my wife Juni and my lovely Adelita
+
+-->
