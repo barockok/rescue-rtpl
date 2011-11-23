@@ -1,0 +1,1067 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<link rel="shortcut icon" href="https://agent.sriwijayaair.co.id/b2b/images/favicon.ico" type="image/x-icon">
+<link href="createpnr.jsp_files/main.css" rel="stylesheet" type="text/css">
+<script src="createpnr.jsp_files/ga.js" async="" type="text/javascript"></script><script src="createpnr.jsp_files/main.js" type="text/javascript"></script>
+<title>Sriwijaya Agent Application</title>
+
+
+<style type="text/css" charset="utf-8">/* See license.txt for terms of usage */
+/** reset styling **/
+.firebugResetStyles {
+    z-index: 2147483646 !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    border: 0 none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: fixed !important;
+    -moz-transform: rotate(0deg) !important;
+    -moz-transform-origin: 50% 50% !important;
+    -moz-border-radius: 0 !important;
+    -moz-box-shadow: none !important;
+    background: transparent none !important;
+    pointer-events: none !important;
+}
+
+.firebugBlockBackgroundColor {
+    background-color: transparent !important;
+}
+
+.firebugResetStyles:before, .firebugResetStyles:after {
+    content: "" !important;
+}
+/**actual styling to be modified by firebug theme**/
+.firebugCanvas {
+    display: none !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBox {
+    width: auto !important;
+    position: static !important;
+}
+
+.firebugLayoutBoxOffset {
+    opacity: 0.8 !important;
+    position: fixed !important;
+}
+
+.firebugLayoutLine {
+    opacity: 0.4 !important;
+    background-color: #000000 !important;
+}
+
+.firebugLayoutLineLeft, .firebugLayoutLineRight {
+    width: 1px !important;
+    height: 100% !important;
+}
+
+.firebugLayoutLineTop, .firebugLayoutLineBottom {
+    width: 100% !important;
+    height: 1px !important;
+}
+
+.firebugLayoutLineTop {
+    margin-top: -1px !important;
+    border-top: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineRight {
+    border-right: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineBottom {
+    border-bottom: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineLeft {
+    margin-left: -1px !important;
+    border-left: 1px solid #999999 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBoxParent {
+    border-top: 0 none !important;
+    border-right: 1px dashed #E00 !important;
+    border-bottom: 1px dashed #E00 !important;
+    border-left: 0 none !important;
+    position: fixed !important;
+    width: auto !important;
+}
+
+.firebugRuler{
+    position: absolute !important;
+}
+
+.firebugRulerH {
+    top: -15px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 14px !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%13%88%00%00%00%0E%08%02%00%00%00L%25a%0A%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%04%F8IDATx%DA%EC%DD%D1n%E2%3A%00E%D1%80%F8%FF%EF%E2%AF2%95%D0D4%0E%C1%14%B0%8Fa-%E9%3E%CC%9C%87n%B9%81%A6W0%1C%A6i%9A%E7y%0As8%1CT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AATE9%FE%FCw%3E%9F%AF%2B%2F%BA%97%FDT%1D~K(%5C%9D%D5%EA%1B%5C%86%B5%A9%BDU%B5y%80%ED%AB*%03%FAV9%AB%E1%CEj%E7%82%EF%FB%18%BC%AEJ8%AB%FA'%D2%BEU9%D7U%ECc0%E1%A2r%5DynwVi%CFW%7F%BB%17%7Dy%EACU%CD%0E%F0%FA%3BX%FEbV%FEM%9B%2B%AD%BE%AA%E5%95v%AB%AA%E3E5%DCu%15rV9%07%B5%7F%B5w%FCm%BA%BE%AA%FBY%3D%14%F0%EE%C7%60%0EU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5JU%88%D3%F5%1F%AE%DF%3B%1B%F2%3E%DAUCNa%F92%D02%AC%7Dm%F9%3A%D4%F2%8B6%AE*%BF%5C%C2Ym~9g5%D0Y%95%17%7C%C8c%B0%7C%18%26%9CU%CD%13i%F7%AA%90%B3Z%7D%95%B4%C7%60%E6E%B5%BC%05%B4%FBY%95U%9E%DB%FD%1C%FC%E0%9F%83%7F%BE%17%7DkjMU%E3%03%AC%7CWj%DF%83%9An%BCG%AE%F1%95%96yQ%0Dq%5Dy%00%3Et%B5'%FC6%5DS%95pV%95%01%81%FF'%07%00%00%00%00%00%00%00%00%00%F8x%C7%F0%BE%9COp%5D%C9%7C%AD%E7%E6%EBV%FB%1E%E0(%07%E5%AC%C6%3A%ABi%9C%8F%C6%0E9%AB%C0'%D2%8E%9F%F99%D0E%B5%99%14%F5%0D%CD%7F%24%C6%DEH%B8%E9rV%DFs%DB%D0%F7%00k%FE%1D%84%84%83J%B8%E3%BA%FB%EF%20%84%1C%D7%AD%B0%8E%D7U%C8Y%05%1E%D4t%EF%AD%95Q%BF8w%BF%E9%0A%BF%EB%03%00%00%00%00%00%00%00%00%00%B8vJ%8E%BB%F5%B1u%8Cx%80%E1o%5E%CA9%AB%CB%CB%8E%03%DF%1D%B7T%25%9C%D5(%EFJM8%AB%CC'%D2%B2*%A4s%E7c6%FB%3E%FA%A2%1E%80~%0E%3E%DA%10x%5D%95Uig%15u%15%ED%7C%14%B6%87%A1%3B%FCo8%A8%D8o%D3%ADO%01%EDx%83%1A~%1B%9FpP%A3%DC%C6'%9C%95gK%00%00%00%00%00%00%00%00%00%20%D9%C9%11%D0%C0%40%AF%3F%EE%EE%92%94%D6%16X%B5%BCMH%15%2F%BF%D4%A7%C87%F1%8E%F2%81%AE%AAvzr%DA2%ABV%17%7C%E63%83%E7I%DC%C6%0Bs%1B%EF6%1E%00%00%00%00%00%00%00%00%00%80cr%9CW%FF%7F%C6%01%0E%F1%CE%A5%84%B3%CA%BC%E0%CB%AA%84%CE%F9%BF)%EC%13%08WU%AE%AB%B1%AE%2BO%EC%8E%CBYe%FE%8CN%ABr%5Dy%60~%CFA%0D%F4%AE%D4%BE%C75%CA%EDVB%EA(%B7%F1%09g%E5%D9%12%00%00%00%00%00%00%00%00%00H%F6%EB%13S%E7y%5E%5E%FB%98%F0%22%D1%B2'%A7%F0%92%B1%BC%24z3%AC%7Dm%60%D5%92%B4%7CEUO%5E%F0%AA*%3BU%B9%AE%3E%A0j%94%07%A0%C7%A0%AB%FD%B5%3F%A0%F7%03T%3Dy%D7%F7%D6%D4%C0%AAU%D2%E6%DFt%3F%A8%CC%AA%F2%86%B9%D7%F5%1F%18%E6%01%F8%CC%D5%9E%F0%F3z%88%AA%90%EF%20%00%00%00%00%00%00%00%00%00%C0%A6%D3%EA%CFi%AFb%2C%7BB%0A%2B%C3%1A%D7%06V%D5%07%A8r%5D%3D%D9%A6%CAu%F5%25%CF%A2%99%97zNX%60%95%AB%5DUZ%D5%FBR%03%AB%1C%D4k%9F%3F%BB%5C%FF%81a%AE%AB'%7F%F3%EA%FE%F3z%94%AA%D8%DF%5B%01%00%00%00%00%00%00%00%00%00%8E%FB%F3%F2%B1%1B%8DWU%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*UiU%C7%BBe%E7%F3%B9%CB%AAJ%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5J%95*U%AAT%A9R%A5*%AAj%FD%C6%D4%5Eo%90%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5%86%AF%1B%9F%98%DA%EBm%BBV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%ADV%AB%D5j%B5Z%AD%D6%E4%F58%01%00%00%00%00%00%00%00%00%00%00%00%00%00%40%85%7F%02%0C%008%C2%D0H%16j%8FX%00%00%00%00IEND%AEB%60%82") repeat-x !important;
+    border-top: 1px solid #BBBBBB !important;
+    border-right: 1px dashed #BBBBBB !important;
+    border-bottom: 1px solid #000000 !important;
+}
+
+.firebugRulerV {
+    top: 0 !important;
+    left: -15px !important;
+    width: 14px !important;
+    height: 100% !important;
+    background: url("data:image/png,%89PNG%0D%0A%1A%0A%00%00%00%0DIHDR%00%00%00%0E%00%00%13%88%08%02%00%00%00%0E%F5%CB%10%00%00%00%04gAMA%00%00%D6%D8%D4OX2%00%00%00%19tEXtSoftware%00Adobe%20ImageReadyq%C9e%3C%00%00%06~IDATx%DA%EC%DD%D1v%A20%14%40Qt%F1%FF%FF%E4%97%D9%07%3BT%19%92%DC%40(%90%EEy%9A5%CB%B6%E8%F6%9Ac%A4%CC0%84%FF%DC%9E%CF%E7%E3%F1%88%DE4%F8%5D%C7%9F%2F%BA%DD%5E%7FI%7D%F18%DDn%BA%C5%FB%DF%97%BFk%F2%10%FF%FD%B4%F2M%A7%FB%FD%FD%B3%22%07p%8F%3F%AE%E3%F4S%8A%8F%40%EEq%9D%BE8D%F0%0EY%A1Uq%B7%EA%1F%81%88V%E8X%3F%B4%CEy%B7h%D1%A2E%EBohU%FC%D9%AF2fO%8BBeD%BE%F7X%0C%97%A4%D6b7%2Ck%A5%12%E3%9B%60v%B7r%C7%1AI%8C%BD%2B%23r%00c0%B2v%9B%AD%CA%26%0C%1Ek%05A%FD%93%D0%2B%A1u%8B%16-%95q%5Ce%DCSO%8E%E4M%23%8B%F7%C2%FE%40%BB%BD%8C%FC%8A%B5V%EBu%40%F9%3B%A72%FA%AE%8C%D4%01%CC%B5%DA%13%9CB%AB%E2I%18%24%B0n%A9%0CZ*Ce%9C%A22%8E%D8NJ%1E%EB%FF%8F%AE%CAP%19*%C3%BAEKe%AC%D1%AAX%8C*%DEH%8F%C5W%A1e%AD%D4%B7%5C%5B%19%C5%DB%0D%EF%9F%19%1D%7B%5E%86%BD%0C%95%A12%AC%5B*%83%96%CAP%19%F62T%86%CAP%19*%83%96%CA%B8Xe%BC%FE)T%19%A1%17xg%7F%DA%CBP%19*%C3%BA%A52T%86%CAP%19%F62T%86%CA%B0n%A9%0CZ%1DV%C6%3D%F3%FCH%DE%B4%B8~%7F%5CZc%F1%D6%1F%AF%84%F9%0F6%E6%EBVt9%0E~%BEr%AF%23%B0%97%A12T%86%CAP%19%B4T%86%CA%B8Re%D8%CBP%19*%C3%BA%A52huX%19%AE%CA%E5%BC%0C%7B%19*CeX%B7h%A9%0C%95%E1%BC%0C%7B%19*CeX%B7T%06%AD%CB%5E%95%2B%BF.%8F%C5%97%D5%E4%7B%EE%82%D6%FB%CF-%9C%FD%B9%CF%3By%7B%19%F62T%86%CA%B0n%D1R%19*%A3%D3%CA%B0%97%A12T%86uKe%D0%EA%B02*%3F1%99%5DB%2B%A4%B5%F8%3A%7C%BA%2B%8Co%7D%5C%EDe%A8%0C%95a%DDR%19%B4T%C66%82fA%B2%ED%DA%9FC%FC%17GZ%06%C9%E1%B3%E5%2C%1A%9FoiB%EB%96%CA%A0%D5qe4%7B%7D%FD%85%F7%5B%ED_%E0s%07%F0k%951%ECr%0D%B5C%D7-g%D1%A8%0C%EB%96%CA%A0%A52T%C6)*%C3%5E%86%CAP%19%D6-%95A%EB*%95q%F8%BB%E3%F9%AB%F6%E21%ACZ%B7%22%B7%9B%3F%02%85%CB%A2%5B%B7%BA%5E%B7%9C%97%E1%BC%0C%EB%16-%95%A12z%AC%0C%BFc%A22T%86uKe%D0%EA%B02V%DD%AD%8A%2B%8CWhe%5E%AF%CF%F5%3B%26%CE%CBh%5C%19%CE%CB%B0%F3%A4%095%A1%CAP%19*Ce%A8%0C%3BO*Ce%A8%0C%95%A12%3A%AD%8C%0A%82%7B%F0v%1F%2FD%A9%5B%9F%EE%EA%26%AF%03%CA%DF9%7B%19*Ce%A8%0C%95%A12T%86%CA%B8Ze%D8%CBP%19*Ce%A8%0C%95%D1ae%EC%F7%89I%E1%B4%D7M%D7P%8BjU%5C%BB%3E%F2%20%D8%CBP%19*Ce%A8%0C%95%A12T%C6%D5*%C3%5E%86%CAP%19*Ce%B4O%07%7B%F0W%7Bw%1C%7C%1A%8C%B3%3B%D1%EE%AA%5C%D6-%EBV%83%80%5E%D0%CA%10%5CU%2BD%E07YU%86%CAP%19*%E3%9A%95%91%D9%A0%C8%AD%5B%EDv%9E%82%FFKOee%E4%8FUe%A8%0C%95%A12T%C6%1F%A9%8C%C8%3D%5B%A5%15%FD%14%22r%E7B%9F%17l%F8%BF%ED%EAf%2B%7F%CF%ECe%D8%CBP%19*Ce%A8%0C%95%E1%93~%7B%19%F62T%86%CAP%19*Ce%A8%0C%E7%13%DA%CBP%19*Ce%A8%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4h%A9%0C%B3E%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%A9%0CZf%8B%16-Z%B4h%D1R%19f%8B%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1R%19%B4%CC%16-Z%B4h%D1%A2%A52%CC%16-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2%A52h%99-Z%B4h%D1%A2EKe%98-Z%B4h%D1%A2EKe%D02%5B%B4h%D1%A2EKe%D02%5B%B4h%D1%A2E%8B%96%CA0%5B%B4h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%96%CA%A0e%B6h%D1%A2E%8B%16-%95a%B6h%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-%95A%CBl%D1%A2E%8B%16-Z*%C3l%D1%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z*%83%96%D9%A2E%8B%16-Z%B4T%86%D9%A2E%8B%16-Z%B4T%06-%B3E%8B%16-Z%B4%AE%A4%F5%25%C0%00%DE%BF%5C'%0F%DA%B8q%00%00%00%00IEND%AEB%60%82") repeat-y !important;
+    border-left: 1px solid #BBBBBB !important;
+    border-right: 1px solid #000000 !important;
+    border-bottom: 1px dashed #BBBBBB !important;
+}
+
+.overflowRulerX > .firebugRulerV {
+    left: 0 !important;
+}
+
+.overflowRulerY > .firebugRulerH {
+    top: 0 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.fbProxyElement {
+    position: fixed !important;
+    pointer-events: auto !important;
+}</style></head>
+<body onload="javascript:setEnableReturn();" onunload="closeApplication();"> 
+
+<div id="pagewrapper">
+
+<div id="header">
+	<div id="mainMenu">
+		<ul>
+			<li><a href="https://agent.sriwijayaair.co.id/b2b/secure/home.jsp">Home</a></li>
+			<li>
+				<a href="https://agent.sriwijayaair.co.id/b2b/secure/availability.jsp">Booking</a>
+			</li> 
+			<li>
+				<a href="https://agent.sriwijayaair.co.id/b2b/secure/changepassword.jsp">Profile</a>
+			</li>
+			
+			<li class="menuParent">
+				<a href="#">Help</a>
+				<ul class="child">
+					<li class="first"><a target="_blank" href="https://agent.sriwijayaair.co.id/b2b/secure//help/guide_klikbca.pdf">Payment Guide - KlikBCA</a></li>
+					<li class="first"><a target="_blank" href="https://agent.sriwijayaair.co.id/b2b/secure//help/guide_mandiri.pdf">Payment Guide - Mandiri</a></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div id="mainWrapper"><input id="daysDafaultDate" value="3" type="hidden">
+
+
+<form name="form1" class="searchFlight" method="post" action="./AvailabilityAction" onsubmit="return validate();">
+
+
+<div id="searchPanelTop">
+	<div class="panelTitle">Search Flight</div> 
+    <div id="radioWrapper">
+	<div class="spRadioOW">
+	<input name="isReturn" value="false" checked="checked" id="isReturn" onclick="javascript:setEnableReturn();" type="radio">
+	</div>
+	<div class="spLabelOW">One Way</div>
+	<div class="spRadioRT">
+	<input name="isReturn" value="true" id="isReturn" onclick="javascript:setEnableReturn();" type="radio">
+		</div>
+	
+	<div class="spLabelRT">Return</div></div>
+			<div id="fromToWrapper"> 
+			<div class="labelPanel">From</div>
+
+			<div class="spSelectORIG">
+				<select id="selectOrigin" name="from" size="1">
+					<option value="">Origin</option>
+					<option value="">---------------------------</option>
+					<option value="AMQ">
+								Ambon (AMQ)</option>
+						<option value="BPN">
+								Balikpapan (BPN)</option>
+						<option value="BTJ">
+								Banda Aceh (BTJ)</option>
+						<option value="BDO">
+								Bandung (BDO)</option>
+						<option value="BDJ">
+								Banjarmasin (BDJ)</option>
+						<option value="BTH">
+								Batam (BTH)</option>
+						<option value="BKS">
+								Bengkulu (BKS)</option>
+						<option value="BEJ">
+								Berau (BEJ)</option>
+						<option value="DPS">
+								Denpasar (DPS)</option>
+						<option value="GTO">
+								Gorontalo (GTO)</option>
+						<option value="CGK" selected="selected">
+								Jakarta (CGK)</option>
+						<option value="DJB">
+								Jambi (DJB)</option>
+						<option value="KDI">
+								Kendari (KDI)</option>
+						<option value="KOE">
+								Kupang (KOE)</option>
+						<option value="TKG">
+								Lampung (TKG)</option>
+						<option value="MLG">
+								Malang (MLG)</option>
+						<option value="MDC">
+								Manado (MDC)</option>
+						<option value="MKW">
+								Manokwari (MKW)</option>
+						<option value="MES">
+								Medan (MES)</option>
+						<option value="PDG">
+								Padang (PDG)</option>
+						<option value="PKY">
+								Palangkaraya (PKY)</option>
+						<option value="PLM">
+								Palembang (PLM)</option>
+						<option value="PLW">
+								Palu (PLW)</option>
+						<option value="PGK">
+								Pangkalpinang (PGK)</option>
+						<option value="PKU">
+								Pekanbaru (PKU)</option>
+						<option value="PEN">
+								Penang (PEN)</option>
+						<option value="PNK">
+								Pontianak (PNK)</option>
+						<option value="SRG">
+								Semarang (SRG)</option>
+						<option value="SIN">
+								Singapore (SIN)</option>
+						<option value="SOC">
+								Solo (SOC)</option>
+						<option value="SOQ">
+								Sorong (SOQ)</option>
+						<option value="SUB">
+								Surabaya (SUB)</option>
+						<option value="TJQ">
+								Tanjung Pandan (TJQ)</option>
+						<option value="TNJ">
+								Tanjung Pinang (TNJ)</option>
+						<option value="TRK">
+								Tarakan (TRK)</option>
+						<option value="TTE">
+								Ternate (TTE)</option>
+						<option value="UPG">
+								Ujung Pandang (UPG)</option>
+						<option value="JOG">
+								Yogyakarta (JOG)</option>
+						</select>
+			</div>
+
+			
+			<div class="labelPanel">To</div>
+			<div class="spSelectDEST">
+			<select id="selectDestination" name="to" size="1">
+				<option value="">Destination</option>
+				<option value="">---------------------------</option>
+
+				<option value="AMQ">
+								Ambon (AMQ)</option>
+						<option value="BPN">
+								Balikpapan (BPN)</option>
+						<option value="BTJ">
+								Banda Aceh (BTJ)</option>
+						<option value="BDO">
+								Bandung (BDO)</option>
+						<option value="BDJ">
+								Banjarmasin (BDJ)</option>
+						<option value="BTH">
+								Batam (BTH)</option>
+						<option value="BKS">
+								Bengkulu (BKS)</option>
+						<option value="BEJ">
+								Berau (BEJ)</option>
+						<option value="DPS">
+								Denpasar (DPS)</option>
+						<option value="GTO">
+								Gorontalo (GTO)</option>
+						<option value="CGK">
+								Jakarta (CGK)</option>
+						<option value="DJB">
+								Jambi (DJB)</option>
+						<option value="KDI">
+								Kendari (KDI)</option>
+						<option value="KOE">
+								Kupang (KOE)</option>
+						<option value="TKG">
+								Lampung (TKG)</option>
+						<option value="MLG">
+								Malang (MLG)</option>
+						<option value="MDC">
+								Manado (MDC)</option>
+						<option value="MKW" selected="selected">
+								Manokwari (MKW)</option>
+						<option value="MES">
+								Medan (MES)</option>
+						<option value="PDG">
+								Padang (PDG)</option>
+						<option value="PKY">
+								Palangkaraya (PKY)</option>
+						<option value="PLM">
+								Palembang (PLM)</option>
+						<option value="PLW">
+								Palu (PLW)</option>
+						<option value="PGK">
+								Pangkalpinang (PGK)</option>
+						<option value="PKU">
+								Pekanbaru (PKU)</option>
+						<option value="PEN">
+								Penang (PEN)</option>
+						<option value="PNK">
+								Pontianak (PNK)</option>
+						<option value="SRG">
+								Semarang (SRG)</option>
+						<option value="SIN">
+								Singapore (SIN)</option>
+						<option value="SOC">
+								Solo (SOC)</option>
+						<option value="SOQ">
+								Sorong (SOQ)</option>
+						<option value="SUB">
+								Surabaya (SUB)</option>
+						<option value="TJQ">
+								Tanjung Pandan (TJQ)</option>
+						<option value="TNJ">
+								Tanjung Pinang (TNJ)</option>
+						<option value="TRK">
+								Tarakan (TRK)</option>
+						<option value="TTE">
+								Ternate (TTE)</option>
+						<option value="UPG">
+								Ujung Pandang (UPG)</option>
+						<option value="JOG">
+								Yogyakarta (JOG)</option>
+						</select>
+			</div>
+			</div>
+
+			<div id="dateWrapperJSP"> 
+			<div class="labelPanel">Depart</div>
+			<div class="spSelectDate1">
+			
+		 	<select id="selectDate1" name="departDate1" size="1" onchange="setReturnDate();"> 
+				<option value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30" selected="selected">30</option>	
+						<option value="31">31</option>
+						</select>
+			
+						
+			<select id="selectMonthYear1" name="departDate2" size="1" onchange="setReturnDate();">
+			
+			<option value="10-2011" selected="selected">Nov2011</option>
+						
+						<option value="11-2011">Dec2011</option>						
+						<option value="0-2012">Jan2012</option>						
+						<option value="1-2012">Feb2012</option>						
+						<option value="2-2012">Mar  2012</option>						
+						<option value="3-2012">Apr  2012</option>						
+						<option value="4-2012">May    2012</option>						
+						<option value="5-2012">Jun   2012</option>						
+						<option value="6-2012">Jul   2012</option>						
+						<option value="7-2012">Aug 2012</option>						
+						<option value="8-2012">Sep2012</option>						
+						<option value="9-2012">Oct2012</option>						
+						</select>
+			
+			</div>
+
+			<div class="labelPanel">Return</div>
+			<div class="spSelectDate2">
+			<select disabled="disabled" id="selectDate2" name="returnDate1" size="1">
+				<option selected="selected" value="01">01</option>
+						<option value="02">02</option>
+						<option value="03">03</option>
+						<option value="04">04</option>
+						<option value="05">05</option>
+						<option value="06">06</option>
+						<option value="07">07</option>
+						<option value="08">08</option>
+						<option value="09">09</option>
+						<option value="10">10</option>
+						<option value="11">11</option>
+						<option value="12">12</option>
+						<option value="13">13</option>
+						<option value="14">14</option>
+						<option value="15">15</option>
+						<option value="16">16</option>
+						<option value="17">17</option>
+						<option value="18">18</option>
+						<option value="19">19</option>
+						<option value="20">20</option>
+						<option value="21">21</option>
+						<option value="22">22</option>
+						<option value="23">23</option>
+						<option value="24">24</option>
+						<option value="25">25</option>
+						<option value="26">26</option>
+						<option value="27">27</option>
+						<option value="28">28</option>
+						<option value="29">29</option>
+						<option value="30">30</option>
+						<option value="31">31</option>
+						</select>
+			<select disabled="disabled" id="selectMonthYear2" name="returnDate2" size="1">
+		
+			<option selected="selected" value="10-2011">Nov2011</option>						
+					<option value="11-2011">Dec2011</option>						
+					<option value="0-2012">Jan2012</option>						
+					<option value="1-2012">Feb2012</option>						
+					<option value="2-2012">Mar  2012</option>						
+					<option value="3-2012">Apr  2012</option>						
+					<option value="4-2012">May    2012</option>						
+					<option value="5-2012">Jun   2012</option>						
+					<option value="6-2012">Jul   2012</option>						
+					<option value="7-2012">Aug 2012</option>						
+					<option value="8-2012">Sep2012</option>						
+					<option value="9-2012">Oct2012</option>						
+					</select>
+
+			</div>
+			</div>
+		
+			<div class="travelerLabelJSP">
+				Number of Passenger</div>
+		
+			<div class="spGuestWrapJSP">
+			<div class="spAdultWrap">  
+			<span class="spLabelAdult">Adult<span class="agesLabelJSP">( &gt;12years)</span></span>
+
+			<span class="spSelectAdult">
+			<select id="adult" name="adult">
+				<option value="1" selected="selected">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div>
+
+
+			<div class="spChildWrap"> 
+ 			<span class="spLabelChild">Child<span class="agesLabelJSP">(2-12years)</span></span>
+
+			<span class="spSelectChild">
+			<select id="child" name="child">
+				<option value="0" selected="selected">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div>
+
+			<div class="spInfantWrap">
+ 			<span class="spLabelInfant">Infant<span class="agesLabelJSP">(1month - 2years)</span></span>
+
+			<span class="spSelectInfant">
+			<select id="infant" name="infant">
+				<option value="0" selected="selected">0</option>
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="3">3</option>
+							<option value="4">4</option>
+							<option value="5">5</option>
+							<option value="6">6</option>
+							<option value="7">7</option>
+							<option value="8">8</option>
+							<option value="9">9</option>
+							</select></span>
+			</div> 
+			</div> <!--GuestWrapper-->
+
+			<div class="spReturnDate"><input name="returndaterange" value="0" id="returndaterange" type="hidden"></div>
+		    
+			<div class="spSubmitButton">
+			<input class="searchPanelSubmitButton" name="Submit" value="Search" onclick="" type="Submit">
+			</div>
+			
+			<div class="clear"></div>
+
+</div>
+<div class="clear"></div>
+
+
+</form>
+
+<input id="validatororigin" value="Please choose origin" type="hidden">  
+<input id="validatordestination" value="Please choose destination" type="hidden">
+<input id="validatorinvalidItinerary" value="Invalid origin &amp; destination" type="hidden">
+<input id="validatorfillDepartureDate" value="Please enter a valid departure date" type="hidden">
+<input id="validatorinvalidDepartureDate" value="Invalid departure date because it is  smaller than todays date" type="hidden">
+<input id="validatorfillReturnDate" value="Please enter a valid return date" type="hidden">
+<input id="validatorinvalidReturnDate" value="Invalid return date because it is smaller than the departure date" type="hidden">
+<input id="validatorinfantAndAdult" value="Every infant must be accompanied by an adult" type="hidden"> 
+<input id="validatorinvalidReturnDate1" value="Invalid return date because it must be" type="hidden">
+<input id="validatorinvalidReturnDateDays" value="days after departure date" type="hidden">
+<input id="validatorinvalidReturnDateDay" value="day after departure date" type="hidden">
+ 
+
+
+<form action="./PNRAction" method="post">
+			
+<div class="avTableDiv1">
+<span>
+<div class="flightDateInfoWrap">
+			<span id="depIcon"></span><span id="departTableLabel" class="avTableLabel1">Departure</span>
+			<span class="avTableLabel2">30-Nov-11</span>
+		</div>
+		<span class="avPrev"><a href="https://agent.sriwijayaair.co.id/b2b/secure/AvailabilityAction?step=prev&amp;type=dep">&lt; prev day</a> </span>
+		<span class="avNext"><a href="https://agent.sriwijayaair.co.id/b2b/secure/AvailabilityAction?step=next&amp;type=dep">next day &gt;</a> </span>
+		</span>
+</div>
+<div class="avTableDiv2">
+
+
+<span>
+
+Fare is shown in thousand </span> <span>IDR</span>
+</div>
+<table id="table_go" class="tableAvailability" cellspacing="0">
+<tbody><tr>
+			<td class="leftTD">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 598&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=UPG">SJ 598</a></span>
+							<span class="warningStop"></span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>00:30</span>
+						</td>								
+						<td class="arrInfo">
+							<span>UPG</span>
+							<span>03:45</span>
+						</td>								
+					</tr>
+				<tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 570&amp;date=30&amp;month=10&amp;departure=UPG&amp;arrival=MKW">SJ 570</a></span>
+							<span class="warningStop">1stop</span>
+						</td>	
+						<td>
+							<span>UPG</span>
+							<span>04:30</span>
+						</td>								
+						<td class="arrInfo">
+							<span>MKW</span>
+							<span>09:20</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+						<table class="classTable" cellspacing="0">
+							<tbody><tr>
+					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|f6362cab-6a89-4b47-9864-ea9e656d65c7" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|f6362cab-6a89-4b47-9864-ea9e656d65c7" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,100</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|284f80a3-012a-45e4-b092-93d553d14a6c" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|284f80a3-012a-45e4-b092-93d553d14a6c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,200</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|3a7e1588-94aa-461d-b387-5eafa4c3444d" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|3a7e1588-94aa-461d-b387-5eafa4c3444d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,350</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|0ebce50d-2df2-4b73-9634-83b4cb2cd6bd" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|0ebce50d-2df2-4b73-9634-83b4cb2cd6bd" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,500</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|798767a7-8ffe-4244-b74c-86572f94ccb3" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|798767a7-8ffe-4244-b74c-86572f94ccb3" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,650</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|936acc6c-179a-4acd-bdcf-0cb52e96f3bd" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|936acc6c-179a-4acd-bdcf-0cb52e96f3bd" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(4)</span>
+		<span class="avcellFare">1,800</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|60c86708-4f4e-49d0-a353-14c34b6eb02a" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|60c86708-4f4e-49d0-a353-14c34b6eb02a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">1,990</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|92f234e3-247b-4273-827f-f8044ac2f865" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|92f234e3-247b-4273-827f-f8044ac2f865" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,250</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|7d2e058c-472b-44e7-80e2-a537e6652e5f" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|7d2e058c-472b-44e7-80e2-a537e6652e5f" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,490</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|2122bf5f-c68f-4f02-bfec-0df564531169" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|2122bf5f-c68f-4f02-bfec-0df564531169" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,700</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|e6727e18-bd07-43a9-a916-3d761b01d9fd" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|e6727e18-bd07-43a9-a916-3d761b01d9fd" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,900</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|669efc7c-8242-4586-b745-26809fcba800" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|669efc7c-8242-4586-b745-26809fcba800" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,100</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|1eb39056-fbf4-4a44-bf9d-99f0a276dff3" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|1eb39056-fbf4-4a44-bf9d-99f0a276dff3" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|2fc5e751-d9e5-4be4-9375-11a50e098703" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|2fc5e751-d9e5-4be4-9375-11a50e098703" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,500</span>
+
+		</div>
+		</td>
+	<td class="avcellTd">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="43510d89-69c5-4d5b-98e9-e89039c6327d" id="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|d9cb3e59-11bf-484c-baea-389aa4402b1c" value="43510d89-69c5-4d5b-98e9-e89039c6327d|43510d89-69c5-4d5b-98e9-e89039c6327d|d9cb3e59-11bf-484c-baea-389aa4402b1c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,600</span>
+
+		</div>
+		</td>
+	</tr>
+						</tbody></table>
+					</td>
+					</tr>
+	<tr>
+			<td class="leftTD_even">
+			
+				<table class="flightInfo" cellspacing="0">
+				<tbody><tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 234&amp;date=30&amp;month=10&amp;departure=CGK&amp;arrival=SUB">SJ 234</a></span>
+							<span class="warningStop">1stop</span>
+						</td>	
+						<td>
+							<span>CGK</span>
+							<span>18:00</span>
+						</td>								
+						<td class="arrInfo">
+							<span>SUB</span>
+							<span>20:20</span>
+						</td>								
+					</tr>
+				<tr>
+						<td>
+							<span class="flightNum"><a href="javascript:void(0)" onclick="popupWin(id)" id="flightDetail.jsp?flightno=SJ 570&amp;date=30&amp;month=10&amp;departure=SUB&amp;arrival=MKW">SJ 570</a></span>
+							<span class="warningStop">2stop</span>
+						</td>	
+						<td>
+							<span>SUB</span>
+							<span>21:20</span>
+						</td>								
+						<td class="arrInfo">
+							<span>MKW</span>
+							<span>09:20</span>
+						</td>								
+					</tr>
+				</tbody></table>			
+			
+			</td>
+			
+			<td class="rightTD">
+						<table class="classTable" cellspacing="0">
+							<tbody><tr>
+					<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">X</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|28549ba5-8f27-498d-872d-a64eba0140ed" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|28549ba5-8f27-498d-872d-a64eba0140ed" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,100</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">E</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|b660ed77-4012-4f2b-8a42-4e3279bb558a" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|b660ed77-4012-4f2b-8a42-4e3279bb558a" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,200</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">G</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|1549b4a3-fa64-4b7f-902f-5d1b7d25bdcb" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|1549b4a3-fa64-4b7f-902f-5d1b7d25bdcb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,350</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">V</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|4cbfa433-5266-4256-976f-ec63100b55eb" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|4cbfa433-5266-4256-976f-ec63100b55eb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,500</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">T</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|5e4b1d19-b564-4fbe-9aeb-3d8116fbcf01" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|5e4b1d19-b564-4fbe-9aeb-3d8116fbcf01" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,650</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_disable">
+		<div class="avcell">
+		<span class="classLetterCode">Q</span>  
+		<input class="avcellRadio" disabled="disabled" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|f5d1777a-ff3e-4d4b-b96c-f7fca29e06cb" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|f5d1777a-ff3e-4d4b-b96c-f7fca29e06cb" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(0)</span>
+		<span class="avcellFare">1,800</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">N</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|9b3db11c-f4f5-4f96-824f-857314242520" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|9b3db11c-f4f5-4f96-824f-857314242520" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(6)</span>
+		<span class="avcellFare">1,990</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">M</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|81700b88-46a2-4344-8420-6987340c4d14" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|81700b88-46a2-4344-8420-6987340c4d14" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(8)</span>
+		<span class="avcellFare">2,250</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">L</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|591dae6b-fdf0-4683-b615-6ef911eda114" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|591dae6b-fdf0-4683-b615-6ef911eda114" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,490</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">K</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|bca0b971-6bcc-4b8f-a335-aa2471bb6d2c" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|bca0b971-6bcc-4b8f-a335-aa2471bb6d2c" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,700</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">H</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|627aee72-21aa-4d70-a52f-97fc893a33d0" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|627aee72-21aa-4d70-a52f-97fc893a33d0" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">2,900</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">B</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|5a0303ef-751c-472b-b396-b8ff5a94280d" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|5a0303ef-751c-472b-b396-b8ff5a94280d" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,100</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">W</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|97a0ef8a-5763-4b93-8e99-8a1ae6973122" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|97a0ef8a-5763-4b93-8e99-8a1ae6973122" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,300</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">S</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|4839615a-d9f5-451c-9aed-d462bf81410b" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|4839615a-d9f5-451c-9aed-d462bf81410b" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,500</span>
+
+		</div>
+		</td>
+	<td class="avcellTd_even">
+		<div class="avcell">
+		<span class="classLetterCode">Y</span>  
+		<input class="avcellRadio" name="5f70254f-ca29-46d2-909a-d70ca592cb26" id="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|d7d44d05-15a3-4587-82a0-a56079280709" value="5f70254f-ca29-46d2-909a-d70ca592cb26|5f70254f-ca29-46d2-909a-d70ca592cb26|d7d44d05-15a3-4587-82a0-a56079280709" onclick="selectCell(id,'go')" type="radio">
+		<span class="availNumCode">(9)</span>
+		<span class="avcellFare">3,600</span>
+
+		</div>
+		</td>
+	</tr>
+						</tbody></table>
+					</td>
+					</tr>
+	</tbody></table>
+<div id="bookingSummary"></div>
+	<table id="detailAdult" class="detailPax">
+	<tbody><tr>
+	<td class="mainTitle">Adult</td>
+	<td class="detailFill">	
+	<table>	
+
+	<tbody><tr>
+			<td>1</td>
+    		<td>
+    		<select name="adult.title.1">
+				<option selected="selected" value="">&lt;Title&gt;</option>
+    			<option value="" disabled="disabled">---</option>
+    			<option value="Mr">Mr</option>
+				<option value="Mrs">Mrs</option>
+				<option value="Ms">Ms</option>    		
+				<option value="Dr">Dr</option>
+    		</select><span class="asterisk">*</span>
+    		
+    		</td>
+    		<td>
+    			<input size="55" name="adult.name.1" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Full Name&gt;" type="text"><span class="asterisk">*</span>
+    		</td>
+    		<td><input name="adult.id.1" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Identity No&gt;" type="text"></td>
+    		<td>
+    		<select name="adult.specialRequestSelect.1">
+				<option selected="selected" value="">&lt;NO SSR&gt;</option>
+				<option value="" disabled="disabled">---</option>
+			<option value="WCHR">SSR:Wheelchair</option>
+				</select>
+    		</td>
+</tr>	
+		</tbody></table>
+	</td>
+	</tr>
+	</tbody></table>
+	<table class="detailContact">
+	<tbody><tr>
+	<td class="mainTitle">Contact</td>
+	<td class="contactFill">	
+	<table class="contactFillInner">	
+	<tbody><tr class="contactPax">
+		<td class="contactInnerLabel">
+	Customer</td>
+
+<td>
+	<input name="contactcustomer.name" size="50" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Full Name&gt;" type="text"><span class="asterisk">*</span>  
+</td>
+
+<td>
+	<input name="contactcustomer.phone" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Origin Phone&gt;" type="text"><span class="asterisk">*</span>
+	<input name="contactcustomer.otherphone" onblur="this.value = this.value || this.defaultValue;" onfocus="if (this.value==this.defaultValue) {this.value=''}; this.style.color = '#000';" value="&lt;Other Phone&gt;" type="text">
+</td>
+
+</tr>
+		
+	<tr class="contactAgent">
+		<td class="contactInnerLabel">
+	Agent</td>
+
+<td>
+	<input name="contactagent.name" size="50" value="PT. REA TOUR" type="text"><span class="asterisk">*</span>
+</td>
+
+<td>
+	<input name="contactagent.email" size="50" value="boyarie_zag@yahoo.com" type="text"><span class="asterisk">*</span>
+	 
+</td>
+
+<td>
+	<input name="contactagent.phone" value="081252676799" type="text"><span class="asterisk">*</span>
+</td></tr>
+	</tbody></table>
+	</td>
+	</tr>
+	</tbody></table>
+<!-- 	
+	<div class="fareRuleAgg">
+		<input type="checkbox" name="extracover"  id="farerulesAgreement" checked="checked">
+		<label>
+		Customer agree to use the extra cover insurance.     
+		</label>
+		<a href="https://booking.sriwijayaair.co.id/b2c/insurance_term_id.html" id="carrierpolicy_en.html" target="_blank">
+			Term and Condition   </a>
+	</div>
+ -->
+	<div class="extraCoverAgg" align="right">
+		<input name="extracover" checked="checked" value="extracover" onclick="selectCell('0','extracover')" type="checkbox">
+		<label>I agree to use the extra cover insurance     . </label><a href="https://booking.sriwijayaair.co.id/b2c/insurance_term_id.html" target="_blank" id="carrierpolicy_en.html">Term and Condition   </a> 
+	</div>
+
+	<div class="fareRuleAgg">
+		<input name="term" id="farerulesAgreement" value="1" type="checkbox">
+		<label>I HAVE READ AND AGREED TO ALL<a href="https://agent.sriwijayaair.co.id/b2b/secure/term/term.html" target="_blank" id="carrierpolicy_en.html">TERMS AND CONDITIONS</a> TRANSPORTATION THAT ARE DETERMINED BY SRIWIJAYA AIR.</label>
+	</div>
+	
+	
+	
+	<div id="buttonBottomContainer">
+<div id="buttonBookContainer"><div class="buttonStyle"><input name="procceedType" value="Book" onclick="return promptAgreeTermAndCond()" type="submit"><span class="buttonRightSide"></span></div></div><div class="clear"> </div>
+
+</div>
+</form>
+</div>
+<div id="footer">
+	Copyright © 2011 Sriwijaya Air. All Rights Reserved.
+</div>
+</div>
+<div class="clear">
+</div>
+<div id="userInfo">
+
+	<div class="username">idbooking4<span class="logout">(<a href="https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp">logout</a>)</span></div>
+	<div class="userNoID">Agent ID: STRAG0069</div>
+	
+	<div class="voltras"><a href="http://www.voltras.co.id/" target="_blank">Powered by VOLTRAS</a></div>
+	<div class="slogan">ONE STEP BOOKING</div>
+</div>
+
+<script type="text/javascript">
+
+<!--//--><![CDATA[//><!--
+
+var _gaq = _gaq || [];_gaq.push(["_setAccount", "UA-6945713-5"]);_gaq.push(["_setDomainName", "sriwijayaair.co.id"]);_gaq.push(["_trackPageview"]);(function() {var ga = document.createElement("script");ga.type = "text/javascript";ga.async = true;ga.src = ("https:" == document.location.protocol ? "https://ssl" : "http://www") + ".google-analytics.com/ga.js";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(ga, s);})();
+
+//--><!]]>
+
+</script>
+
+
+
+</body></html>
+<!--
+	for my wife Juni and my lovely Adelita
+
+-->

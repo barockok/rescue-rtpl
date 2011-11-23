@@ -1,0 +1,1396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0063)https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="Head1"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>
+	LION AIR - We Make People Fly
+</title><link href="./LION AIR - We Make People Fly_files/step2.css" rel="stylesheet" type="text/css"><meta content="Microsoft Visual Studio .NET 8.0" name="GENERATOR"><meta content="C#" name="CODE_LANGUAGE"><meta content="JavaScript" name="vs_defaultClientScript"><meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+
+	<script type="text/javascript" src="./LION AIR - We Make People Fly_files/Step2b.js"></script>
+
+	<script type="text/javascript">
+		var today = new Date("24 Nov 2011" );
+		var clientLang = "id";
+		var fsPre = "UcFlightSelection_";
+		var transitionID = "Transition1_";
+		var insPre = "Insurance_";
+		var insuranceSelectedByDefault = "False";
+		var displayInsuranceReminder = "False";
+	</script>
+
+	<script type="text/javascript">
+
+		var onewaytrip = true;
+
+		
+		
+		var OutSegs = new Array('1');
+		var InSegs = new Array('');
+		var OutSelected = new Array(1);
+		var InSelected = new Array(1);
+		var i, j;
+		var cab = "Y";
+		var naFare = false;
+
+		var cabins = new Array('C','C','C','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y');
+		var outFlightCount = 1;
+		var inFlightCount = '';
+
+		var seldOut = "";
+		var seldIn = "";
+
+		var PriceSelection = "btnPriceSelection";
+
+		var replBC = '%1';
+		var replFBC = '%2';
+		var replSell = '%3';
+
+
+		function InitialiseSelections()
+		{
+			InitFlightSelected(seldOut);
+			//CabinSelection(0, 'Y');
+			if (!onewaytrip)
+			{
+				InitFlightSelected(seldIn);
+				//CabinSelection(1, 'Y');
+			}
+		}
+
+		function InitFlightSelected(IDs)
+		{
+			if (IDs == "") return;
+			IDs = IDs.split("|");
+			if (IDs.length > 0)
+				for (var i = 0; i < IDs.length; i++)
+					{
+						var control = document.getElementById(IDs[i]);
+						if (control != null && !control.disabled)
+						{
+							control.checked = true;
+							flightSelected(IDs[i]);
+						}
+					}
+		}
+
+		function flightSelected(ID, fromClear)	//Triggered by rb
+		{
+			if (ID == "") return;
+
+			var detes = ParseID(ID);
+			if (AlreadySelected(detes, ID)) return;
+
+			var selArray, segCounts;
+			if (detes[0] == 0)
+			{
+				selArray = OutSelected;
+				segCounts = OutSegs;
+			}
+			else
+			{
+				selArray = InSelected;
+				segCounts = InSegs;
+			}
+			UncheckCells(detes[0], detes[1], detes[2], selArray);
+
+			DoCombinabilities(ID);
+			var postBack = false;
+			if (fromClear == null)
+			{
+				CheckForNAFare(ID, true);
+				SetSelected(ID, detes, selArray, segCounts);
+				SetNAFare();
+				BuildFlightsSelected();
+				if (PriceableCellsSelected())
+				{
+					document.getElementById("spnTotalTripCost").style.display = "none";
+					postBack = true;
+					//__doPostBack("btnUpdateInsurance","");
+					__doPostBack(PriceSelection,"");
+					SetTripCostDisp(false);
+					if (document.getElementById("lblPricingError") != null)
+						document.getElementById("lblPricingError").style.display = "none";
+				}
+			}
+			if (!postBack)
+			{
+				SetContinue(false);
+			}
+		}
+
+
+		function EnableInsuranceSelection(value)
+		{
+			var rbl = document.getElementById(insPre + "rblInsurance");
+//			if(rbl != null)
+//				rbl.disabled = value;
+			
+//			if(rbl != null)
+//			{
+//				var radioButtons = rbl.getElementsByTagName("input");
+//	alert(radioButtons.length);
+//				if (radioButtons != null && radioButtons.length > 0)
+//					 for (var i=0; i<radioButtons.length; i++)
+//						radioButtons[i].disabled = value;
+//				else
+//					rbl.disabled = value;
+
+			if(rbl != null)
+			{
+				var elements = rbl.getElementsByTagName("input");
+			    if (elements != null && elements.length > 0)
+			    {
+					for( var x = 0; x < elements.length; x++ ) 
+					{
+						  elements[x].disabled = value;
+					}
+				}
+			}
+		}
+
+
+		function SetContinue(can)
+		{
+			SetTripCostDisp(can);
+			SetbtnContinueDisabled(!can);			
+			EnableInsuranceSelection(!can);
+			if (!can)
+				document.getElementById("txtOutFBCsUsed").value = document.getElementById("txtInFBCsUsed").value = "";
+		}
+
+		function SetTripCostDisp(can)
+		{
+			document.getElementById("FareDetailsTable").style.display = (can ? "" : "none");
+		}
+
+		function PageLoadedHandler(sender, args)
+		{
+			var ok = (document.getElementById("txtPricingResponse").value == "OK");
+			SetContinue(ok);
+			if (naFare) SetbtnContinueDisabled(true);
+			BuildFlightsSelected();
+		}
+
+		function SetbtnContinueDisabled(disabled)
+		{
+			var btnGrey = "";
+			var ctl = document.getElementById("lbContinue");
+			ctl.disabled = disabled;
+			var cls = ctl.className.replace(btnGrey, "");
+			if (disabled) cls += btnGrey;
+			ctl.className = cls;
+		}
+
+		function AlreadySelected(detes, ID)
+		{
+			var selArray = (detes[0] == 0) ? OutSelected : InSelected;
+			return ID == selArray[detes[2]];
+		}
+
+		function SetNAFare()
+		{
+			var i;
+			var arr = (new Array()).concat(OutSelected, InSelected);
+
+			naFare = false;
+			for (i = 0; i < arr.length; i++)
+			{
+				if ((arr[i] != null) && CheckForNAFare(arr[i], false))
+					naFare = true;
+			}
+		}
+
+		function CheckForNAFare(ID, notify)
+		{
+			var naf = "_na";
+			if (document.getElementById(ID + naf) != null)
+			{
+				naFare = true;
+				if (notify) alert("Fare has unsufficient availability. Please amend the number in party or select a different class.");
+				return true;
+			}
+			return false;
+		}
+
+		function PriceableCellsSelected()
+		{
+			if (!PriceableThisDirection(OutSelected, OutSegs))
+				return false;
+			if (!onewaytrip)
+				return PriceableThisDirection(InSelected, InSegs)
+			return true;
+			
+		}
+
+		function PriceableThisDirection(selArray, segCounts)
+		{
+			if (selArray[0] == null)
+				return false;
+
+			var detes = ParseID(selArray[0]);
+			for (var i = 1; i < parseInt(segCounts[detes[1]]); i++)
+				if (selArray[i] == null)
+					return false;
+
+			return true;
+		}
+
+		function UncheckCells(matrix, cand, flight, selArray)
+		{
+			for (var i = 0; i < selArray.length; i++)
+				if ((selArray[i] != null) && (selArray[i].length > 1) && (i != flight))
+				{
+					var detes = ParseID(selArray[i]);
+					if (detes[1] != cand)	//in a diff cand... uncheck
+					{
+						var control = document.getElementById(selArray[i]);
+						if (control != null)
+							control.checked = false;
+					}
+				}
+		}
+
+		function SetSelected(ID, detes, selArray, segCounts)
+		{
+			var flight = detes[2];
+
+			for (var i = 0; i < selArray.length; i++)
+				if (selArray[i] != null)
+				{
+					var seldetes = ParseID(selArray[i]);
+					if (seldetes[1] != detes[1])	//in a diff cand... uncheck
+					{
+						var control = document.getElementById(selArray[i]);
+						if (control != null)
+						{
+							control.checked = false;
+						}
+						RemoveLastSelected(selArray[i]);
+						selArray[i] = null;
+					}
+				}
+			document.getElementById(ID).className = "step2_selectedFare"; 
+			selArray[flight] = ID;
+
+			var cellIDSave, rowIDSave;
+
+			if (detes[0] == 0)
+			{
+				cellIDSave = "txtOBNNCellID";
+				rowIDSave = "txtOBNNRowID";
+			}
+			else
+			{
+				cellIDSave = "txtIBNNCellID";
+				rowIDSave = "txtIBNNRowID";
+			}
+
+			document.getElementById(cellIDSave).value = selArray.join('|');
+			//document.getElementById(rowIDSave).value = document.getElementById(ID).parentNode.parentNode.parentNode.id.split("_")[0];
+			document.getElementById(rowIDSave).value = GetRowID(ID);
+		}
+
+		function ParseID(ID)
+		{
+			var detes = ID.split("_");
+			//matrix/cand/flight/slot, all zero based
+			return new Array(parseInt(detes[0].substr(1)), parseInt(detes[1].substr(1)), parseInt(detes[2].substr(1)), parseInt(detes[3].substr(1)));
+		}
+
+
+		function RemoveLastSelected(ID, segsThisRow)
+		{
+			//var rowID = document.getElementById(ID).parentNode.parentNode.parentNode.id.split("_")[0];
+			var rowID = GetRowID(ID);
+			SetHighlightByID(rowID, "#FFFFFF");
+			document.getElementById(ID).className = "";
+		}
+
+		function BuildFlightsSelected()
+		{
+			var nl = "<br/>";
+			var arr = new Array(0);
+			var i, k;
+
+			AddToFlightSelectedArray(OutSelected, document.getElementById("txtOutFBCsUsed").value, arr);
+
+			if (!onewaytrip)
+				AddToFlightSelectedArray(InSelected, document.getElementById("txtInFBCsUsed").value, arr);
+
+			arr.sort();
+			//0002 JT 202K SAT 11AUG CGKAMI SS1  0810 0935 0BL
+			var fsTable = "<table class='step2_selectedFlights'>";
+			for (i = 0; i < arr.length; i++)
+			{
+				var cellArr = arr[i].split("|");
+				fsTable += "<tr>";
+				fsTable += AddFltSelCell(i+1);
+				for (k = 1; k < cellArr.length; k++)
+					fsTable += AddFltSelCell(cellArr[k]);
+				fsTable += "</tr>";
+			}
+
+			fsTable += "</table>";
+			document.getElementById("FlightsSelected").innerHTML = fsTable;
+		}
+
+		function AddFltSelCell(text)
+		{
+			return "<td>" + text + "</td>";
+		}
+
+		function AddToFlightSelectedArray(selectedCells, fbcsUsed, arr)
+		{
+			var fltsel = "_selText";
+			var bkcls = "_bc";
+			var cellID, rowID, dispText, bkClasses, control;
+			//var replBC = '<FlightMatrixDisplay.REPLACE_WITH_CLASS>';
+			//var replFBC = '<FlightMatrixDisplay.REPLACE_WITH_FBC>';
+			//var replSell = '<FlightMatrixDisplay.REPLACE_WITH_SELL>';
+
+			for (var i = 0; i < selectedCells.length; i++)
+				if (selectedCells[i] != null)
+				{
+					cellID = selectedCells[i];
+					//rowID =  document.getElementById(cellID).parentNode.parentNode.parentNode.id;
+					rowID = GetRowID(cellID);
+					dispText = document.getElementById(rowID + fltsel).innerHTML;
+
+					bkClasses = document.getElementById(cellID + bkcls).value;
+					var bc = bkClasses.split("/")[0];
+
+					if (fbcsUsed == "")
+						dispText = dispText.replace(replFBC + "|", "");
+					else
+						dispText = dispText.replace(replFBC, fbcsUsed.split("|")[i]);
+
+					dispText = dispText.replace(replBC, bc);
+					dispText = dispText.replace(replSell, bkClasses.split("/")[1]);
+					arr.push(dispText);
+				}
+		}
+
+		function GetRowID(rowID)
+		{
+			var d = ParseID(rowID);
+			return "RM" + d[0] + "_C" + d[1] + "_F" + d[2];
+		}
+
+		function MouseOverMatrix(ID)
+		{
+			SetHighlightByID(ID, '#DEE7E9');
+		}
+
+
+		function MouseOutMatrix(ID)
+		{
+			var selectedRow;
+			
+			if (LeavingSelectedRow("txtOBNNRowID", ID) || LeavingSelectedRow("txtIBNNRowID", ID))
+				return;
+
+			SetHighlightByID(ID, '#FFFFFF');
+		}
+
+		function LeavingSelectedRow(rowIDstorage, ID)
+		{
+			var selectedRow = document.getElementById(rowIDstorage).value;
+			if ((selectedRow != "") && (selectedRow.split("_")[0] == ID))
+				return true;
+			return false;
+		}
+
+
+		function ClearSelection(table)
+		{	
+			var control;
+			var i;
+			var selArray, segCounts;
+			var selArrayOpp;
+			var cellIDSave, rowIDSave;
+			if (table == 0)
+			{
+				cellIDSave = "txtOBNNCellID";
+				rowIDSave = "txtOBNNRowID";
+				UncheckCells(-1, -1, -1, OutSelected);
+				selArray = OutSelected;
+				selArrayOpp = InSelected;
+				segCounts = OutSegs;
+
+				if (!onewaytrip)
+					ClearCombinabilities(1, inFlightCount, cabins.length);
+			}
+			else
+			{
+				cellIDSave = "txtIBNNCellID";
+				rowIDSave = "txtIBNNRowID";
+				UncheckCells(-1, -1, -1, InSelected);
+				selArray = InSelected;
+				selArrayOpp = OutSelected;
+				segCounts = InSegs;
+
+				ClearCombinabilities(0, outFlightCount, cabins.length);
+			}
+			document.getElementById(cellIDSave).value = "";
+			document.getElementById(rowIDSave).value = "";
+
+			for (i = 0; i < selArray.length; i++)
+			{
+				if (selArray[i] != null)
+				{
+					var detes = ParseID(selArray[i]);
+					RemoveLastSelected(selArray[i], parseInt(segCounts[detes[1]]));
+					selArray[i] = null;
+				}
+			}
+
+			for (i = 0; i < selArrayOpp.length; i++)
+			{
+				if (selArrayOpp[i] != null)
+					flightSelected(selArrayOpp[i], true);
+				else
+					ResetInsuranceDisplay();
+			}
+			SetNAFare();
+			SetContinue(false);
+			BuildFlightsSelected();
+		}
+
+	</script>
+
+</head>
+<body onload="InitialiseSelections();">
+	<form name="Form1" method="post" action="https://agent.lionair.co.id/LionAirAgentsIBE/Step2Availability.aspx" onsubmit="javascript:return WebForm_OnSubmit();" id="Form1">
+<div>
+<input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="">
+<input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="">
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJODIwODU3NzgzD2QWAgIBD2QWIAIFDw8WAh4ISW1hZ2VVcmwFI34vaW1hZ2VzL2lkL0hkckZ0ci9iYW5uZXJfc3RlcDIuanBnZGQCBw9kFgQCBQ8PFgIeBFRleHQFEUlORE9ORVNJQSBNRVJERUtBZGQCCQ8PFgIfAQUNSURSIDEuNTI4LjM3OWRkAhEPDxYCHwEFATFkZAITDw8WAh8BBQEwZGQCFQ8PFgIfAQUBMGRkAiQPDxYCHwEFQzxiPkJBTkRVTkc8L2I+IChCRE8pIGtlIDxiPkpPR0pBS0FSVEE8L2I+IChKT0cpIEp1bWF0LCAwOSBEZXMsIDIwMTFkZAIqDw8WBB4IQ3NzQ2xhc3MFC2ZsaWdodHRhYmxlHgRfIVNCAgJkFgICAw9kFgJmD2QWAmYPDxYEHgVXaWR0aBsAAAAAAABZQAcAAAAfAwKAAmRkAiwPDxYCHgdWaXNpYmxlaGRkAjIPFgIeCWlubmVyaHRtbAWLASZuYnNwOyZuYnNwOzxpbWcgc3JjPSdpbWFnZXMvbG9nb3MvSVcuZ2lmJyBhbHQ9J0Rpb3BlcmFzaWthbiBPbGVoIFdpbmdzIEFpcicgY2xhc3MgPSdjYXJyaWVySW1hZ2UnIC8+ID0gRmxpZ2h0IERpb3BlcmFzaWthbiBPbGVoIFdpbmdzIEFpciBkAjQPFgIeBXN0eWxlBQ5kaXNwbGF5OmJsb2NrOxYCAgEPZBYCZg9kFgICBQ9kFgJmD2QWAmYPZBYCAgUPZBYEZg9kFgJmD2QWAgIBDw8WAh4PVmFsaWRhdGlvbkdyb3VwBQhjb250aW51ZWRkAgEPZBYCZg9kFhACBQ8PFgIeC05hdmlnYXRlVXJsBT0vTGlvbkFpckFnZW50c1BvcnRhbC9BZ2VudHMvSGVscHMvSW5zdXJhbmNlL2lkL2luc3VyYW5jZS5odG1sZGQCBw8PFgIfCQU9L0xpb25BaXJBZ2VudHNQb3J0YWwvQWdlbnRzL0hlbHBzL0luc3VyYW5jZS9pZC9pbnN1cmFuY2UuaHRtbGRkAgkPDxYCHwkFPS9MaW9uQWlyQWdlbnRzUG9ydGFsL0FnZW50cy9IZWxwcy9JbnN1cmFuY2UvaWQvaW5zdXJhbmNlLmh0bWxkZAILDw8WAh8JBT0vTGlvbkFpckFnZW50c1BvcnRhbC9BZ2VudHMvSGVscHMvSW5zdXJhbmNlL2lkL2luc3VyYW5jZS5odG1sZGQCDQ8PFgIfCQU9L0xpb25BaXJBZ2VudHNQb3J0YWwvQWdlbnRzL0hlbHBzL0luc3VyYW5jZS9pZC9pbnN1cmFuY2UuaHRtbGRkAhMPFgIfBgUBMGQCFQ8QDxYCHgtfIURhdGFCb3VuZGdkZBYAZAIZDw8WAh8IBQhjb250aW51ZWRkAkQPZBYCZg9kFgICDQ8WAh8GBRNIYXJnYSBiZWx1bSBkaXBpbGloZAJMDw9kFgIeB29uY2xpY2sFFXN3YXBQcm9jZXNzaW5nRGl2cygpO2QCTg8PZBYCHwsFDWRvQ29udGludWUoKTtkAlAPDxYCHwAFJn4vaW1hZ2VzL2lkL0hkckZ0ci9zaC1zZWFyY2hmbGlnaHQuZ2lmZGQCUg9kFggCAQ9kFgICAQ9kFg4CAQ8QD2QWAh8LBQ5zZWxlY3RSZXR1cm4oKWRkZAIDDxAPZBYCHwsFDnNlbGVjdE9uZVdheSgpZGRkAgkPDxYCHwVoZGQCEg8QDxYCHwpnFgIeCG9uY2hhbmdlBZwBdXBkYXRlRGF5cyhVY0ZsaWdodFNlbGVjdGlvbl9kZGxEZXBEYXksIHRoaXMpO3VwZGF0ZVJldHVybkRhdGUodGhpcywgVWNGbGlnaHRTZWxlY3Rpb25fZGRsRGVwRGF5LFVjRmxpZ2h0U2VsZWN0aW9uX2RkbFJldE1vbnRoLFVjRmxpZ2h0U2VsZWN0aW9uX2RkbFJldERheSk7ZGRkAhQPEA8WAh8KZxYCHwwFcXVwZGF0ZVJldHVybkRhdGUoVWNGbGlnaHRTZWxlY3Rpb25fZGRsRGVwTW9udGgsIHRoaXMsIFVjRmxpZ2h0U2VsZWN0aW9uX2RkbFJldE1vbnRoLFVjRmxpZ2h0U2VsZWN0aW9uX2RkbFJldERheSk7ZGRkAicPEA8WBB8KZx4HRW5hYmxlZGgWAh8MBS51cGRhdGVEYXlzKFVjRmxpZ2h0U2VsZWN0aW9uX2RkbFJldERheSwgdGhpcyk7ZBYAZAIpDxAPFgQfCmcfDWhkZBYAZAIDDw8WAh8FaGRkAgUPDxYCHwVoZGQCBw8PZBYCHwsFEnVwZGF0ZVRyaXBEYXRlcygpO2QCVg9kFgICAQ9kFgICAQ8PFgIfAAUpLi4vaW1hZ2VzL2lkL1RyYW4vdHJuLUJvZWluZzczNy05MDBlci5wbmdkZBgBBR5fX0NvbnRyb2xzUmVxdWlyZVBvc3RCYWNrS2V5X18WDwULTTBfQzBfRjBfUzMFC00wX0MwX0YwX1MzBQtNMF9DMF9GMF9TNAULTTBfQzBfRjBfUzQFC00wX0MwX0YwX1M1BQtNMF9DMF9GMF9TNQULTTBfQzBfRjBfUzYFC00wX0MwX0YwX1M2BQpsYkNvbnRpbnVlBRpVY0ZsaWdodFNlbGVjdGlvbiRyYlJldHVybgUaVWNGbGlnaHRTZWxlY3Rpb24kcmJSZXR1cm4FGlVjRmxpZ2h0U2VsZWN0aW9uJHJiT25lV2F5BR5VY0ZsaWdodFNlbGVjdGlvbiRyYk11c3RUcmF2ZWwFIFVjRmxpZ2h0U2VsZWN0aW9uJHJiRGF0ZUZsZXhpYmxlBSBVY0ZsaWdodFNlbGVjdGlvbiRyYkRhdGVGbGV4aWJsZQmpSoUna66f48cy+rFg22dgrvjx">
+</div>
+
+<script type="text/javascript">
+//<![CDATA[
+var theForm = document.forms['Form1'];
+if (!theForm) {
+    theForm = document.Form1;
+}
+function __doPostBack(eventTarget, eventArgument) {
+    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+        theForm.__EVENTTARGET.value = eventTarget;
+        theForm.__EVENTARGUMENT.value = eventArgument;
+        theForm.submit();
+    }
+}
+//]]>
+</script>
+
+
+<script src="./LION AIR - We Make People Fly_files/WebResource.axd" type="text/javascript"></script>
+
+
+<script src="./LION AIR - We Make People Fly_files/common.js" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/Prototype.js" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/FlightSelection.js" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ACDropDownList.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+var dayName = new Array	('Min','Sen','Sel','Rab','Kam','Jum','Sab');
+var monthName_display = new Array;
+ monthName_display[0]=new Option('Jan',31);
+ monthName_display[1]=new Option('Feb',28);
+ monthName_display[2]=new Option('Mar',31);
+ monthName_display[3]=new Option('Apr',30);
+ monthName_display[4]=new Option('Mei',31);
+ monthName_display[5]=new Option('Jun',30);
+ monthName_display[6]=new Option('Jul',31);
+ monthName_display[7]=new Option('Agt',31);
+ monthName_display[8]=new Option('Sep',30);
+ monthName_display[9]=new Option('Okt',31);
+ monthName_display[10]=new Option('Nop',30);
+ monthName_display[11]=new Option('Des',31);
+var monthName = new Array;
+monthName[0]=new Option('Jan',31);
+ monthName[1]=new Option('Feb',28);
+ monthName[2]=new Option('Mar',31);
+ monthName[3]=new Option('Apr',30);
+ monthName[4]=new Option('May',31);
+ monthName[5]=new Option('Jun',30);
+ monthName[6]=new Option('Jul',31);
+ monthName[7]=new Option('Aug',31);
+ monthName[8]=new Option('Sep',30);
+ monthName[9]=new Option('Oct',31);
+ monthName[10]=new Option('Nov',30);
+ monthName[11]=new Option('Dec',31);
+//]]>
+</script>
+
+<script src="./LION AIR - We Make People Fly_files/Date.js" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/DateControls.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+
+var wmPre = 'Transition1_';
+//]]>
+</script>
+
+<script src="./LION AIR - We Make People Fly_files/ScriptResource.axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(1).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(2).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(3).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(4).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(5).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(6).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(7).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(8).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(9).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(10).axd" type="text/javascript"></script>
+<script src="./LION AIR - We Make People Fly_files/ScriptResource(11).axd" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+function WebForm_OnSubmit() {
+if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+return true;
+}
+//]]>
+</script>
+
+		<script type="text/javascript">
+//<![CDATA[
+Sys.WebForms.PageRequestManager._initialize('ScriptManager1', document.getElementById('Form1'));
+Sys.WebForms.PageRequestManager.getInstance()._updateControls(['tupnlInsuranceBlock','tInsurance$upInsurance','tupnlTotalTripCost','tupnlFareRules'], ['Insurance$rblInsurance'], [], 90);
+//]]>
+</script>
+
+
+		<script type="text/javascript">
+			Sys.WebForms.PageRequestManager.getInstance().add_pageLoaded(PageLoadedHandler);
+			function btnShowFares_onclick()
+			{
+				LoadPopupURL2("FareDisplay.aspx" ,700, 600)
+			}
+		</script>
+
+		<div id="wrapper">
+			
+<div id="header">
+	<div id="UcHeader1_region" class="RegionSelector">
+		<span>Language:</span>
+		<select id="selCountry" onchange="__doPostBack(&#39;CHANGECULTURE&#39;, this.value);">
+			<option selected="selected">- Please Select -</option>
+			<option value="id-ID">Bahasa Indonesia</option>
+			<option value="en-US">English</option>
+		</select>
+	</div>
+</div>
+
+			<div class="step-progress">
+				<img id="imgStepHeader" src="./LION AIR - We Make People Fly_files/banner_step2.jpg" style="width:786px;border-width:0px;">
+			</div>
+			<div id="main-content">
+				
+<div style="background-color: #DFE7FB; padding: 10px 20px 10px 20px; margin-bottom: 5px; height:30px;">
+
+	<div style="float: left;">
+		<h3 style="padding-top: 0px; margin-top: 0px;">
+			Detail Anda</h3>
+		<p>
+			Pemesanan sedang dibuat oleh:
+			<span id="AgentDetails_lblConsultantName">INDONESIA MERDEKA</span></p>
+	</div>
+	<div style="text-align: right;">
+		<p>
+			Kredit Tersedia:
+			<span id="AgentDetails_lblCreditLimit">IDR 1.528.379</span></p>
+	</div>
+</div>
+
+				<div class="pageerror">
+					
+				</div>
+				<div id="PassengerCounts">
+					<table id="tblPassengerCounts" cellpadding="0" cellspacing="0">
+						<tbody><tr>
+							<th>
+								<span id="lblADT">Dewasa</span></th>
+							<th>
+								<span id="lblCNN">Anak-Anak</span></th>
+							<th>
+								<span id="lblINF">Bayi</span></th>
+						</tr>
+						<tr>
+							<td>
+								<span id="lblADTCount">1</span></td>
+							<td style="border-right: solid 1px #FFFFFF; border-left: solid 1px #FFFFFF;">
+								<span id="lblCNNCount">0</span></td>
+							<td>
+								<span id="lblINFCount">0</span></td>
+						</tr>
+					</tbody></table>
+				</div>
+				<div id="Step2Welcome">
+					<p>
+						<span id="lblWelcomeMessage1">Untuk melanjutkan pemesanan anda, pilih penerbangan dan tarif yang anda inginkan.</span></p>
+					<p>
+						<span id="lblWelcomMessage2">Letakkan kursor anda di atas detail setiap penerbangan dan kolom tarif untuk informasi lebih lengkap.</span></p>
+				</div>
+				<div style="clear: both; text-align: right;">
+					<table id="PriceGuide" style="width: 195px;" align="right">
+						<tbody><tr>
+							<th colspan="3">
+								<span id="lblPriceGuideHeader">Petunjuk Harga</span>
+							</th>
+						</tr>
+						<tr>
+							<td style="height: 20px">
+								<span id="lblPriceGuideHigh">Tinggi</span></td>
+							<td style="height: 20px">
+							</td><td style="height: 20px">
+								<span id="lblPriceGuideLow">Rendah</span></td>
+						</tr>
+					</tbody></table>
+				</div>
+				<div style="clear: both;">
+					<img id="imgAvailDepartingFlight" src="./LION AIR - We Make People Fly_files/depart_icon.gif" align="absmiddle" style="border-width:0px;"><span id="lblDepartureFlightOptions">PILIHAN JADWAL KEBERANGKATAN</span>
+				</div>
+				<div>
+					<table style="width: 100%;" cellpadding="0" cellspacing="0">
+						<tbody><tr class="flightDetails">
+							<td style="width: 10%">
+								&nbsp;</td>
+							<td>
+								<span id="lblDepartingDetails"><b>BANDUNG</b> (BDO) ke <b>JOGJAKARTA</b> (JOG) Jumat, 09 Des, 2011</span></td>
+							<td style="width: 40%; text-align: right" colspan="2">
+								<a id="lnkPreviousDepDay" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("lnkPreviousDepDay", "", true, "", "", false, true))">&lt; Hari Sebelumnya</a>&nbsp;
+								<a id="lnkNextDepDay" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("lnkNextDepDay", "", true, "", "", false, true))">Hari Selanjutnya &gt;</a>&nbsp;</td>
+						</tr>
+					</tbody></table>
+					<table id="tblOutFlightBlocks" class="flighttable" cellspacing="0" cellpadding="0" border="0" style="width:100%;border-collapse:collapse;">
+	<tbody><tr>
+		<td class="step2_heading flightColumn step2Cell flightInfo_left" rowspan="2">Penerbangan</td><td rowspan="2" style="display:none;"></td><td class="step2_heading step2Cell flightInfo_middle" rowspan="2">Berangkat</td><td class="step2_heading step2Cell flightInfo_middle" rowspan="2">Tiba</td><td id="M0_CC_F0" class="step2hdrCell flightInfo_middle" colspan="3" rowspan="1">Bisnis</td><td id="M0_CY_F0" class="step2hdrCell flightInfo_middle" colspan="12" rowspan="1">Ekonomi</td><td id="M0_CY_F1" class="step2hdrCell flightInfo_right" colspan="3" rowspan="1">Promo</td>
+	</tr><tr>
+		<td id="M0_S0" class="step2avlCell flightInfo_middle" rowspan="1">C</td><td id="M0_S1" class="step2avlCell flightInfo_middle" rowspan="1">D</td><td id="M0_S2" class="step2avlCell flightInfo_middle" rowspan="1">I</td><td id="M0_S3" class="step2avlCell flightInfo_middle" rowspan="1">Y</td><td id="M0_S4" class="step2avlCell flightInfo_middle" rowspan="1">A</td><td id="M0_S5" class="step2avlCell flightInfo_middle" rowspan="1">G</td><td id="M0_S6" class="step2avlCell flightInfo_middle" rowspan="1">W</td><td id="M0_S7" class="step2avlCell flightInfo_middle" rowspan="1">S</td><td id="M0_S8" class="step2avlCell flightInfo_middle" rowspan="1">B</td><td id="M0_S9" class="step2avlCell flightInfo_middle" rowspan="1">H</td><td id="M0_S10" class="step2avlCell flightInfo_middle" rowspan="1">K</td><td id="M0_S11" class="step2avlCell flightInfo_middle" rowspan="1">L</td><td id="M0_S12" class="step2avlCell flightInfo_middle" rowspan="1">M</td><td id="M0_S13" class="step2avlCell flightInfo_middle" rowspan="1">N</td><td id="M0_S14" class="step2avlCell flightInfo_middle" rowspan="1">Q</td><td id="M0_S15" class="step2avlCell flightInfo_middle" rowspan="1">T</td><td id="M0_S16" class="step2avlCell flightInfo_middle" rowspan="1">V</td><td id="M0_S17" class="step2avlCell flightInfo_right" rowspan="1">X</td>
+	</tr><tr id="RM0_C0_F0" onmouseover="MouseOverMatrix(&#39;RM0_C0&#39;);" onmouseout="MouseOutMatrix(&#39;RM0_C0&#39;);">
+		<td><div class="FlightNumberInTable"><div class="carrierLogo"><img src="./LION AIR - We Make People Fly_files/IW.gif" alt=" Wings Air" class="carrierImage" title=" Wings Air"></div>JT 1812</div></td><td id="RM0_C0_F0_selText" class="step2Cell flightInfo_middle" rowspan="1" style="display:none;">0002|JT1812|JUMAT|09DES|%1|%2|BDOJOG|%31|1425 1535|0|</td><td class="step2Cell flightInfo_middle" rowspan="1">Bandung<br>Jumat 14:25</td><td class="step2Cell flightInfo_middle" rowspan="1">Jogjakarta<br>Jumat 15:35</td><td id="M0_C0_F0_S0_td" class="step2_soldcell fareInfo_middle" rowspan="1"></td><td id="M0_C0_F0_S1_td" class="step2_soldcell fareInfo_middle" rowspan="1"></td><td id="M0_C0_F0_S2_td" class="step2_soldcell fareInfo_middle" rowspan="1"></td><td id="M0_C0_F0_S3_td" class="step2farecell fareInfo_middle"><span title="YOW	"><input id="M0_C0_F0_S3" type="radio" name="RGM0_0" value="M0_C0_F0_S3" onclick="flightSelected(&#39;M0_C0_F0_S3&#39;);"><label for="M0_C0_F0_S3">7</label></span><span><input type="hidden" name="M0_C0_F0_S3_bc" id="M0_C0_F0_S3_bc" value="Y/SS"></span></td><td id="M0_C0_F0_S4_td" class="step2farecell fareInfo_middle"><span title="AOW	"><input id="M0_C0_F0_S4" type="radio" name="RGM0_0" value="M0_C0_F0_S4" onclick="flightSelected(&#39;M0_C0_F0_S4&#39;);"><label for="M0_C0_F0_S4">7</label></span><span><input type="hidden" name="M0_C0_F0_S4_bc" id="M0_C0_F0_S4_bc" value="A/SS"></span></td><td id="M0_C0_F0_S5_td" class="step2farecell fareInfo_middle"><span title="GOW	"><input id="M0_C0_F0_S5" type="radio" name="RGM0_0" value="M0_C0_F0_S5" onclick="flightSelected(&#39;M0_C0_F0_S5&#39;);"><label for="M0_C0_F0_S5">7</label></span><span><input type="hidden" name="M0_C0_F0_S5_bc" id="M0_C0_F0_S5_bc" value="G/SS"></span></td><td id="M0_C0_F0_S6_td" class="step2farecell fareInfo_middle"><span title="WOW	"><input id="M0_C0_F0_S6" type="radio" name="RGM0_0" value="M0_C0_F0_S6" onclick="flightSelected(&#39;M0_C0_F0_S6&#39;);"><label for="M0_C0_F0_S6">5</label></span><span><input type="hidden" name="M0_C0_F0_S6_bc" id="M0_C0_F0_S6_bc" value="W/SS"></span></td><td id="M0_C0_F0_S7_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="SOW	"><input id="M0_C0_F0_S7" type="radio" name="RGM0_0" value="M0_C0_F0_S7" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S7&#39;);"><label for="M0_C0_F0_S7">0</label></span><span><input type="hidden" name="M0_C0_F0_S7_na" id="M0_C0_F0_S7_na"><input type="hidden" name="M0_C0_F0_S7_bc" id="M0_C0_F0_S7_bc" value="S/HL"></span></td><td id="M0_C0_F0_S8_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="BOW	"><input id="M0_C0_F0_S8" type="radio" name="RGM0_0" value="M0_C0_F0_S8" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S8&#39;);"><label for="M0_C0_F0_S8">0</label></span><span><input type="hidden" name="M0_C0_F0_S8_na" id="M0_C0_F0_S8_na"><input type="hidden" name="M0_C0_F0_S8_bc" id="M0_C0_F0_S8_bc" value="B/HL"></span></td><td id="M0_C0_F0_S9_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="HOW	"><input id="M0_C0_F0_S9" type="radio" name="RGM0_0" value="M0_C0_F0_S9" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S9&#39;);"><label for="M0_C0_F0_S9">0</label></span><span><input type="hidden" name="M0_C0_F0_S9_na" id="M0_C0_F0_S9_na"><input type="hidden" name="M0_C0_F0_S9_bc" id="M0_C0_F0_S9_bc" value="H/HL"></span></td><td id="M0_C0_F0_S10_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="KOW	"><input id="M0_C0_F0_S10" type="radio" name="RGM0_0" value="M0_C0_F0_S10" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S10&#39;);"><label for="M0_C0_F0_S10">0</label></span><span><input type="hidden" name="M0_C0_F0_S10_na" id="M0_C0_F0_S10_na"><input type="hidden" name="M0_C0_F0_S10_bc" id="M0_C0_F0_S10_bc" value="K/HL"></span></td><td id="M0_C0_F0_S11_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="LOW	"><input id="M0_C0_F0_S11" type="radio" name="RGM0_0" value="M0_C0_F0_S11" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S11&#39;);"><label for="M0_C0_F0_S11">0</label></span><span><input type="hidden" name="M0_C0_F0_S11_na" id="M0_C0_F0_S11_na"><input type="hidden" name="M0_C0_F0_S11_bc" id="M0_C0_F0_S11_bc" value="L/HL"></span></td><td id="M0_C0_F0_S12_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="MOW	"><input id="M0_C0_F0_S12" type="radio" name="RGM0_0" value="M0_C0_F0_S12" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S12&#39;);"><label for="M0_C0_F0_S12">0</label></span><span><input type="hidden" name="M0_C0_F0_S12_na" id="M0_C0_F0_S12_na"><input type="hidden" name="M0_C0_F0_S12_bc" id="M0_C0_F0_S12_bc" value="M/HL"></span></td><td id="M0_C0_F0_S13_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="NOW	"><input id="M0_C0_F0_S13" type="radio" name="RGM0_0" value="M0_C0_F0_S13" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S13&#39;);"><label for="M0_C0_F0_S13">0</label></span><span><input type="hidden" name="M0_C0_F0_S13_na" id="M0_C0_F0_S13_na"><input type="hidden" name="M0_C0_F0_S13_bc" id="M0_C0_F0_S13_bc" value="N/HL"></span></td><td id="M0_C0_F0_S14_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="QOW	"><input id="M0_C0_F0_S14" type="radio" name="RGM0_0" value="M0_C0_F0_S14" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S14&#39;);"><label for="M0_C0_F0_S14">0</label></span><span><input type="hidden" name="M0_C0_F0_S14_na" id="M0_C0_F0_S14_na"><input type="hidden" name="M0_C0_F0_S14_bc" id="M0_C0_F0_S14_bc" value="Q/HL"></span></td><td id="M0_C0_F0_S15_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="TOW	"><input id="M0_C0_F0_S15" type="radio" name="RGM0_0" value="M0_C0_F0_S15" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S15&#39;);"><label for="M0_C0_F0_S15">0</label></span><span><input type="hidden" name="M0_C0_F0_S15_na" id="M0_C0_F0_S15_na"><input type="hidden" name="M0_C0_F0_S15_bc" id="M0_C0_F0_S15_bc" value="T/HL"></span></td><td id="M0_C0_F0_S16_td" class="step2farecell fareInfo_middle"><span disabled="disabled" title="VOW	"><input id="M0_C0_F0_S16" type="radio" name="RGM0_0" value="M0_C0_F0_S16" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S16&#39;);"><label for="M0_C0_F0_S16">0</label></span><span><input type="hidden" name="M0_C0_F0_S16_na" id="M0_C0_F0_S16_na"><input type="hidden" name="M0_C0_F0_S16_bc" id="M0_C0_F0_S16_bc" value="V/HL"></span></td><td id="M0_C0_F0_S17_td" class="step2farecell fareInfo_right"><span disabled="disabled" title="XOW	"><input id="M0_C0_F0_S17" type="radio" name="RGM0_0" value="M0_C0_F0_S17" disabled="disabled" onclick="flightSelected(&#39;M0_C0_F0_S17&#39;);"><label for="M0_C0_F0_S17">0</label></span><span><input type="hidden" name="M0_C0_F0_S17_na" id="M0_C0_F0_S17_na"><input type="hidden" name="M0_C0_F0_S17_bc" id="M0_C0_F0_S17_bc" value="X/HL"></span></td>
+	</tr><tr>
+		<td colspan="21"><table cellspacing="0" cellpadding="0" border="0" style="width:100%;border-collapse:collapse;">
+			<tbody><tr>
+				<td class="FlightTableFooter_text" style="width:25%;">Semua Waktu Adalah Waktu Lokal</td><td class="FlightTableFooter_text" style="width:50%;"></td><td class="FlightTableFooter_clear" align="right"><a href="javascript:ClearSelection(0)">Hapus Pilihan</a></td>
+			</tr>
+		</tbody></table></td>
+	</tr>
+</tbody></table>
+				</div>
+				
+				<div>
+					<b>
+						Legenda:
+					</b>
+					<img src="./LION AIR - We Make People Fly_files/JT.gif" alt="Lion Air" class="carrierImage">
+					= Penerbangan Lion Air
+					<span id="spKeyItems">&nbsp;&nbsp;<img src="./LION AIR - We Make People Fly_files/IW(1).gif" alt="Dioperasikan Oleh Wings Air" class="carrierImage"> = Flight Dioperasikan Oleh Wings Air </span>
+				</div>
+				<div id="trInsurance" style="display:block;">
+					<br>
+					<br>
+					<div id="upnlInsuranceBlock">
+	
+							<input type="submit" name="btnUpdateInsurance" value="" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnUpdateInsurance&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="btnUpdateInsurance" style="display: none;">
+							<input type="hidden" name="txtUpdateInsurance" id="txtUpdateInsurance" value="no">
+							<div id="Insurance_upInsurance">
+		
+        <div class="InsuranceBlock">
+            <div style="clear: both;" class="InsuranceBlockHeading">
+                <h5>
+                    <b>
+                        <span id="Insurance_lblInsuranceHeading">Asuransi Perjalanan</span></b></h5>
+            </div>
+            <div class="Padd5">
+                <div id="Insurance_trCodeShareMessage" style="display: none; color: Red;">
+                    Insurance is available for travel on LionAir operated flight only.
+                </div>
+                <table id="Insurance_InsuranceTable" cellspacing="0" cellpadding="0" style="width: 100%;">
+			<tbody><tr>
+				<td>
+                            <div id="Insurance_ValidationSummary1" style="color:Red;display:none;">
+
+				</div>
+                        </td>
+			</tr>
+			<tr>
+				<td id="Insurance_InsuranceTableDetails" style="padding-left: 10px;">
+                            <table>
+                                <tbody><tr>
+                                    <td style="">
+                                        <div>
+                                            <span id="Insurance_lblInsuranceLine1">Raih pendapatan tambahan dengan menambahkan asuransi perjalanan.</span>&nbsp;
+                                                
+											<span id="Insurance_lblPlease">Silahkan</span>	
+																							
+											<a id="Insurance_hlPlanDomEcon" href="https://agent.lionair.co.id/LionAirAgentsPortal/Agents/Helps/Insurance/id/insurance.html" target="_blank" style="display: inline;">Klik disini</a>
+											<a id="Insurance_hlPlanDomPrem" href="https://agent.lionair.co.id/LionAirAgentsPortal/Agents/Helps/Insurance/id/insurance.html" target="_blank" style="display: none;">Klik disini</a>
+											<a id="Insurance_hlPlanSilver" href="https://agent.lionair.co.id/LionAirAgentsPortal/Agents/Helps/Insurance/id/insurance.html" target="_blank" style="display: none;">Klik disini</a>
+											<a id="Insurance_hlPlanGold" href="https://agent.lionair.co.id/LionAirAgentsPortal/Agents/Helps/Insurance/id/insurance.html" target="_blank" style="display: none;">Klik disini</a>
+											<a id="Insurance_hlPlanPlatinum" href="https://agent.lionair.co.id/LionAirAgentsPortal/Agents/Helps/Insurance/id/insurance.html" target="_blank" style="display: none;">Klik disini</a>
+												
+											<span id="Insurance_lblLearnMore">untuk memperoleh informasi lebih detail.</span>
+										</div>
+                                        <br>
+                                        <table style="border: none; width: 100%;">
+                                            <tbody><tr>
+                                                <td>
+                                                    <span id="Insurance_lblInsuranceLine2">Tambahkan Asuransi Perjalanan Lion Air hanya dengan</span>&nbsp; <span id="Insurance_sYesLinePremium">0</span>?&nbsp;
+                                                </td>
+                                                <td align="left" style="margin-left: 40px">
+                                                    <table id="Insurance_rblInsurance" border="0">
+					<tbody><tr>
+						<td><input id="Insurance_rblInsurance_0" type="radio" name="Insurance$rblInsurance" value="Yes" onclick="RefreshDisplay(&#39;&#39;,&#39;&#39;);setTimeout(&#39;__doPostBack(\&#39;Insurance$rblInsurance$0\&#39;,\&#39;\&#39;)&#39;, 0)" disabled=""><label for="Insurance_rblInsurance_0">Ya, silahkan.</label></td><td><input id="Insurance_rblInsurance_1" type="radio" name="Insurance$rblInsurance" value="No" onclick="RefreshDisplay(&#39;no&#39;,&#39;Harap diingat!-|-Kami sangat merekomendasikan agar anda menyertakan asuransi perjalanan untuk penumpang anda - karena produk ini tidak hanya memberikan perlindungan dari kejadian-kejadian yang tak terduga tetapi juga memberikan pendapatan tambahan melalui insentif Lion Air.-|-Untuk menyertakan asuransi perjalanan dalam rencana perjalanan anda, harap klik [OK]&#39;);setTimeout(&#39;__doPostBack(\&#39;Insurance$rblInsurance$1\&#39;,\&#39;\&#39;)&#39;, 0)" disabled=""><label for="Insurance_rblInsurance_1">Tidak, terima kasih.</label></td>
+					</tr>
+				</tbody></table>
+                                                </td>
+                                             </tr>
+                                            <tr>
+                                                <td>
+                                                    &nbsp;</td>
+                                                <td align="left" style="color: red; margin-left: 40px">
+                                                    <span id="Insurance_lblPleaseSelect">Pilih salah satu di atas</span>
+                                                </td>
+                                            </tr>
+                                        </tbody></table>
+                                        <span id="Insurance_CustomValidator1" style="color:Red;visibility:hidden;">*</span>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </td>
+			</tr>
+		</tbody></table>
+		
+            </div>
+        </div>
+		<input type="hidden" name="Insurance$txtInsPostbackRequired" id="Insurance_txtInsPostbackRequired" value="no">
+    
+	</div>
+
+						
+</div>
+					<br>
+					<br>
+				</div>
+				<div>
+					<table style="width: 100%;">
+						<tbody><tr>
+							<td style="width: 55%">
+								<div>
+									<h5>
+										<b>
+											<span id="lblFlightsSelected">RINCIAN JADWAL</span></b></h5>
+									<div id="FlightsSelected"><table class="step2_selectedFlights"></table></div>
+								<h5>
+								<span id="lblPleaseNote">PERHATIAN</span>&nbsp;</h5>
+								<div style="vertical-align: top; padding-left: 10px; width: 200px; text-align: justify;">
+									<span id="lblPleaseNoteText">Anda mungkin tidak dapat memilih penerbangan tertentu atau menggabungkan beberapa tarif tertentu untuk sektor pergi dan pulang. Ini dapat disebabkan oleh waktu koneksi minimum atau batasan dari peraturan tarif.</span><br>
+									<br>
+									<p>
+										<a id="lnkMoreInformation" href="javascript:LoadPopupURL('misc/MoreInformation.htm');">Informasi lebih lanjut</a></p>
+								</div>
+							</div></td>
+							<td style="padding-left: 10px; vertical-align: top;">
+								<h5>
+									<b>
+										<span id="lblFareInformation">INFORMASI TARIF</span></b>&nbsp;</h5>
+								<div id="uprgTotalTripCost" style="display:none;">
+	
+										<div style="text-align: center; vertical-align: middle; width: 100%; height: 58px">
+											<img src="./LION AIR - We Make People Fly_files/ajax-loader.gif" alt="">
+										</div>
+									
+</div>
+								<div id="uprgTotalTripCostOnInsuranceChange" style="display:none;">
+	
+										<div style="text-align: center; vertical-align: middle; width: 100%; height: 58px">
+											<img src="./LION AIR - We Make People Fly_files/ajax-loader.gif" alt="">
+										</div>
+									
+</div>
+								<div id="upnlTotalTripCost">
+	
+										<span id="lblPricingError" class="errortext"></span>
+										<input type="submit" name="btnPriceSelection" value="" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnPriceSelection&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="btnPriceSelection" style="display: none;">
+										<input type="hidden" name="txtPricingResponse" id="txtPricingResponse">
+										<input type="hidden" name="txtOutFBCsUsed" id="txtOutFBCsUsed" value="">
+										<input type="hidden" name="txtInFBCsUsed" id="txtInFBCsUsed" value="">
+										<input type="hidden" name="txtTaxBreakdown" id="txtTaxBreakdown">
+										<span id="spnTotalTripCost">Harga belum dipilih</span>
+										<table id="FareDetailsTable" style="display: none; ">
+		<tbody><tr>
+			<td>
+													Published Fare</td>
+			<td id="tdCurrFare" class="CurrencyCol"></td>
+			<td id="tdAmtFare" class="MoneyCol"></td>
+		</tr>
+		<tr>
+			<td>
+													<a href="javascript:ShowTaxBreakdown();">
+														Total Taxes</a></td>
+			<td id="tdCurrTax" class="CurrencyCol"></td>
+			<td id="tdAmtTax" class="MoneyCol"></td>
+		</tr>
+		<tr id="taxbdInsurance">
+			<td>
+													Asuransi Perjalanan</td>
+			<td id="taxbdInsuranceCur" class="CurrencyCol"></td>
+			<td id="taxbdInsuranceAmt" class="MoneyCol"></td>
+		</tr>
+		<tr id="TripTotalRow">
+			<td style="font-weight: bold;">
+													TOTAL</td>
+			<td id="tdCurrTotal" class="CurrencyCol"></td>
+			<td id="tdAmtTotal" class="MoneyCol"></td>
+		</tr>
+	</tbody></table>
+	
+										<div id="pnlTaxBD" class="taxBDPopup" style="display: none; position: fixed; z-index: 100001; ">
+		
+											<div id="TaxBD" style="display: none;">
+												<table>
+													<tbody><tr>
+														<td colspan="3" style="text-align: center;">
+															<h1>
+																Tax Breakdown</h1>
+														</td>
+													</tr>
+													<tr id="taxbdYQ">
+			<td>
+															Surcharge Bahan Bakar (YQ)</td>
+			<td id="taxbdYQCur" style="text-align: right;"></td>
+			<td id="taxbdYQAmt" style="text-align: right;"></td>
+		</tr>
+		
+													<tr id="taxbdYR">
+			<td id="taxbdYRName"></td>
+			<td id="taxbdYRCur" style="text-align: right;"></td>
+			<td id="taxbdYRAmt" style="text-align: right;"></td>
+		</tr>
+		
+													<tr id="taxbdID">
+			<td>
+															PPN (ID)</td>
+			<td id="taxbdIDCur" style="text-align: right;"></td>
+			<td id="taxbdIDAmt" style="text-align: right;"></td>
+		</tr>
+		
+													<tr id="taxbdSG">
+			<td>
+															Biaya Keamanan dan Pelayanan Penumpang (SG)</td>
+			<td id="taxbdSGCur" style="text-align: right;">
+														</td>
+			<td id="taxbdSGAmt" style="text-align: right;">
+														</td>
+		</tr>
+		
+													<tr id="taxbdOO">
+			<td>
+															Biaya Pelayanan Keamanan Penumpang (OO)</td>
+			<td id="taxbdOOCur" style="text-align: right;">
+														</td>
+			<td id="taxbdOOAmt" style="text-align: right;">
+														</td>
+		</tr>
+		
+													<tr id="taxbdOP">
+			<td>
+															Bea Penerbangan (OP)</td>
+			<td id="taxbdOPCur" style="text-align: right;">
+														</td>
+			<td id="taxbdOPAmt" style="text-align: right;">
+														</td>
+		</tr>
+		
+													<tr id="taxbdXT">
+			<td>
+															Airport Taxes (XT)</td>
+			<td id="taxbdXTCur" style="text-align: right;"></td>
+			<td id="taxbdXTAmt" style="text-align: right;"></td>
+		</tr>
+		
+												</tbody></table>
+												<br>
+												<a id="lbCloseTaxBD" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("lbCloseTaxBD", "", true, "", "", false, true))"><img alt="Close" src="./LION AIR - We Make People Fly_files/btn-close.gif"></a>
+											</div>
+											<input type="submit" name="btnTB" value="" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnTB&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="btnTB" style="display: none;">
+										
+	</div>
+										
+									
+<div id="mpeTaxBD_backgroundElement" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000; " class="modalBackground"></div></div>
+								<div id="FareNote">
+									<span id="lblFareInformationText">Pastikan anda telah membaca Peraturan Tarif untuk syarat &amp; ketentuan, denda, pembatalan atau penggantian tarif sebelum membeli tiket.</span><p>
+											</p><div id="upnlFareRules">
+	
+													<a id="lnkFareRules" href="javascript:__doPostBack('lnkFareRules','')">Untuk melihat peraturan-peraturan tarif klik di sini</a>
+												
+</div>
+										<p></p>
+								</div>
+							</td>
+						</tr>
+					</tbody></table>
+				</div>
+				
+<div id="ImportantNote">
+	<h5>
+		<span id="ImportantInformation_lblImportantInformation">Informasi Penting</span>&nbsp;</h5>
+	<div id="ImportantNoteText">
+		<span id="ImportantInformation_lblImporatantNoteText">
+								<p>Ketika anda melanjutkan ke tahap selanjutnya, tempat duduk pilihan anda akan diminta dari sistem reservasi.<br>
+								Namun jika tahap selanjutnya tidak diselesaikan dalam waktu 15 menit, tempat duduk tersebut akan dibatalkan secara otomatis.</p>
+								
+										</span></div>
+	<div>
+		<span id="ImportantInformation_lblPleaseReadNote">( Pastikan anda terlebih dahulu membaca "CATATAN PENTING" di atas dan telah mempersiapkan segala informasi yang dibutuhkan SEBELUM melanjutkan )</span></div>
+</div>
+
+				<div style="text-align: right; margin-top: 10px;">
+					<a onclick="swapProcessingDivs();" id="lbGoBack" href="javascript:__doPostBack('lbGoBack','')"><img alt="Close" src="./LION AIR - We Make People Fly_files/btn-close.gif"></a>
+					<input type="image" name="lbContinue" id="lbContinue" src="./LION AIR - We Make People Fly_files/btn-continue.gif" onclick="doContinue();WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;lbContinue&quot;, &quot;&quot;, true, &quot;continue&quot;, &quot;&quot;, false, false))" style="border-width:0px;" disabled="" class="">
+				</div>
+				<div class="subhead" style="margin-top: 0px">
+					<img id="imgSearchAgain" src="./LION AIR - We Make People Fly_files/sh-searchflight.gif" style="width:182px;border-width:0px;">
+				</div>
+				<div>
+					
+<div class="searchBlock">
+	<div id="UcFlightSelection_RoundedCorners1" style="width: 700px; background-color: transparent; vertical-align: top; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; "><div style="background-color: rgb(247, 239, 206); margin-left: 3px; margin-right: 3px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div><div style="background-color: rgb(247, 239, 206); margin-left: 1px; margin-right: 1px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div><div style="background-color: rgb(247, 239, 206); margin-left: 0px; margin-right: 0px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div><div id="" style="background-color: transparent; vertical-align: top; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; width: 100%; border-top-style: none; border-bottom-style: none; border-left-style: none; border-right-style: none; ">
+	
+		<div class="searchInnerBlock">
+			<div id="UcFlightSelection_RoundedCorners2" style="width: 690px; background-color: transparent; vertical-align: top; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; "><div style="margin-left: 5px; margin-right: 3px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; background-color: rgb(206, 195, 181); "></div><div style="background-color: rgb(233, 233, 233); margin-left: 2px; margin-right: 0px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 3px; border-right-width: 3px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 1px; margin-right: -1px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 0px; margin-right: -2px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 0px; margin-right: -2px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div id="" style="background-color: transparent; vertical-align: top; padding-top: 0px; padding-right: 0px; padding-bottom: 0px; padding-left: 0px; width: 100%; border-top-style: none; border-bottom-style: none; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; ">
+		
+				<div class="findFlights">
+					<table cellpadding="5px">
+						<tbody><tr>
+							<td>
+								<span class="no-resize"><input id="UcFlightSelection_rbReturn" type="radio" name="UcFlightSelection$TripType" value="rbReturn" onclick="selectReturn();" tabindex="1"><label for="UcFlightSelection_rbReturn">Pulang-Pergi</label></span></td>
+							<td>
+								<span class="no-resize"><input id="UcFlightSelection_rbOneWay" type="radio" name="UcFlightSelection$TripType" value="rbOneWay" checked="checked" onclick="selectOneWay();" tabindex="2"><label for="UcFlightSelection_rbOneWay">Sekali Jalan</label></span></td>
+							<td>
+								<span class="no-resize"><input id="UcFlightSelection_rbMustTravel" type="radio" name="UcFlightSelection$DateFlexibility" value="rbMustTravel" checked="checked" tabindex="3"><label for="UcFlightSelection_rbMustTravel">Tanggal saya tetap</label></span></td>
+							<td>
+								<span class="no-resize"><input id="UcFlightSelection_rbDateFlexible" type="radio" name="UcFlightSelection$DateFlexibility" value="rbDateFlexible" tabindex="4"><label for="UcFlightSelection_rbDateFlexible">Tanggal saya fleksibel</label></span></td>
+							<td style="padding-left: 20px;">
+								
+							</td>
+						</tr>
+					</tbody></table>
+					<table cellpadding="0" cellspacing="0" style="width: 100%;">
+						<tbody><tr class="no-resize">
+							<td class="no-resize">
+								&nbsp;<input name="UcFlightSelection$txtSelOri" type="text" value="BDO" id="UcFlightSelection_txtSelOri" style="display: none;">
+								<input name="UcFlightSelection$txtOri" type="text" value="BDO" maxlength="30" id="UcFlightSelection_txtOri" tabindex="6" class="no-resize acOriDes"><img id="UcFlightSelection_imgOriPlus" class="acPlusSign" src="./LION AIR - We Make People Fly_files/ACShowAll.gif" style="border-top-style: none; border-right-style: none; border-bottom-style: none; border-left-style: none; border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; top: 4px; ">
+								<div id="fromShowTable" class="acShowTable" style="left: 308px; top: 1187px; ">
+									<div id="fromCityBox" class="acSelectionBox">
+									</div>
+									<img id="fromBoxCloseButton" class="acSelectionBoxCloseButton" src="./LION AIR - We Make People Fly_files/ACCloseDDL.gif" alt="">
+									<iframe src="./LION AIR - We Make People Fly_files/blank.htm"></iframe>
+								</div>
+								<span id="UcFlightSelection_ValidateOriginCity" class="no-resize" style="color:Red;font-weight:bold;visibility:hidden;">*</span></td>
+							<td class="no-resize">
+								<select name="UcFlightSelection$ddlDepMonth" id="UcFlightSelection_ddlDepMonth" tabindex="8" class="no-resize" onchange="updateDays(UcFlightSelection_ddlDepDay, this);updateReturnDate(this, UcFlightSelection_ddlDepDay,UcFlightSelection_ddlRetMonth,UcFlightSelection_ddlRetDay);">
+
+		<option value="Nov 2011">Nop 2011</option><option value="Dec 2011">Des 2011</option><option value="Jan 2012">Jan 2012</option><option value="Feb 2012">Feb 2012</option><option value="Mar 2012">Mar 2012</option><option value="Apr 2012">Apr 2012</option><option value="May 2012">Mei 2012</option><option value="Jun 2012">Jun 2012</option><option value="Jul 2012">Jul 2012</option><option value="Aug 2012">Agt 2012</option><option value="Sep 2012">Sep 2012</option><option value="Oct 2012">Okt 2012</option></select></td>
+							<td class="no-resize" style="padding: 0px;">
+								<select name="UcFlightSelection$ddlDepDay" id="UcFlightSelection_ddlDepDay" tabindex="9" class="no-resize" onchange="updateReturnDate(UcFlightSelection_ddlDepMonth, this, UcFlightSelection_ddlRetMonth,UcFlightSelection_ddlRetDay);">
+
+		<option value="1">Kam 1</option><option value="2">Jum 2</option><option value="3">Sab 3</option><option value="4">Min 4</option><option value="5">Sen 5</option><option value="6">Sel 6</option><option value="7">Rab 7</option><option value="8">Kam 8</option><option value="9">Jum 9</option><option value="10">Sab 10</option><option value="11">Min 11</option><option value="12">Sen 12</option><option value="13">Sel 13</option><option value="14">Rab 14</option><option value="15">Kam 15</option><option value="16">Jum 16</option><option value="17">Sab 17</option><option value="18">Min 18</option><option value="19">Sen 19</option><option value="20">Sel 20</option><option value="21">Rab 21</option><option value="22">Kam 22</option><option value="23">Jum 23</option><option value="24">Sab 24</option><option value="25">Min 25</option><option value="26">Sen 26</option><option value="27">Sel 27</option><option value="28">Rab 28</option><option value="29">Kam 29</option><option value="30">Jum 30</option><option value="31">Sab 31</option></select>
+								<span id="UcFlightSelection_DepDateValidator" class="no-resize" style="color:Red;visibility:hidden;">*</span>
+							</td>
+							<td style="padding-left: 0px;">
+								<img id="DepCal" class="calThumb" align="absMiddle" src="./LION AIR - We Make People Fly_files/icon-calendar.gif" onclick="calendarClick(0);" height="15" width="20" alt="">
+							</td>
+							<td class="no-resize">
+								<span id="UcFlightSelection_lblAdult">Dewasa:</span></td>
+							<td class="no-resize">
+								<select name="UcFlightSelection$ddlADTCount" id="UcFlightSelection_ddlADTCount" tabindex="12" class="no-resize">
+			<option value="0">0</option>
+			<option selected="selected" value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+
+		</select>
+								<span id="UcFlightSelection_ValidateSeats" class="no-resize" style="color:Red;font-weight:bold;visibility:hidden;">*</span></td>
+							<td class="no-resize" style="width: 100px">
+							</td>
+						</tr>
+						<tr class="no-resize">
+							<td class="no-resize">
+								&nbsp;<input name="UcFlightSelection$txtSelDes" type="text" value="JOG" id="UcFlightSelection_txtSelDes" style="display: none;">
+								<input name="UcFlightSelection$txtDes" type="text" value="JOG" maxlength="30" id="UcFlightSelection_txtDes" tabindex="7" class="no-resize acOriDes"><img id="UcFlightSelection_imgDesPlus" class="acPlusSign" src="./LION AIR - We Make People Fly_files/ACShowAll.gif" style="border-top-width: 0px; border-right-width: 0px; border-bottom-width: 0px; border-left-width: 0px; top: 4px; ">
+								<div id="toShowTable" class="acShowTable" style="left: 308px; top: 1220px; ">
+									<div id="toCityBox" class="acSelectionBox">
+									</div>
+									<img id="toBoxCloseButton" class="acSelectionBoxCloseButton" src="./LION AIR - We Make People Fly_files/ACCloseDDL.gif" alt="">
+									<iframe src="./LION AIR - We Make People Fly_files/blank.htm"></iframe>
+								</div>
+								<span id="UcFlightSelection_ValidateDestCity" class="no-resize" style="color:Red;font-weight:bold;display:none;">*</span>
+								<span id="UcFlightSelection_ValidateCityPair" class="no-resize" style="color:Red;visibility:hidden;">*</span></td>
+							<td class="no-resize">
+								<select name="UcFlightSelection$ddlRetMonth" id="UcFlightSelection_ddlRetMonth" disabled="disabled" tabindex="10" class="no-resize" onchange="updateDays(UcFlightSelection_ddlRetDay, this);">
+
+		<option value="Nov 2011">Nop 2011</option><option value="Dec 2011">Des 2011</option><option value="Jan 2012">Jan 2012</option><option value="Feb 2012">Feb 2012</option><option value="Mar 2012">Mar 2012</option><option value="Apr 2012">Apr 2012</option><option value="May 2012">Mei 2012</option><option value="Jun 2012">Jun 2012</option><option value="Jul 2012">Jul 2012</option><option value="Aug 2012">Agt 2012</option><option value="Sep 2012">Sep 2012</option><option value="Oct 2012">Okt 2012</option></select></td>
+							<td class="no-resize" style="padding: 0px;">
+								<select name="UcFlightSelection$ddlRetDay" id="UcFlightSelection_ddlRetDay" disabled="disabled" tabindex="11" class="no-resize">
+
+		<option value="1">Kam 1</option><option value="2">Jum 2</option><option value="3">Sab 3</option><option value="4">Min 4</option><option value="5">Sen 5</option><option value="6">Sel 6</option><option value="7">Rab 7</option><option value="8">Kam 8</option><option value="9">Jum 9</option><option value="10">Sab 10</option><option value="11">Min 11</option><option value="12">Sen 12</option><option value="13">Sel 13</option><option value="14">Rab 14</option><option value="15">Kam 15</option><option value="16">Jum 16</option><option value="17">Sab 17</option><option value="18">Min 18</option><option value="19">Sen 19</option><option value="20">Sel 20</option><option value="21">Rab 21</option><option value="22">Kam 22</option><option value="23">Jum 23</option><option value="24">Sab 24</option><option value="25">Min 25</option><option value="26">Sen 26</option><option value="27">Sel 27</option><option value="28">Rab 28</option><option value="29">Kam 29</option><option value="30">Jum 30</option><option value="31">Sab 31</option></select>
+								<span id="UcFlightSelection_ValidateReturnDate" class="no-resize" style="color:Red;visibility:hidden;">*</span>
+							</td>
+							<td style="padding-left: 0px;">
+								<img id="RetCal" class="calThumb" align="absMiddle" src="./LION AIR - We Make People Fly_files/icon-calendar.gif" onclick="calendarClick(1);" height="15" width="20" alt="">
+							</td>
+							<td class="no-resize">
+								<span id="UcFlightSelection_lblChild">Anak-Anak:</span></td>
+							<td class="no-resize">
+								<select name="UcFlightSelection$ddlCNNCount" id="UcFlightSelection_ddlCNNCount" tabindex="13" class="no-resize">
+			<option selected="selected" value="0">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+
+		</select></td>
+							<td class="no-resize" style="white-space: nowrap;">
+								<span id="UcFlightSelection_lblChildAges">(Usia 2 hingga 12 tahun)</span></td>
+						</tr>
+						<tr>
+							<td class="no-resize" colspan="4" style="padding-left: 5px;">
+							</td>
+							<td class="no-resize">
+								<span id="UcFlightSelection_lblInfant">Bayi:</span></td>
+							<td>
+								<select name="UcFlightSelection$ddlINFCount" id="UcFlightSelection_ddlINFCount" tabindex="14" class="no-resize">
+			<option selected="selected" value="0">0</option>
+			<option value="1">1</option>
+			<option value="2">2</option>
+			<option value="3">3</option>
+			<option value="4">4</option>
+			<option value="5">5</option>
+			<option value="6">6</option>
+			<option value="7">7</option>
+
+		</select>
+								<span id="UcFlightSelection_cvValidateInfants" class="no-resize" style="color:Red;visibility:hidden;">*</span></td>
+							<td class="no-resize">
+								<span id="UcFlightSelection_lblInfantAge">(Kurang dari 2 tahun)</span></td>
+						</tr>
+						<tr>
+							<td colspan="7" align="center">
+						</td></tr>
+					</tbody></table>
+				</div>
+			
+	</div><div style="background-color: rgb(233, 233, 233); margin-left: 0px; margin-right: -2px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 0px; margin-right: -2px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 1px; margin-right: -1px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; "></div><div style="background-color: rgb(233, 233, 233); margin-left: 2px; margin-right: 0px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 3px; border-right-width: 3px; "></div><div style="margin-left: 5px; margin-right: 3px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; border-left-style: solid; border-right-style: solid; border-left-color: rgb(206, 195, 181); border-right-color: rgb(206, 195, 181); border-left-width: 1px; border-right-width: 1px; background-color: rgb(206, 195, 181); "></div></div>
+		</div>
+	
+</div><div style="background-color: rgb(247, 239, 206); margin-left: 0px; margin-right: 0px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div><div style="background-color: rgb(247, 239, 206); margin-left: 1px; margin-right: 1px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div><div style="background-color: rgb(247, 239, 206); margin-left: 3px; margin-right: 3px; height: 1px; font-size: 1px; overflow-x: hidden; overflow-y: hidden; "></div></div>
+</div>
+<div class="extro">
+	<div style="float: left; width: 50%; text-align: left;">
+		
+	</div>
+	<div style="float: left; width: 50%;">
+		
+		<a onclick="updateTripDates();" id="UcFlightSelection_lbSearch" tabindex="17" href="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("UcFlightSelection$lbSearch", "", true, "", "", false, true))"><img src="./LION AIR - We Make People Fly_files/btn-search.gif" alt="Search"></a>
+	</div>
+	<div style="clear: both;"></div>
+</div>
+<div id="Srch_DepCal" style="left: 269px; top: 1164px; ">
+	<iframe id="UcFlightSelection_fmeDepartCalendar" scrolling="no" onblur="hideCalendar(&#39;Srch_DepCal&#39;);" frameborder="0" src="./LION AIR - We Make People Fly_files/blank.htm"></iframe>
+</div>
+<div id="Srch_RetCal" style="left: 269px; top: 1197px; ">
+	<iframe id="UcFlightSelection_fmeReturnCalendar" scrolling="no" onblur="hideCalendar(&#39;Srch_RetCal&#39;);" frameborder="0" src="./LION AIR - We Make People Fly_files/blank.htm"></iframe>
+</div>
+<span id="UcFlightSelection_CheckPortAvail" style="color:Red;display:none;"></span>
+<span id="UcFlightSelection_cvValFinal" style="color:Red;display:none;"></span>
+<div id="UcFlightSelection_ValidationSummary1" style="color:Red;display:none;">
+
+</div>
+<div style="display: none;">
+	<input type="hidden" name="UcFlightSelection$txtDepartureDate" id="UcFlightSelection_txtDepartureDate" value="09 Dec 2011">
+	<input type="hidden" name="UcFlightSelection$txtReturnDate" id="UcFlightSelection_txtReturnDate" value="10 Dec 2011">
+</div>
+
+
+
+<script type="text/javascript">
+	<!-- Start Hiding the Script
+	datesSetup();
+	var calLOff = -400;
+	var calTOff = -4;
+	SetCalPoss();
+	// Stop Hiding script --->
+</script>
+
+
+				</div>
+			</div>
+			
+<div>
+	<img src="./LION AIR - We Make People Fly_files/bottom.jpg" alt="" style="width: 786px;"></div>
+<div id="footer">
+	<div id="footer-links">
+		<p>
+			<a href="https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx#" class="linkset4">Terms &amp; Conditions</a> | <a href="https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx#" class="linkset4">
+				Privacy</a></p>
+	</div>
+	<div id="footer-copy">
+		<p>
+			Copyright © 2008 Lion Air. All Rights Reserved</p>
+	</div>
+</div>
+
+		</div>
+		
+
+<script type="text/javascript">
+<!--
+	function setWaitImagesTimeout() {
+		var imgRel;
+		imgRel = document.getElementById(wmPre + "imgTransition");
+		if (imgRel) {
+			var src = imgRel.src;
+			setTimeout('document.getElementById("' + wmPre + 'imgTransition' + '").src = "' + src + '"', 200);
+		}
+	}
+// -->
+</script>
+
+
+<div id="Transition1_pnlTran" class="tranPopup" style="display: none; position: fixed; z-index: 100001; ">
+	
+	<div id="ProcTran" style="display: none;">
+		<img id="Transition1_imgTransition" src="./LION AIR - We Make People Fly_files/trn-Boeing737-900er.png" style="border-width:0px;">
+		<img id="processingImage" src="./LION AIR - We Make People Fly_files/waiting.gif" alt="loading" style="position: relative;
+			top: -20px; left: -148px;">
+	</div>
+	<input type="submit" name="Transition1$btnTran" value="" onclick="javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;Transition1$btnTran&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, false))" id="Transition1_btnTran" style="display: none;">
+
+</div>
+
+
+		<div style="display: none; text-align: center;">
+			<input type="hidden" name="txtOBNNCellID" id="txtOBNNCellID">
+			<input type="hidden" name="txtIBNNCellID" id="txtIBNNCellID" value="oneway">
+			<input type="hidden" name="txtOBNNRowID" id="txtOBNNRowID">
+			<input type="hidden" name="txtIBNNRowID" id="txtIBNNRowID">
+			<input type="hidden" name="txtUserSelectedOneway" id="txtUserSelectedOneway">
+		</div>
+	
+<script type="text/javascript">
+//<![CDATA[
+var Page_ValidationSummaries =  new Array(document.getElementById("Insurance_ValidationSummary1"), document.getElementById("UcFlightSelection_ValidationSummary1"));
+var Page_Validators =  new Array(document.getElementById("Insurance_CustomValidator1"), document.getElementById("UcFlightSelection_ValidateOriginCity"), document.getElementById("UcFlightSelection_DepDateValidator"), document.getElementById("UcFlightSelection_ValidateSeats"), document.getElementById("UcFlightSelection_ValidateDestCity"), document.getElementById("UcFlightSelection_ValidateCityPair"), document.getElementById("UcFlightSelection_ValidateReturnDate"), document.getElementById("UcFlightSelection_cvValidateInfants"), document.getElementById("UcFlightSelection_CheckPortAvail"), document.getElementById("UcFlightSelection_cvValFinal"));
+//]]>
+</script>
+
+<script type="text/javascript">
+//<![CDATA[
+var Insurance_ValidationSummary1 = document.all ? document.all["Insurance_ValidationSummary1"] : document.getElementById("Insurance_ValidationSummary1");
+Insurance_ValidationSummary1.showmessagebox = "True";
+Insurance_ValidationSummary1.showsummary = "False";
+Insurance_ValidationSummary1.displaymode = "List";
+Insurance_ValidationSummary1.validationGroup = "continue";
+var Insurance_CustomValidator1 = document.all ? document.all["Insurance_CustomValidator1"] : document.getElementById("Insurance_CustomValidator1");
+Insurance_CustomValidator1.errormessage = "Mohon pilih salah satu dari opsi asuransi perjalanan sebelum melanjutkan.";
+Insurance_CustomValidator1.validationGroup = "continue";
+Insurance_CustomValidator1.evaluationfunction = "CustomValidatorEvaluateIsValid";
+Insurance_CustomValidator1.clientvalidationfunction = "ValidateTravelInsurance";
+var UcFlightSelection_ValidateOriginCity = document.all ? document.all["UcFlightSelection_ValidateOriginCity"] : document.getElementById("UcFlightSelection_ValidateOriginCity");
+UcFlightSelection_ValidateOriginCity.controltovalidate = "UcFlightSelection_txtSelOri";
+UcFlightSelection_ValidateOriginCity.errormessage = "* Pilih kota keberangkatan";
+UcFlightSelection_ValidateOriginCity.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+UcFlightSelection_ValidateOriginCity.initialvalue = "--Depart--";
+var UcFlightSelection_DepDateValidator = document.all ? document.all["UcFlightSelection_DepDateValidator"] : document.getElementById("UcFlightSelection_DepDateValidator");
+UcFlightSelection_DepDateValidator.errormessage = "*";
+UcFlightSelection_DepDateValidator.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_DepDateValidator.clientvalidationfunction = "ValidateDepartDate";
+var UcFlightSelection_ValidateSeats = document.all ? document.all["UcFlightSelection_ValidateSeats"] : document.getElementById("UcFlightSelection_ValidateSeats");
+UcFlightSelection_ValidateSeats.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_ValidateSeats.clientvalidationfunction = "ValidateSeatCount";
+var UcFlightSelection_ValidateDestCity = document.all ? document.all["UcFlightSelection_ValidateDestCity"] : document.getElementById("UcFlightSelection_ValidateDestCity");
+UcFlightSelection_ValidateDestCity.controltovalidate = "UcFlightSelection_txtSelDes";
+UcFlightSelection_ValidateDestCity.errormessage = "* Pilih kota tujuan";
+UcFlightSelection_ValidateDestCity.display = "Dynamic";
+UcFlightSelection_ValidateDestCity.evaluationfunction = "RequiredFieldValidatorEvaluateIsValid";
+UcFlightSelection_ValidateDestCity.initialvalue = "--Return--";
+var UcFlightSelection_ValidateCityPair = document.all ? document.all["UcFlightSelection_ValidateCityPair"] : document.getElementById("UcFlightSelection_ValidateCityPair");
+UcFlightSelection_ValidateCityPair.errormessage = "* Mohon periksa kembali pilihan kota";
+UcFlightSelection_ValidateCityPair.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_ValidateCityPair.clientvalidationfunction = "ValidateCityPair";
+var UcFlightSelection_ValidateReturnDate = document.all ? document.all["UcFlightSelection_ValidateReturnDate"] : document.getElementById("UcFlightSelection_ValidateReturnDate");
+UcFlightSelection_ValidateReturnDate.errormessage = "* Tanggal Kembali tidak boleh mendahului tanggal keberangkatan";
+UcFlightSelection_ValidateReturnDate.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_ValidateReturnDate.clientvalidationfunction = "ValidateInputDates";
+var UcFlightSelection_cvValidateInfants = document.all ? document.all["UcFlightSelection_cvValidateInfants"] : document.getElementById("UcFlightSelection_cvValidateInfants");
+UcFlightSelection_cvValidateInfants.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_cvValidateInfants.clientvalidationfunction = "ValidateInfants";
+var UcFlightSelection_CheckPortAvail = document.all ? document.all["UcFlightSelection_CheckPortAvail"] : document.getElementById("UcFlightSelection_CheckPortAvail");
+UcFlightSelection_CheckPortAvail.display = "None";
+UcFlightSelection_CheckPortAvail.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_CheckPortAvail.clientvalidationfunction = "CheckPortAvail";
+var UcFlightSelection_cvValFinal = document.all ? document.all["UcFlightSelection_cvValFinal"] : document.getElementById("UcFlightSelection_cvValFinal");
+UcFlightSelection_cvValFinal.display = "None";
+UcFlightSelection_cvValFinal.evaluationfunction = "CustomValidatorEvaluateIsValid";
+UcFlightSelection_cvValFinal.clientvalidationfunction = "OnAllValid";
+var UcFlightSelection_ValidationSummary1 = document.all ? document.all["UcFlightSelection_ValidationSummary1"] : document.getElementById("UcFlightSelection_ValidationSummary1");
+UcFlightSelection_ValidationSummary1.showmessagebox = "True";
+UcFlightSelection_ValidationSummary1.showsummary = "False";
+UcFlightSelection_ValidationSummary1.displaymode = "List";
+//]]>
+</script>
+
+
+<script type="text/javascript">
+//<![CDATA[
+
+document.getElementById('Insurance_ValidationSummary1').dispose = function() {
+    Array.remove(Page_ValidationSummaries, document.getElementById('Insurance_ValidationSummary1'));
+}
+
+var Page_ValidationActive = false;
+if (typeof(ValidatorOnLoad) == "function") {
+    ValidatorOnLoad();
+}
+
+function ValidatorOnSubmit() {
+    if (Page_ValidationActive) {
+        return ValidatorCommonOnSubmit();
+    }
+    else {
+        return true;
+    }
+}
+        
+document.getElementById('UcFlightSelection_ValidationSummary1').dispose = function() {
+    Array.remove(Page_ValidationSummaries, document.getElementById('UcFlightSelection_ValidationSummary1'));
+}
+Sys.Application.initialize();
+
+document.getElementById('Insurance_CustomValidator1').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('Insurance_CustomValidator1'));
+}
+Sys.Application.add_init(function() {
+    $create(Sys.UI._UpdateProgress, {"associatedUpdatePanelId":"upnlTotalTripCost","displayAfter":0,"dynamicLayout":true}, null, null, $get("uprgTotalTripCost"));
+});
+Sys.Application.add_init(function() {
+    $create(Sys.UI._UpdateProgress, {"associatedUpdatePanelId":"upnlInsuranceBlock","displayAfter":0,"dynamicLayout":true}, null, null, $get("uprgTotalTripCostOnInsuranceChange"));
+});
+Sys.Application.add_init(function() {
+    $create(AjaxControlToolkit.ModalPopupBehavior, {"BackgroundCssClass":"modalBackground","CancelControlID":"lbCloseTaxBD","PopupControlID":"pnlTaxBD","dynamicServicePath":"/LionAirAgentsIBE/OnlineBooking.aspx","id":"mpeTaxBD"}, null, null, $get("btnTB"));
+});
+
+document.getElementById('UcFlightSelection_ValidateOriginCity').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_ValidateOriginCity'));
+}
+
+document.getElementById('UcFlightSelection_DepDateValidator').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_DepDateValidator'));
+}
+
+document.getElementById('UcFlightSelection_ValidateSeats').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_ValidateSeats'));
+}
+
+document.getElementById('UcFlightSelection_ValidateDestCity').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_ValidateDestCity'));
+}
+
+document.getElementById('UcFlightSelection_ValidateCityPair').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_ValidateCityPair'));
+}
+
+document.getElementById('UcFlightSelection_ValidateReturnDate').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_ValidateReturnDate'));
+}
+
+document.getElementById('UcFlightSelection_cvValidateInfants').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_cvValidateInfants'));
+}
+
+document.getElementById('UcFlightSelection_CheckPortAvail').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_CheckPortAvail'));
+}
+
+document.getElementById('UcFlightSelection_cvValFinal').dispose = function() {
+    Array.remove(Page_Validators, document.getElementById('UcFlightSelection_cvValFinal'));
+}
+Sys.Application.add_init(function() {
+    $create(AjaxControlToolkit.RoundedCornersBehavior, {"Color":"#F7EFCE","Radius":3,"id":"UcFlightSelection_RoundedCornersExtender1"}, null, null, $get("UcFlightSelection_RoundedCorners1"));
+});
+Sys.Application.add_init(function() {
+    $create(AjaxControlToolkit.RoundedCornersBehavior, {"BorderColor":"#CEC3B5","Color":"#E9E9E9","id":"UcFlightSelection_RoundedCornersExtender2"}, null, null, $get("UcFlightSelection_RoundedCorners2"));
+});
+Sys.Application.add_init(function() {
+    $create(AjaxControlToolkit.ModalPopupBehavior, {"BackgroundCssClass":"tranBackground","PopupControlID":"Transition1_pnlTran","dynamicServicePath":"/LionAirAgentsIBE/OnlineBooking.aspx","id":"Transition1_mpeTran"}, null, null, $get("Transition1_btnTran"));
+});
+//]]>
+</script>
+<div id="Transition1_mpeTran_backgroundElement" style="display: none; position: fixed; left: 0px; top: 0px; z-index: 10000; " class="tranBackground"></div></form>
+
+
+<script type="text/javascript">
+	<!--
+	var oriBoxControl, desBoxControl;
+	function positionPortDropDowns()
+	{
+		if (typeof (SetCalPoss) == "function")
+			SetCalPoss();
+		if (oriBoxControl)
+			oriBoxControl.positionShowTable();
+		if (desBoxControl)
+			desBoxControl.positionShowTable();
+	}
+
+	var PortCodes = ['AMQ','BPN','BTJ','TKG','BDO','BDJ','BTH','BUW','BKS','BMU','WUB','DPS','ENE','FKQ','GTO','GNS','SGN','CGK|JKT','DJB','DJJ','JED','JOG','KNG','KDI','KBU','KUL','KOE','LBJ','LAH','LSW','MKZ','MLG','MJU','MKW','AMI','MOF','MES','MNA','MDC','MKQ','MEQ','NBX','NTX','PDG','PKY','PLM','PLW','PGK','PKU','PEN','PUM','PNK','SRG','AEG','DTB','SIN','SOC','SOQ','SWQ','SUB','NAH','TMC','TNJ','TRK','TTE','KAZ','LUV','UPG','WGP'];
+	var PortNames = ['Ambon','Balikpapan','Banda Aceh','Bandar Lampung','Bandung','Banjarmasin','Batam','Baubau','Bengkulu','Bima','Buli','Denpasar (Bali)','Ende','Fak Fak','Gorontalo','Gunung Sitoli','Ho Chi Minh City','Jakarta','Jambi','Jayapura','Jeddah','Jogjakarta','Kaimana','Kendari','Kotabaru','Kuala Lumpur','Kupang','Labuan Bajo','Labuha','Lhokseumawe','Malacca','Malang','Mamuju','Manokwari','Mataram','Maumere','Medan','Melanguane','Menado','Merauke','Meulaboh','Nabire','Natuna Ranai','Padang','Palangkaraya','Palembang','Palu','Pangkal Pinang','Pekan Baru','Penang','Pomalaa','Pontianak','Semarang','Sibolga','Silangit','Singapore','Solo','Sorong','Sumbawa','Surabaya','Tahuna','Tambolaka','Tanjung Pinang','Tarakan','Ternate','Tobelo','Tual','Ujung Pandang','Waingapu'];
+	var PortCountries = ['ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','VN','ID','ID','ID','SA','ID','ID','ID','ID','MY','ID','ID','ID','ID','MY','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','MY','ID','ID','ID','ID','ID','SG','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID','ID'];
+	var CountryCodes = ['ID','VN','SA','MY','SG'];
+	var CountryNames = ['Indonesia','Vietnam','Saudi Arabia','Malaysia','Singapore'];
+	var Countries = InitCountries(CountryCodes, CountryNames);
+	var Ports = InitPorts(PortCodes, PortNames, PortCountries, Countries);
+
+	var pageDataContainer = new DataContainer(Countries, Ports);
+	
+	var fromPortIds = new Object();
+	fromPortIds.portSelected = fsPre + "txtSelOri";
+	fromPortIds.inputBox = fsPre + "txtOri";
+	fromPortIds.showTable = "fromShowTable";
+	fromPortIds.closeButton = "fromBoxCloseButton";
+	fromPortIds.toggleButton = fsPre + "imgOriPlus";
+	fromPortIds.selectionBoxDiv = "fromCityBox";
+
+	var toPortIds = new Object();
+	toPortIds.portSelected = fsPre + "txtSelDes";
+	toPortIds.inputBox = fsPre + "txtDes";
+	toPortIds.showTable = "toShowTable";
+	toPortIds.closeButton = "toBoxCloseButton";
+	toPortIds.toggleButton = fsPre + "imgDesPlus";
+	toPortIds.selectionBoxDiv = "toCityBox";
+	
+	oriBoxControl = new PortBoxControl(fromPortIds, toPortIds.portSelected, "ACShowAll", 
+		"ACShowAllClose", "Form1", pageDataContainer, true);
+
+	desBoxControl = new PortBoxControl(toPortIds, fromPortIds.portSelected, "ACShowAll", 
+		"ACShowAllClose", "Form1", pageDataContainer, false);
+	
+	desBoxControl.oppPortBoxControl = oriBoxControl;
+	oriBoxControl.oppPortBoxControl = desBoxControl;
+	var originDestinationHandler = new OriginDestinationHandler(oriBoxControl, desBoxControl, pageDataContainer);
+
+	window.onresize = positionPortDropDowns;
+
+	// -->
+</script>
+
+
+</body></html>

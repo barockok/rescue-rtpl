@@ -6,7 +6,7 @@ class Comp_maskapai_base {
 	var $_optSrc;
 	public function __construct()
 	{
-		$this->_ci =& get_instace();
+		$this->_ci =& get_instance();
 		$this->_3th_party = './components/partner/third_party/comp_maskapai/';
 		
 	}
@@ -17,5 +17,18 @@ class Comp_maskapai_base {
 			$this->_optSrc->$key = $val;
 		}
 	}
+	public function addResult($array = array())
+	{
+		self::$srcResult = array_merge(self::$srcResult, $array);
+	}
+	public function doSearch()
+	{
+		# code...
+	}
+	public function getResult()
+	{
+		return self::$srcResult;
+	}
+	
 	
 }

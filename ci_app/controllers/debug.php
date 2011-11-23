@@ -14,8 +14,8 @@ class Debug extends MX_Controller {
 	function maskapai(){
 		$maskapai = $this->uri->segment(3);
 		$func 	 = $this->uri->segment(4);
-		$this->load->library('maskapai/airlines');
-		$fac = $this->airlines->load($maskapai, $func);
+		$this->load->library('partner/comp_maskapai');
+		$fac = $this->comp_maskapai->load($maskapai, $func);
 		
 		if( $fac == false ){
 			echo 'Somthing wrong Func or Class Not Exist';

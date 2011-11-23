@@ -1,0 +1,1799 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0046)https://www.citilink.co.id/giaidb2b/agent.aspx -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Citilink</title>
+		<meta content="JavaScript" name="vs_defaultClientScript">
+		<meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<link href="./Citilink_files/en.Gia.StyleSheet.css" rel="stylesheet" type="text/css">
+		<script language="javascript" src="./Citilink_files/popup.js"></script>
+		<script language="javascript" src="./Citilink_files/start.js"></script>
+	</head>
+	<body>
+		<form name="Form1" method="post" action="./Citilink_files/Citilink.htm" id="Form1" onsubmit="return OnSubmit()">
+<input type="hidden" name="__EVENTTARGET" value="">
+<input type="hidden" name="__EVENTARGUMENT" value="">
+<input type="hidden" name="__VIEWSTATEKEY" value="913c19ee-17f2-490c-80d7-e3f6fb4ab563">
+<input type="hidden" name="__VIEWSTATE" value="">
+<script language="javascript" type="text/javascript">
+<!--
+	function __doPostBack(eventTarget, eventArgument) {
+		var theform;
+		if (window.navigator.appName.toLowerCase().indexOf("microsoft") > -1) {
+			theform = document.Form1;
+		}
+		else {
+			theform = document.forms["Form1"];
+		}
+		theform.__EVENTTARGET.value = eventTarget.split("$").join(":");
+		theform.__EVENTARGUMENT.value = eventArgument;
+		theform.submit();
+	}
+// -->
+</script>
+<script type="text/javascript">
+var Anthem_DefaultURL = "agent.aspx?Anthem_CallBack=true";
+var Anthem_FormID = "Form1";
+</script>
+
+	<script type="text/javascript">
+function Anthem_AddEvent(obj, evType, fn, useCapture) {
+	if (obj.addEventListener) {
+		obj.addEventListener(evType, fn, useCapture);
+		return true;
+	} else if (obj.attachEvent) {
+		var r = obj.attachEvent("on" + evType, fn);
+		return r;
+	} else {
+		alert("Anthem_AddEvent could not add event!");
+	}
+}
+
+function Anthem_GetXMLHttpRequest() {
+	if (window.XMLHttpRequest) {
+		return new XMLHttpRequest();
+	} else {
+		if (window.Anthem_XMLHttpRequestProgID) {
+			return new ActiveXObject(window.Anthem_XMLHttpRequestProgID);
+		} else {
+			var progIDs = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+			for (var i = 0; i < progIDs.length; ++i) {
+				var progID = progIDs[i];
+				try {
+					var x = new ActiveXObject(progID);
+					window.Anthem_XMLHttpRequestProgID = progID;
+					return x;
+				} catch (e) {
+				}
+			}
+		}
+	}
+	return null;
+}
+
+function Anthem_CallBack(url, target, id, method, args, clientCallBack, clientCallBackArg, includeControlValuesWithCallBack, updatePageAfterCallBack) {
+	if (window.Anthem_PreCallBack) {
+		var preCallBackResult = Anthem_PreCallBack();
+		if (!(typeof preCallBackResult == "undefined" || preCallBackResult)) {
+			if (window.Anthem_CallBackCancelled) {
+				Anthem_CallBackCancelled();
+			}
+			return null;
+		}
+	}
+	var x = Anthem_GetXMLHttpRequest();
+	var result = null;
+	if (!x) {
+		result = { "value": null, "error": "NOXMLHTTP" };
+		Anthem_DebugError(result.error);
+		if (window.Anthem_Error) {
+			Anthem_Error(result);
+		}
+		if (clientCallBack) {
+			clientCallBack(result, clientCallBackArg);
+		}
+		return result;
+	}
+	x.open("POST", url ? url : Anthem_DefaultURL, clientCallBack ? true : false);
+	x.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+	x.setRequestHeader("Accept-Encoding", "gzip, deflate");
+	if (clientCallBack) {
+		x.onreadystatechange = function() {
+			if (x.readyState != 4) {
+				return;
+			}
+			Anthem_DebugResponseText(x.responseText);
+			result = Anthem_GetResult(x);
+			if (result.error) {
+				Anthem_DebugError(result.error);
+				if (window.Anthem_Error) {
+					Anthem_Error(result);
+				}
+			}
+			if (updatePageAfterCallBack) {
+				Anthem_UpdatePage(result);
+			}
+			Anthem_EvalClientSideScript(result);
+			clientCallBack(result, clientCallBackArg);
+			x = null;
+			if (window.Anthem_PostCallBack) {
+				Anthem_PostCallBack();
+			}
+		}
+	}
+    var encodedData = "";
+    if (target == "Page") {
+        encodedData += "&Anthem_PageMethod=" + method;
+    } else if (target == "MasterPage") {
+        encodedData += "&Anthem_MasterPageMethod=" + method;
+    } else if (target == "Control") {
+        encodedData += "&Anthem_ControlID=" + id.split(":").join("_");
+        encodedData += "&Anthem_ControlMethod=" + method;
+    }
+	if (args) {
+		for (var argsIndex = 0; argsIndex < args.length; ++argsIndex) {
+			if (args[argsIndex] instanceof Array) {
+				for (var i = 0; i < args[argsIndex].length; ++i) {
+					encodedData += "&Anthem_CallBackArgument" + argsIndex + "=" + encodeURIComponent(args[argsIndex][i]);
+				}
+			} else {
+				encodedData += "&Anthem_CallBackArgument" + argsIndex + "=" + encodeURIComponent(args[argsIndex]);
+			}
+		}
+	}
+	if (updatePageAfterCallBack) {
+		encodedData += "&Anthem_UpdatePage=true";
+	}
+	if (includeControlValuesWithCallBack) {
+		var form = document.getElementById(Anthem_FormID);
+		if (form != null) {
+			for (var elementIndex = 0; elementIndex < form.length; ++elementIndex) {
+				var element = form.elements[elementIndex];
+				if (element.name) {
+					var elementValue = null;
+					if (element.nodeName == "INPUT") {
+						var inputType = element.getAttribute("TYPE").toUpperCase();
+						if (inputType == "TEXT" || inputType == "PASSWORD" || inputType == "HIDDEN") {
+							elementValue = element.value;
+						} else if (inputType == "CHECKBOX" || inputType == "RADIO") {
+							if (element.checked) {
+								elementValue = element.value;
+							}
+						}
+					} else if (element.nodeName == "SELECT") {
+						if (element.multiple) {
+							elementValue = [];
+							for (var i = 0; i < element.length; ++i) {
+								if (element.options[i].selected) {
+									elementValue.push(element.options[i].value);
+								}
+							}
+						} else {
+							elementValue = element.value;
+						}
+					} else if (element.nodeName == "TEXTAREA") {
+						elementValue = element.value;
+					}
+					if (elementValue instanceof Array) {
+						for (var i = 0; i < elementValue.length; ++i) {
+							encodedData += "&" + element.name + "=" + encodeURIComponent(elementValue[i]);
+						}
+					} else if (elementValue != null) {
+						encodedData += "&" + element.name + "=" + encodeURIComponent(elementValue);
+					}
+				}
+			}
+			// ASP.NET 1.1 won't fire any events if neither of the following
+			// two parameters are not in the request so make sure they're
+			// always in the request.
+			if (typeof form.__VIEWSTATE == "undefined") {
+				encodedData += "&__VIEWSTATE=";
+			}
+			if (typeof form.__EVENTTARGET == "undefined") {
+				encodedData += "&__EVENTTARGET=";
+			}
+		}
+	}
+	Anthem_DebugRequestText(encodedData.split("&").join("\n&"));
+	x.send(encodedData);
+	if (!clientCallBack) {
+		Anthem_DebugResponseText(x.responseText);
+		result = Anthem_GetResult(x);
+		if (result.error) {
+			Anthem_DebugError(result.error);
+			if (window.Anthem_Error) {
+				Anthem_Error(result);
+			}
+		}
+		if (updatePageAfterCallBack) {
+			Anthem_UpdatePage(result);
+		}
+		Anthem_EvalClientSideScript(result);
+	}
+	return result;
+}
+
+function Anthem_GetResult(x) {
+	var result = { "value": null, "error": null };
+	var responseText = x.responseText;
+	try {
+		result = eval("(" + responseText + ")");
+	} catch (e) {
+		if (responseText.length == 0) {
+			result.error = "NORESPONSE";
+		} else {
+			result.error = "BADRESPONSE";
+			result.responseText = responseText;
+		}
+	}
+	return result;
+}
+
+function Anthem_SetHiddenInputValue(form, name, value) {
+    if (form[name]) {
+        form[name].value = value;
+    } else {
+        var input = document.createElement("input");
+        input.setAttribute("name", name);
+        input.setAttribute("type", "hidden");
+        input.setAttribute("value", value);
+        form.appendChild(input);
+        form[name] = input;
+    }
+}
+
+function Anthem_FireEvent(eventTarget, eventArgument, clientCallBack, clientCallBackArg, includeControlValuesWithCallBack, updatePageAfterCallBack) {
+	var form = document.getElementById(Anthem_FormID);
+	Anthem_SetHiddenInputValue(form, "__EVENTTARGET", eventTarget);
+	Anthem_SetHiddenInputValue(form, "__EVENTARGUMENT", eventArgument);
+	Anthem_CallBack(null, null, null, null, null, clientCallBack, clientCallBackArg, includeControlValuesWithCallBack, updatePageAfterCallBack);
+	form.__EVENTTARGET.value = "";
+	form.__EVENTARGUMENT.value = "";
+}
+
+function Anthem_UpdatePage(result) {
+	var form = document.getElementById(Anthem_FormID);
+	if (result.viewState) {
+		Anthem_SetHiddenInputValue(form, "__VIEWSTATE", result.viewState);
+	}
+	if (result.viewStateEncrypted) {
+		Anthem_SetHiddenInputValue(form, "__VIEWSTATEENCRYPTED", result.viewStateEncrypted);
+	}
+	if (result.eventValidation) {
+		Anthem_SetHiddenInputValue(form, "__EVENTVALIDATION", result.eventValidation);
+	}
+	if (result.controls) {
+		for (var controlID in result.controls) {
+			var containerID = "Anthem_" + controlID.split("$").join("_") + "__";
+			var control = document.getElementById(containerID);
+			if (control) {
+				control.innerHTML = result.controls[controlID];
+				if (result.controls[controlID] == "") {
+					control.style.display = "none";
+				} else {
+					control.style.display = "";
+				}
+			}
+		}
+	}
+}
+
+function Anthem_EvalClientSideScript(result) {
+	if (result.script) {
+		for (var i = 0; i < result.script.length; ++i) {
+			try {
+				eval(result.script[i]);
+			} catch (e) {
+				alert("Error evaluating client-side script!\n\nScript: " + result.script[i] + "\n\nException: " + e);
+			}
+		}
+	}
+}
+
+function Anthem_DebugRequestText(text) {
+}
+
+function Anthem_DebugResponseText(text) {
+}
+
+function Anthem_DebugError(text) {
+}
+
+//Fix for bug #1429412, "Reponse callback returns previous response after file push".
+//see http://sourceforge.net/tracker/index.php?func=detail&aid=1429412&group_id=151897&atid=782464
+function Anthem_Clear__EVENTTARGET()
+{
+	var form = document.getElementById(Anthem_FormID);
+	Anthem_SetHiddenInputValue(form, "__EVENTTARGET", "");
+}
+
+function Anthem_InvokePageMethod(methodName, args, callBack, context) {
+	Anthem_Clear__EVENTTARGET(); // fix for bug #1429412
+    return Anthem_CallBack(null, "Page", null, methodName, args, callBack, context, true, true);
+}
+
+function Anthem_InvokeMasterPageMethod(methodName, args, callBack, context) {
+	Anthem_Clear__EVENTTARGET(); // fix for bug #1429412
+    return Anthem_CallBack(null, "MasterPage", null, methodName, args, callBack, context, true, true);
+}
+
+function Anthem_InvokeControlMethod(id, methodName, args, callBack, context) {
+	Anthem_Clear__EVENTTARGET(); // fix for bug #1429412
+    return Anthem_CallBack(null, "Control", id, methodName, args, callBack, context, true, true);
+}
+
+function AnthemButton_Click(
+	button,
+	id,
+	causesValidation,
+	validationGroup,
+	textDuringCallBack,
+	enabledDuringCallBack,
+	preCallBackFunction,
+	postCallBackFunction,
+	callBackCancelledFunction,
+	includeControlValuesWithCallBack,
+	updatePageAfterCallBack
+) {
+	var preCallBackResult = true;
+	if (preCallBackFunction) {
+		preCallBackResult = preCallBackFunction(button);
+	}
+	if (typeof preCallBackResult == "undefined" || preCallBackResult) {
+		var valid = true;
+		if (causesValidation && typeof Page_ClientValidate == "function") {
+			valid = Page_ClientValidate(validationGroup);
+		}
+		if (valid) {
+			var text = button.value;
+			if (textDuringCallBack) {
+				button.value = textDuringCallBack;
+			}
+			var enabled = !button.disabled;
+			button.disabled = !enabledDuringCallBack;
+			Anthem_FireEvent(
+				id,
+				"",
+				function(result) {
+					if (postCallBackFunction) {
+						postCallBackFunction(button);
+					}
+					button.disabled = !enabled;
+					button.value = text;
+				},
+				null,
+				includeControlValuesWithCallBack,
+				updatePageAfterCallBack
+			);
+		}
+	} else if (callBackCancelledFunction) {
+		callBackCancelledFunction(button);
+	}
+}
+
+function AnthemDropDownList_Change(
+	dropdown,
+	id,
+	causesValidation,
+	validationGroup,
+	preCallBackFunction,
+	postCallBackFunction,
+    callBackCancelledFunction,
+	includeControlValuesWithCallBack,
+	updatePageAfterCallBack
+) {
+	var preCallBackResult = true;
+	if (preCallBackFunction) {
+		preCallBackResult = preCallBackFunction(dropdown);
+	}
+	if (typeof preCallBackResult == "undefined" || preCallBackResult) {
+		var valid = true;
+		if (causesValidation && typeof Page_ClientValidate == "function") {
+			valid = Page_ClientValidate(validationGroup);
+		}
+		if (valid) {
+			Anthem_FireEvent(
+				id,
+				"",
+				function(result) {
+					if (postCallBackFunction) {
+						postCallBackFunction(dropdown);
+					}
+				},
+				null,
+				includeControlValuesWithCallBack,
+				updatePageAfterCallBack
+			);
+		}
+	} else if (callBackCancelledFunction) {
+		callBackCancelledFunction(dropdown);
+	}
+}
+
+function AnthemLinkButton_Click(
+	button,
+	id,
+	causesValidation,
+	validationGroup,
+	textDuringCallBack,
+	enabledDuringCallBack,
+	preCallBackFunction,
+	postCallBackFunction,
+	callBackCancelledFunction,
+	includeControlValuesWithCallBack,
+	updatePageAfterCallBack
+) {
+	var preCallBackResult = true;
+	if (preCallBackFunction) {
+		preCallBackResult = preCallBackFunction(button);
+	}
+	if (typeof preCallBackResult == "undefined" || preCallBackResult) {
+		var valid = true;
+		if (causesValidation && typeof Page_ClientValidate == "function") {
+			valid = Page_ClientValidate(validationGroup);
+		}
+		if (valid) {
+			var text = button.innerHTML;
+			if (textDuringCallBack) {
+				button.innerHTML = textDuringCallBack;
+			}
+			var enabled = !button.disabled;
+			button.disabled = !enabledDuringCallBack;
+			Anthem_FireEvent(
+				id,
+				"",
+				function(result) {
+					if (postCallBackFunction) {
+						postCallBackFunction(button);
+					}
+					button.disabled = !enabled;
+					button.innerHTML = text;
+				},
+				null,
+				includeControlValuesWithCallBack,
+				updatePageAfterCallBack
+			);
+		}
+	} else if (callBackCancelledFunction) {
+		callBackCancelledFunction(button);
+	}
+}
+
+function AnthemImageButton_Click(
+	button,
+	event,
+	id,
+	causesValidation,
+	validationGroup,
+	imageUrlDuringCallBack,
+	enabledDuringCallBack,
+	preCallBackFunction,
+	postCallBackFunction,
+	callBackCancelledFunction,
+	includeControlValuesWithCallBack,
+	updatePageAfterCallBack
+) {
+	var preCallBackResult = true;
+	if (preCallBackFunction) {
+		preCallBackResult = preCallBackFunction(button);
+	}
+	if (typeof preCallBackResult == "undefined" || preCallBackResult) {
+		var valid = true;
+		if (causesValidation && typeof Page_ClientValidate == "function") {
+			valid = Page_ClientValidate(validationGroup);
+		}
+		if (valid) {
+			var imageUrl = button.src;
+			if (imageUrlDuringCallBack) {
+				button.src = imageUrlDuringCallBack;
+			}
+			var enabled = !button.disabled;
+			button.disabled = !enabledDuringCallBack;
+	        var form = document.getElementById(Anthem_FormID);
+	        if (event.offsetX)
+	        {
+	            Anthem_SetHiddenInputValue(form, id + ".x", event.offsetX);
+	            Anthem_SetHiddenInputValue(form, id + ".y", event.offsetY);
+	        }
+	        else
+	        {
+	            Anthem_SetHiddenInputValue(form, id + ".x", event.clientX - button.offsetLeft + 1);
+	            Anthem_SetHiddenInputValue(form, id + ".y", event.clientY - button.offsetTop + 1);
+	        }
+			Anthem_FireEvent(
+				id,
+				"",
+				function(result) {
+					if (postCallBackFunction) {
+						postCallBackFunction(button);
+					}
+					button.disabled = !enabled;
+					button.src = imageUrl;
+				},
+				null,
+				includeControlValuesWithCallBack,
+				updatePageAfterCallBack
+			);
+	        Anthem_SetHiddenInputValue(form, id + ".x", "");
+	        Anthem_SetHiddenInputValue(form, id + ".y", "");
+		}
+	} else if (callBackCancelledFunction) {
+		callBackCancelledFunction(button);
+	}
+}
+
+function AnthemTextBox_TextChanged(textBox, id, includeControlValuesWithCallBack, updatePageAfterCallBack) {
+	Anthem_FireEvent(id, "", function(result) {}, null, includeControlValuesWithCallBack, updatePageAfterCallBack);
+}
+
+function AnthemRadioButtonList_OnClick(e) {
+	var target = e.target || e.srcElement;
+	var eventTarget = target.id.split("_").join("$");
+	Anthem_FireEvent(eventTarget, "", function() {}, null, true, true);
+}
+</script>
+
+	<script> 
+AutoFocus = 'ctrAgentBase_ctrAgentHome_ctrAgentBookings_ctrAgentBookingsSearch_btmSearch' ;
+</script>
+
+
+	
+<script language="javascript">
+<!--
+var CalendarPopup_curCalendar = '';
+var CalendarPopup_curCalendarID = '';
+var CalendarPopup_curMonthYear = '';
+var CalendarPopup_selMonth = '';
+var CalendarPopup_selYear = '';
+if (navigator.appName == 'Netscape') { document.captureEvents(Event.CLICK); }
+
+function CalendarPopup_Up_LostFocus(e) { CalendarPopup_Up_HideNonCurrentCalendar('', ''); }
+
+function CalendarPopup_Up_Holiday(month, day, year, span) {
+	this.Month = month;
+	this.Day = day;
+	this.Year = year;
+	this.Span = span;
+}
+
+function CalendarPopup_Up_IsHoliday(month, day, year, dateArray) {
+	var returnVal = false;
+	
+	if(dateArray == null) {
+		returnVal = false;
+	} else {
+		for(var i=0; i<dateArray.length; i++) {
+			if(dateArray[i].Month == (month + 1) && dateArray[i].Day == day && (dateArray[i].Year == year || dateArray[i].Span)) {
+				returnVal = true;
+				i = dateArray.length;
+			} else {
+				returnVal = false;
+			}
+		}
+	}
+	
+	return returnVal;
+}
+
+function CalendarPopup_Up_findPosX(obj)
+{
+	var curleft = 0;
+	if (obj.offsetParent)
+	{
+		while (obj.offsetParent)
+		{
+			curleft += obj.offsetLeft;
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.x) {
+		curleft += obj.x;
+	}
+	return curleft;
+}
+
+function CalendarPopup_Up_findPosY(obj)
+{
+	var curtop = 0;
+	if (obj.offsetParent)
+	{
+		while (obj.offsetParent)
+		{
+			curtop += obj.offsetTop;
+			obj = obj.offsetParent;
+		}
+	}
+	else if (obj.y)
+		curtop += obj.y;
+	return curtop;
+}
+
+function CalendarPopup_Up_DisplayCalendar(calIdFlag, tbName, lblName, lblTemp, divName, myName, funcName, myFuncName, wdStyle, weStyle, omStyle, sdStyle, mhStyle, dhStyle, cdStyle, tdStyle, gttStyle, holStyle, formatNum, monthnames, daynames, fdweek, sunNum, satNum, enableHide, includeYears, lBound, uBound, btnName, locQuad, pad, postbackFunc, offsetX, offsetY, showClear, clearText, showGoToToday, goToTodayText, arrowUrl, customFunc, calWidth, visibleKey, nullText, dateArray, nextMonthImgUrl, prevMonthImgUrl, nextYearImgUrl, prevYearImgUrl) {
+	var div, tb;
+	CalendarPopup_curCalendarID = calIdFlag;
+	div = document.getElementById(divName);
+	tb = document.getElementById(tbName);
+	if(div.style.visibility != 'hidden') {
+		div.style.visibility = 'hidden';
+		if(enableHide)
+			CalendarPopup_Up_ShowHideDDL('visible');
+	} else {
+		var todayDate = CalendarPopup_Up_GetDate(tbName, formatNum);
+		eval('var stringDate = ' + visibleKey + ';');
+		CalendarPopup_Up_HideNonCurrentCalendar(divName, myName)
+		if(enableHide)
+			CalendarPopup_Up_ShowHideDDL('hidden');
+		div.style.position = 'absolute';
+		var obj;
+		if(lblTemp != '')
+			obj = document.getElementById(lblTemp);
+		else if(lblName != '')
+			obj = document.getElementById(lblName);
+		else
+			obj = tb;
+		var y = CalendarPopup_Up_findPosY(obj);
+		var x = CalendarPopup_Up_findPosX(obj);
+		switch(locQuad) {
+			case 1:
+				y += (obj.offsetHeight + 1);
+				break;
+			case 2:
+				x -= (div.offsetWidth - 2);
+				break;
+			case 3:
+				x += (obj.offsetWidth + 1);
+				break;
+			case 4:
+				y -= (div.offsetHeight - 1);
+				break;
+			default:
+				y = CalendarPopup_Up_findPosY(document.getElementById(btnName));
+				x = CalendarPopup_Up_findPosX(document.getElementById(btnName)) - 3;
+				break;
+		}
+		div.style.top = y + offsetY + 'px';
+		div.style.left = x + offsetX + 'px';
+		CalendarPopup_Up_DisplayCalendarByDate(tbName, lblName, divName, myName, funcName, myFuncName, stringDate, wdStyle, weStyle, omStyle, sdStyle, mhStyle, dhStyle, cdStyle, tdStyle, gttStyle, holStyle, formatNum, monthnames, daynames, fdweek, sunNum, satNum, enableHide, includeYears, lBound, uBound, pad, postbackFunc, showClear, clearText, showGoToToday, goToTodayText, arrowUrl, customFunc, calWidth, visibleKey, nullText, dateArray, nextMonthImgUrl, prevMonthImgUrl, nextYearImgUrl, prevYearImgUrl);
+		div.style.visibility = 'visible';
+	}
+}
+
+function CalendarPopup_Up_ChangeMonth(selMonth, lbDate, ubDate) {
+	if(document.getElementById('CalendarPopup_monthname' + selMonth).style.color == 'black') {
+		for(var i=0; i<12; i++) {
+			if(i != selMonth)
+				document.getElementById('CalendarPopup_monthname' + i).style.background='white';
+			else
+				document.getElementById('CalendarPopup_monthname' + i).style.background='lightgrey';
+		}
+		CalendarPopup_selMonth = selMonth++;
+	}
+}
+
+function CalendarPopup_Up_ChangeYear(selYear, yearNum, lbDate, ubDate) {
+	var lowerDate = new Date(lbDate);
+	var upperDate = new Date(ubDate);
+	lowerDate = new Date((lowerDate.getMonth() + 1) + '/1/' + lowerDate.getFullYear());
+	for(var i=0; i<10; i++) {
+		if(i != selYear)
+			document.getElementById('CalendarPopup_yearname' + i).style.background='white';
+		else
+			document.getElementById('CalendarPopup_yearname' + i).style.background='lightgrey';
+	}
+	for(var i=0; i<12; i++) {
+		var curDate = new Date((i + 1) + '/1/' + yearNum);
+		if(curDate < lowerDate || curDate > upperDate)
+			document.getElementById('CalendarPopup_monthname' + i).style.color = 'gray';
+		else
+			document.getElementById('CalendarPopup_monthname' + i).style.color = 'black';
+		document.getElementById('CalendarPopup_monthname' + i).style.background = 'white';
+	}
+	var curDate = new Date((CalendarPopup_selMonth + 1) + '/1/' + yearNum);
+	if(curDate <= lowerDate)
+		CalendarPopup_selMonth = lowerDate.getMonth();
+	else if(curDate >= upperDate)
+		CalendarPopup_selMonth = upperDate.getMonth();
+	document.getElementById('CalendarPopup_monthname' + CalendarPopup_selMonth).style.background = 'lightgrey';
+	CalendarPopup_selYear = yearNum;
+}
+
+function CalendarPopup_Up_ChangeMonthYear(divName, funcName, isCancel) {
+	if(!isCancel) {
+		eval(funcName + "('" + (CalendarPopup_selMonth + 1) + "/1/" + CalendarPopup_selYear + "');");
+	}
+	document.getElementById(divName).style.visibility = 'hidden';
+	document.getElementById(divName).innerHTML = '';
+	document.onmousedown = CalendarPopup_Up_LostFocus;
+}
+
+function CalendarPopup_Up_DisplayMonthYear(calDivName, myDivName, funcName, myFuncName, monthnames, theDate, applyText, cancelText, lbDate, ubDate) {
+	var calDIV = document.getElementById(calDivName);
+	var myDIV = document.getElementById(myDivName);
+	var curDate = new Date(theDate);
+	var lowerDate = new Date(lbDate);
+	var upperDate = new Date(ubDate);
+	lowerDate = new Date((lowerDate.getMonth() + 1) + '/1/' + lowerDate.getFullYear());
+		
+	CalendarPopup_selMonth = curDate.getMonth();
+	if(curDate < lowerDate)
+		CalendarPopup_selMonth = lowerDate.getMonth();
+	else if(curDate > upperDate)
+		CalendarPopup_selMonth = upperDate.getMonth();
+	CalendarPopup_selYear = curDate.getFullYear();
+	
+	outputString = '<table style=\"border: black 1px solid;background: white;\" border=0 cellspacing=0 cellpadding=0>';
+	outputString = outputString + '<tr><td width=50% valign=top><table border=0 cellspacing=0 cellpadding=2>';
+	for(var i=0; i<12; i++) {
+		if(i % 2 == 0)
+			outputString = outputString + '<tr>';
+		var tempDate = new Date((i + 1) + '/1/' + CalendarPopup_selYear);
+		if(tempDate >= lowerDate  && tempDate <= upperDate) {
+			if(i == CalendarPopup_selMonth)
+				outputString = outputString + "<td id=\"CalendarPopup_monthname" + i + "\" onclick=\"CalendarPopup_Up_ChangeMonth(" + i + ", '" + lbDate + "', '" + ubDate + "')\" align=left nowrap style=\"font-family:verdana; font-size:xx-small; color: black;background:lightgrey; cursor:hand;\">" + monthnames[i] + "</td>";
+			else
+				outputString = outputString + "<td id=\"CalendarPopup_monthname" + i + "\" onclick=\"CalendarPopup_Up_ChangeMonth(" + i + ", '" + lbDate + "', '" + ubDate + "')\" align=left nowrap style=\"font-family:verdana; font-size:xx-small; color: black; cursor:hand;\">" + monthnames[i] + "</td>";
+		} else {
+			outputString = outputString + "<td id=\"CalendarPopup_monthname" + i + "\" onclick=\"CalendarPopup_Up_ChangeMonth(" + i + ", '" + i + lbDate + "', '" + ubDate + "')\" align=left nowrap style=\"font-family:verdana; font-size:xx-small; color: gray; cursor:hand;\">" + monthnames[i] + "</td>";
+		}
+		if(i % 2 != 0)
+			outputString = outputString + '</tr>';
+	}
+	outputString = outputString + '</table></td><td width=50% valign=top><table border=0 cellspacing=0 cellpadding=2 width=100%>';
+	var j = 0;
+	for(var i=(curDate.getFullYear() - 5); i<(curDate.getFullYear() + 5); i++) {
+		if(j % 2 == 0)
+			outputString = outputString + '<tr>';
+		if(i >= lowerDate.getFullYear() && i <= upperDate.getFullYear()) {
+			if(i == curDate.getFullYear())
+				outputString = outputString + "<td id=\"CalendarPopup_yearname" + j + "\" onclick=\"CalendarPopup_Up_ChangeYear(" + j + ", " + i + ", '" + lbDate + "', '" + ubDate + "')\" align=left nowrap style=\"font-family:verdana; font-size:xx-small;color: black;background: lightgrey; cursor:hand;\">" + i + "</td>";
+			else
+				outputString = outputString + "<td id=\"CalendarPopup_yearname" + j + "\" onclick=\"CalendarPopup_Up_ChangeYear(" + j + ", " + i + ", '" + lbDate + "', '" + ubDate + "')\" align=left nowrap style=\"font-family:verdana; font-size:xx-small;color: black; cursor:hand;\">" + i + "</td>";
+		} else {
+			outputString = outputString + "<td id=\"CalendarPopup_yearname" + j + "\" align=left nowrap style=\"font-family:verdana; font-size:xx-small;color: gray; cursor:hand;\">" + i + "</td>";
+		}
+		if(j % 2 != 0)
+			outputString = outputString + '</tr>';
+		j++;
+	}
+	outputString = outputString + "<tr><td align=left><a style=\"font-family:verdana; font-size:xx-small; color: black;\" href=\"javascript:" + myFuncName + "((CalendarPopup_selMonth + 1) + '/" + curDate.getDate() + "/" + (curDate.getFullYear() - 10) + "')\">&lt;&lt;</a></td>";
+	outputString = outputString + "<td align=right><a style=\"font-family:verdana; font-size:xx-small; color: black;\" href=\"javascript:" + myFuncName + "((CalendarPopup_selMonth + 1) + '/" + curDate.getDate() + "/" + (curDate.getFullYear() + 10) + "')\">&gt;&gt;</a></td></tr>";
+	outputString = outputString + '</table></td></tr>';
+	outputString = outputString + "<tr><td colspan=2 align=right nowrap><input onclick=\"CalendarPopup_Up_ChangeMonthYear('" + myDivName + "', '" + funcName + "', false);\" type=button value=\"" + applyText + "\" style=\"font-family:verdana; font-size:xx-small\"><input onclick=\"CalendarPopup_Up_ChangeMonthYear('" + myDivName + "', '" + funcName + "', true);\" type=button value=\"" + cancelText + "\" style=\"font-family:verdana; font-size:xx-small\"></td></tr>";
+	
+	myDIV.style.position = 'absolute';
+	myDIV.style.top = parseInt(calDIV.style.top.replace('px', '')) + 2;
+	myDIV.style.left = parseInt(calDIV.style.left.replace('px', '')) + 2;
+	myDIV.innerHTML = outputString;
+	myDIV.style.visibility = 'visible';
+}
+
+function CalendarPopup_Up_HideNonCurrentCalendar(divName, myName) {
+	if(CalendarPopup_curMonthYear != '') {
+		document.getElementById(CalendarPopup_curMonthYear).style.visibility = 'hidden';
+		document.getElementById(CalendarPopup_curMonthYear).innerHTML = '';
+	}
+	if(CalendarPopup_curCalendar != '') {
+		document.getElementById(CalendarPopup_curCalendar).style.visibility = 'hidden';
+		document.getElementById(CalendarPopup_curCalendar).innerHTML = '';
+		if(eval(CalendarPopup_curCalendarID) == true)
+			CalendarPopup_Up_ShowHideDDL('visible');
+	}
+	if(divName != '')
+		CalendarPopup_curCalendar = divName;
+	if(myName != '')
+		CalendarPopup_curMonthYear = myName;
+}
+
+function CalendarPopup_Up_GetDate(tbName, formatNum) {
+	var todayDate;
+	if(document.getElementById(tbName).value != '') {
+		var theDate;
+		var theDateArr = document.getElementById(tbName).value.split("/");
+		if(theDateArr.length != 3) {
+			theDateArr = document.getElementById(tbName).value.split(".");
+			if(theDateArr.length != 3)
+				theDateArr = document.getElementById(tbName).value.split("-");
+		}
+		if(theDateArr.length == 3) {
+			switch(formatNum) {
+				case 1: // In: MM/DD/YYYY Out: MM/DD/YYYY
+					theDate = theDateArr[0].concat("/").concat(theDateArr[1]).concat("/").concat(theDateArr[2]);
+					break;
+				case 2: // In: DD/MM/YYYY Out: MM/DD/YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[0]).concat("/").concat(theDateArr[2]);
+					break;
+				case 3: // In: YYYY/MM/DD Out: MM/DD/YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[2]).concat("/").concat(theDateArr[0]);
+					break;
+				case 4: // In MM.DD.YYYY Out: MM.DD.YYYY
+					theDate = theDateArr[0].concat("/").concat(theDateArr[1]).concat("/").concat(theDateArr[2]);
+					break;
+				case 5: // In DD.MM.YYYY Out: MM.DD.YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[0]).concat("/").concat(theDateArr[2]);
+					break;
+				case 6: // In YYYY.MM.DD Out: MM.DD.YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[2]).concat("/").concat(theDateArr[0]);
+					break;
+				case 7: // In MM-DD-YYYY Out: MM-DD-YYYY
+					theDate = theDateArr[0].concat("/").concat(theDateArr[1]).concat("/").concat(theDateArr[2]);
+					break;
+				case 8: // In DD-MM-YYYY Out: MM-DD-YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[0]).concat("/").concat(theDateArr[2]);
+					break;
+				case 9: // In YYYY-MM-DD Out: MM-DD-YYYY
+					theDate = theDateArr[1].concat("/").concat(theDateArr[2]).concat("/").concat(theDateArr[0]);
+					break;
+			}
+			todayDate = new Date(theDate);
+			if(todayDate == NaN)
+				todayDate = new Date();
+		} else
+			todayDate = new Date();
+	} else
+		todayDate = new Date();
+	return todayDate;
+}
+
+function CalendarPopup_Up_ShowHideDDL(visibility) {
+	for(j=0;j<document.forms.length; j++) {
+		for(i=0;i<document.forms[j].elements.length;i++) {
+			if(document.forms[j].elements[i].type != null) {
+				if(document.forms[j].elements[i].type.indexOf('select') == 0)
+					document.forms[j].elements[i].style.visibility = visibility;
+			}
+		}
+	}
+}
+
+function CalendarPopup_Up_DisplayCalendarByDate(tbName, lblName, divName, myName, funcName, myFuncName, stringDate, wdStyle, weStyle, omStyle, sdStyle, mhStyle, dhStyle, cdStyle, tdStyle, gttStyle, holStyle, formatNum, monthnames, daynames, fdweek, sunNum, satNum, enableHide, includeYears, lBound, uBound, pad, postbackFunc, showClear, clearText, showGoToToday, goToTodayText, arrowUrl, customFunc, calWidth, visibleKey, nullText, dateArray, nextMonthImgUrl, prevMonthImgUrl, nextYearImgUrl, prevYearImgUrl) {
+	var dateToday = new Date();
+	var lowerDate = new Date(lBound);
+	var upperDate = new Date(uBound);
+	var todayDate = new Date(stringDate);
+	var curDate = new Date(CalendarPopup_Up_GetDate(tbName, formatNum));
+	var curMonth = curDate.getMonth();
+	var curYear = curDate.getFullYear();
+	var monthdays = new Array(31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
+	thisday=todayDate.getDay();
+	thismonth=todayDate.getMonth();
+	thisdate=todayDate.getDate();
+	thisyear=todayDate.getFullYear();
+	if (((thisyear % 4 == 0) && !(thisyear % 100 == 0)) ||(thisyear % 400 == 0))
+		monthdays[1]++;
+	var outputString = '';
+	startspaces=thisdate;
+	var prevMonth = thismonth;
+	var prevDay = thisdate;
+	var prevYear = thisyear;
+	var thisPreviousYear = thisyear - 1;
+	var thisNextYear = thisyear + 1;
+	if(prevMonth < 1) {
+		prevMonth = 12;
+		prevYear = prevYear - 1;
+	}
+	if(thisdate > monthdays[prevMonth - 1])
+		prevDay = monthdays[prevMonth - 1];
+	var nextMonth = thismonth + 2;
+	var nextDay = thisdate;
+	var nextYear = thisyear;
+	if(nextMonth > 12) {
+		nextMonth = 1;
+		nextYear = nextYear + 1;
+	}
+	if(thisdate > monthdays[nextMonth - 1])
+		nextDay = monthdays[nextMonth - 1];
+	while (startspaces > 7)
+		startspaces-=7;
+	startspaces = thisday - startspaces + 1;
+	startspaces = startspaces - fdweek;
+	if (startspaces < 0)
+		startspaces+=7;
+	outputString = outputString + '<table';
+	if(calWidth > 0)
+		outputString = outputString + ' width=\"' + calWidth + 'px\"';
+	outputString = outputString + ' style=\"border: black 1px solid;\" border=0 cellspacing=0px cellpadding=2px>';
+	if (includeYears == false) {
+		if(prevMonthImgUrl == '')
+			outputString = outputString + "<tr " + mhStyle + "><td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + prevMonth + "/" + prevDay + "/" + prevYear + "')\">&lt;</a></td>";
+		else
+			outputString = outputString + "<tr " + mhStyle + "><td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + prevMonth + "/" + prevDay + "/" + prevYear + "')\"><img src=\"" + prevMonthImgUrl + "\" border=0></a></td>";
+	} else {
+		if(prevMonthImgUrl == '')
+			outputString = outputString + "<tr " + mhStyle + "><td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + prevMonth + "/" + prevDay+ "/" + prevYear + "')\">&lt;</a><br>";
+		else
+			outputString = outputString + "<tr " + mhStyle + "><td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + prevMonth + "/" + prevDay+ "/" + prevYear + "')\"><img src=\"" + prevMonthImgUrl + "\" border=0></a><br>";
+		
+		if(prevYearImgUrl == '')
+			outputString = outputString + "<a " + mhStyle + " href=\"javascript:" + funcName + "('" + (thismonth + 1) + "/" + thisdate + "/" + thisPreviousYear + "')\">&lt;&lt;</a></td>";
+		else
+			outputString = outputString + "<a " + mhStyle + " href=\"javascript:" + funcName + "('" + (thismonth + 1) + "/" + thisdate + "/" + thisPreviousYear + "')\"><img src=\"" + prevYearImgUrl + "\" border=0></a></td>";
+	}
+	outputString = outputString + '<td colspan=5 nowrap align=center ' +mhStyle + "><a " + mhStyle + " href=\"javascript:" + myFuncName + "('" + (thismonth + 1) + "/1/" + thisyear + "')\">" + monthnames[thismonth] + ' ' + thisyear;
+	if(arrowUrl != "")
+		outputString = outputString + ' <img src=\"' + arrowUrl + '\" border=0>';
+	outputString = outputString + '</a></td>';
+	if (includeYears == false) {
+		if(nextMonthImgUrl == '')
+			outputString = outputString + "<td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + nextMonth + "/" + nextDay + "/" + nextYear + "')\">&gt;</a></td></tr>";
+		else
+			outputString = outputString + "<td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + nextMonth + "/" + nextDay + "/" + nextYear + "')\"><img src=\"" + nextMonthImgUrl + "\" border=0></a></td></tr>";
+	} else {
+		if(nextMonthImgUrl == '')
+			outputString = outputString + "<td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + nextMonth + "/" + nextDay+ "/" + nextYear + "')\">&gt;</a><br>";
+		else
+			outputString = outputString + "<td align=center><a " + mhStyle + " href=\"javascript:" + funcName + "('" + nextMonth + "/" + nextDay+ "/" + nextYear + "')\"><img src=\"" + nextMonthImgUrl + "\" border=0></a><br>";
+		
+		if(nextYearImgUrl == '')
+			outputString = outputString + "<a " + mhStyle + " href=\"javascript:" + funcName + "('" + (thismonth + 1) + "/" + thisdate + "/" + thisNextYear + "')\">&gt;&gt;</a></td></tr>";
+		else
+			outputString = outputString + "<a " + mhStyle + " href=\"javascript:" + funcName + "('" + (thismonth + 1) + "/" + thisdate + "/" + thisNextYear + "')\"><img src=\"" + nextYearImgUrl + "\" border=0></a></td></tr>";
+	}
+	outputString = outputString + '<tr>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[0] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[1] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[2] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[3] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[4] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[5] + '</td>';
+	outputString = outputString + '<td ' + dhStyle + ' align=center>' + daynames[6] + '</td>';
+	outputString = outputString + '</tr>';
+	for (s=0;s<startspaces;s++) {
+		var theDate, month, year;
+		if(thismonth == 0) {
+			theDate = monthdays[11] - (startspaces - (s + 1));
+			month = 12;
+			year = thisyear - 1;
+		} else {
+			theDate = monthdays[thismonth - 1] - (startspaces - (s + 1));
+			month = thismonth;
+			year = thisyear;
+		}
+		var theCurDate = new Date(month + "/" + theDate + "/" + year);
+		var lowerAmount = (lowerDate - theCurDate);
+		var upperAmount = (theCurDate - upperDate);	
+		if(s == 0)
+			outputString = outputString + '<tr>';
+		if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+			outputString = outputString + "<td align=center " + omStyle + "\">" + theDate + "</td>";
+		else if(s!=sunNum && s!=satNum)
+			outputString = outputString + "<td align=center " + omStyle + "><a " + omStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + month + "/" + theDate + "/" + year + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + theDate + "</a></td>";
+		else
+			outputString = outputString + "<td align=center " + omStyle + "><a " + omStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + month + "/" + theDate + "/" + year + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + theDate + "</a></td>";
+	}
+	count=1;
+	while (count <= monthdays[thismonth]) {
+		for (b = startspaces;b<7;b++) {
+			if(b == 0)
+				outputString = outputString + '<tr>';
+			if((thismonth == dateToday.getMonth() && count == dateToday.getDate() && thisyear == dateToday.getFullYear()) || (count==curDate.getDate() && thismonth == curMonth && thisyear == curYear && document.getElementById(tbName).value != '')) {
+				if (count==curDate.getDate() && thismonth == curMonth && thisyear == curYear && document.getElementById(tbName).value != '')
+					outputString = outputString + '<td align=center ' + sdStyle + '>';
+				else if(CalendarPopup_Up_IsHoliday(thismonth, count, thisyear, dateArray))
+					outputString = outputString + '<td align=center ' + holStyle + '>';
+				else if(thismonth == dateToday.getMonth() && count == dateToday.getDate() && thisyear == dateToday.getFullYear())
+					outputString = outputString + '<td align=center ' + tdStyle + '>';
+			} else {
+				if (count <= monthdays[thismonth]) {
+					if(CalendarPopup_Up_IsHoliday(thismonth, count, thisyear, dateArray)) {
+						outputString = outputString + '<td align=center ' + holStyle + '>';
+					} else {
+						if(b!=sunNum && b!=satNum) {
+							outputString = outputString + '<td align=center ' + wdStyle + '>';
+						} else {
+							outputString = outputString + '<td align=center ' + weStyle + '>';
+						}
+					}
+				} else {
+					outputString = outputString + '<td align=center ' + omStyle + '>';
+				}
+			}
+			if (count <= monthdays[thismonth]) {
+				var theCurDate = new Date((thismonth + 1) + "/" + count + "/" + thisyear);
+				var lowerAmount = (lowerDate - theCurDate);
+				var upperAmount = (theCurDate - upperDate);	
+				
+				if((thismonth == dateToday.getMonth() && count == dateToday.getDate() && thisyear == dateToday.getFullYear()) || (count==curDate.getDate() && thismonth == curMonth && thisyear == curYear && document.getElementById(tbName).value != '')) {
+					if (count==curDate.getDate() && thismonth == curMonth && thisyear == curYear && document.getElementById(tbName).value != '') {							
+						if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+							outputString = outputString + "<span " + sdStyle + ">" + count + "</span>"; 
+						else
+							outputString = outputString + "<a " + sdStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+					} else if(CalendarPopup_Up_IsHoliday(thismonth, count, thisyear, dateArray)) {
+						if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+							outputString = outputString + "<span " + holStyle + ">" + count + "</span>"; 
+						else
+							outputString = outputString + "<a " + holStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+					} else if(thismonth == dateToday.getMonth() && count == dateToday.getDate() && thisyear == dateToday.getFullYear()) {
+						if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+							outputString = outputString + "<span " + tdStyle + ">" + count + "</span>"; 
+						else
+							outputString = outputString + "<a " + tdStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+					}
+				} else if(CalendarPopup_Up_IsHoliday(thismonth, count, thisyear, dateArray)) {
+					if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+						outputString = outputString + "<span " + holStyle + ">" + count + "</span>"; 
+					else
+						outputString = outputString + "<a " + holStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+				} else if(b!=sunNum && b!=satNum && count != thisdate) {
+					if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+						outputString = outputString + "<span " + wdStyle + ">" + count + "</span>"; 
+					else
+						outputString = outputString + "<a " + wdStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+				} else if(b!=sunNum && b!=satNum) {
+					if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+						outputString = outputString + "<span " + wdStyle + ">" + count + "</span>"; 
+					else
+						outputString = outputString + "<a " + wdStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+				} else {
+					if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+						outputString = outputString + "<span " + weStyle + ">" + count + "</span>"; 
+					else
+						outputString = outputString + "<a " + weStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + (thismonth + 1) + "/" + count + "/" + thisyear + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + count + "</a>";
+				}
+			} else {
+				var month, year;
+				if(thismonth == 11) {
+					month = 1;
+					year = thisyear + 1;
+				} else {
+					month = thismonth + 2;
+					year = thisyear;
+				}
+				var theCurDate = new Date(month + "/" + (count - monthdays[thismonth]) + "/" + year);
+				var lowerAmount = (lowerDate - theCurDate);
+				var upperAmount = (theCurDate - upperDate);	
+				if((lowerAmount > 0 && upperAmount < 0) || (upperAmount > 0 && lowerAmount < 0))
+					outputString = outputString + "<span " + omStyle + ">" + (count - monthdays[thismonth]) + "</span>";
+				else
+					outputString = outputString + "<a " +omStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + month + "/" + (count - monthdays[thismonth]) + "/" + year + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + (count - monthdays[thismonth]) + "</a>";
+			}
+			outputString = outputString + '</td>';
+			count++;
+		}
+		outputString = outputString + '</tr>';
+		startspaces=0;
+	}
+	if(showGoToToday) {
+		var shortDate = (dateToday.getMonth() + 1) + "/" + dateToday.getDate() + "/" + dateToday.getFullYear();
+		outputString = outputString + "<tr><td " + gttStyle + " colspan=\"7\" align=\"center\">" + goToTodayText + " <a " + gttStyle + " href=\"javascript:CalendarPopup_Up_SelectDate('" + tbName + "','" + lblName + "','" + divName + "','" + myName + "','" + shortDate + "', " + formatNum + ", " + enableHide + ", " + pad + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "')\">" + CalendarPopup_Up_DetermineDate(shortDate, formatNum, pad) + "</a>";
+	}
+	if(showClear)
+		outputString = outputString + "<tr><td " + cdStyle + " colspan=\"7\" align=\"center\"><a " + cdStyle + " href=\"javascript:CalendarPopup_Up_ClearDate('" + tbName + "','" + lblName + "','" + divName + "', '" + myName + "', " + enableHide + ", '" + postbackFunc + "', '" + customFunc + "', '" + visibleKey + "', '" + nullText + "');\">" + clearText + "</a></td></tr>";
+	outputString = outputString + '</table>';
+	document.getElementById(divName).innerHTML = outputString;
+}
+
+function CalendarPopup_Up_DetermineDate(inDate, formatNum, pad) {
+	var theDateArr = inDate.split("/");
+	if(theDateArr.length != 3) {
+		theDateArr = document.getElementById(tbName).value.split(".");
+		if(theDateArr.length != 3) {
+			theDateArr = document.getElementById(tbName).value.split("-");
+		}		
+	}	
+	if(pad) {
+		if(parseInt(theDateArr[0]) < 10 && theDateArr[0].length == 1)
+			theDateArr[0] = '0' + theDateArr[0];
+		if(parseInt(theDateArr[1]) < 10 && theDateArr[1].length == 1)
+			theDateArr[1] = '0' + theDateArr[1];
+		if(parseInt(theDateArr[2]) < 10 && theDateArr[2].length == 1)
+			theDateArr[2] = '0' + theDateArr[2];
+	}
+	var theDate;
+	switch(formatNum) {
+		case 1: // In: MM/DD/YYYY Out: MM/DD/YYYY
+			theDate = theDateArr[0].concat("/").concat(theDateArr[1]).concat("/").concat(theDateArr[2]);
+			break;
+		case 2: // In: MM/DD/YYYY Out: DD/MM/YYYY
+			theDate = theDateArr[1].concat("/").concat(theDateArr[0]).concat("/").concat(theDateArr[2]);
+			break;
+		case 3: // In: MM/DD/YYYY Out: YYYY/MM/DD
+			theDate = theDateArr[2].concat("/").concat(theDateArr[0]).concat("/").concat(theDateArr[1]);
+			break;
+		case 4: // In MM.DD.YYYY Out: MM.DD.YYYY
+			theDate = theDateArr[0].concat(".").concat(theDateArr[1]).concat(".").concat(theDateArr[2]);
+			break;
+		case 5: // In MM.DD.YYYY Out: DD.MM.YYYY
+			theDate = theDateArr[1].concat(".").concat(theDateArr[0]).concat(".").concat(theDateArr[2]);
+			break;
+		case 6: // In MM.DD.YYYY Out: YYYY.MM.DD
+			theDate = theDateArr[2].concat(".").concat(theDateArr[0]).concat(".").concat(theDateArr[1]);
+			break;
+		case 7: // In MM-DD-YYYY Out: MM-DD-YYYY
+			theDate = theDateArr[0].concat("-").concat(theDateArr[1]).concat("-").concat(theDateArr[2]);
+			break;
+			case 8: // In MM-DD-YYYY Out: DD-MM-YYYY
+			theDate = theDateArr[1].concat("-").concat(theDateArr[0]).concat("-").concat(theDateArr[2]);
+			break;
+		case 9: // In MM-DD-YYYY Out: YYYY-MM-DD
+			theDate = theDateArr[2].concat("-").concat(theDateArr[0]).concat("-").concat(theDateArr[1]);
+			break;
+	}
+	return theDate;
+}
+
+function CalendarPopup_Up_SelectDate(tbName, lblName, divName, myName, theDate, formatNum, enableHide, pad, postbackFunc, customFunc, visibleKey) {
+	document.getElementById(tbName).value = CalendarPopup_Up_DetermineDate(theDate, formatNum, pad);
+	if(lblName != '')
+		document.getElementById(lblName).innerHTML = CalendarPopup_Up_DetermineDate(theDate, formatNum, pad);
+	document.getElementById(divName).style.visibility = 'hidden';
+	document.getElementById(myName).style.visibility = 'hidden';
+	if(enableHide)
+		CalendarPopup_Up_ShowHideDDL('visible');
+	eval(postbackFunc + "();");
+	if(customFunc != "")
+		eval(customFunc + "('" + theDate + "', '" + tbName + "');");
+	eval(visibleKey + ' = \"' + theDate + '\";');
+}
+
+function CalendarPopup_Up_ClearDate(tbName, lblName, divName, myName, enableHide, postbackFunc, customFunc, visibleKey, nullText) {
+	var todayDate = new Date();
+	document.getElementById(tbName).value = '';
+	if(lblName != '')
+		document.getElementById(lblName).innerHTML = nullText;
+	document.getElementById(divName).style.visibility = 'hidden';
+	document.getElementById(myName).style.visibility = 'hidden';
+	if(enableHide)
+		CalendarPopup_Up_ShowHideDDL('visible');
+	eval(postbackFunc + "();");
+	if(customFunc != "")
+		eval(customFunc + "('', '" + tbName + "');");
+	eval(visibleKey + ' = \"' + (todayDate.getMonth() + 1) + '/' + todayDate.getDate() + '/' + todayDate.getFullYear() + '\";');
+}
+// -->
+</script>
+		
+
+
+			
+			<!-- <template.en.Agent.Header.html> -->
+<script type="text/javascript" src="./Citilink_files/ieupdate.js"></script>
+<table width="760" height="95%" border="0" cellspacing="0" cellpadding="0" align="center" bgcolor="#FFFFFF">
+	<tbody><tr>
+    	<td valign="top" align="center">
+			<table width="760" border="0" cellspacing="0" cellpadding="0" class="header">
+				<tbody><tr><td height="20"></td></tr>
+		   		<tr>
+					<td colspan="3"><img src="./Citilink_files/hl0.jpg" border="0"></td>
+			   	</tr>
+				<tr>
+					<td valign="top" colspan="3" align="center">
+						<div class="menu" width="746" align="center">
+							<ul id="nav">
+								<li><input type="image" name="ctrPageHeader:btmAgentHome" id="ctrPageHeader_btmAgentHome" src="./Citilink_files/aho.gif" alt="" border="0"></li>
+								<li><a href="https://www.citilink.co.id/giaidb2b/agent.aspx#"><img src="./Citilink_files/a02.jpg" border="0"></a>
+									<ul>
+										<li><a id="ctrPageHeader_lnkAgencySalesReport" href="javascript:__doPostBack('ctrPageHeader$lnkAgencySalesReport','')">&nbsp;Laporan penjualan<br>&nbsp;travel agent&nbsp;</a></li>
+									</ul>
+								</li>				
+								<li><a href="https://www.citilink.co.id/giaidb2b/agent.aspx#"><img src="./Citilink_files/a01.jpg" border="0"></a>
+									<ul>
+										<li><a id="ctrPageHeader_lnkAgentAvailability" href="javascript:__doPostBack('ctrPageHeader$lnkAgentAvailability','')">&nbsp;Availability&nbsp;</a></li>
+										<li><a id="ctrPageHeader_lnkAgentBooking" href="javascript:__doPostBack('ctrPageHeader$lnkAgentBooking','')">&nbsp;Daftar&nbsp;</a></li>
+										<li><a id="ctrPageHeader_lnkAgentActivities" href="javascript:__doPostBack('ctrPageHeader$lnkAgentActivities','')">&nbsp;Aktifitas&nbsp;</a></li>
+									</ul>
+								</li>
+								<li><input type="image" name="ctrPageHeader:btmAgentNews" id="ctrPageHeader_btmAgentNews" src="./Citilink_files/a03.jpg" alt="" border="0"></li>
+								<li><input type="image" name="ctrPageHeader:btmLogOffAgent" id="ctrPageHeader_btmLogOffAgent" src="./Citilink_files/alo.gif" alt="" border="0"></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td valign="top" colspan="3" align="center">
+						<div align="center">
+							
+						</div>
+					</td>
+				</tr>
+			</tbody></table>
+<script language="JavaScript" type="text/javascript"> startList = function() {
+	if (document.getElementById)
+		{
+			navRoot = document.getElementById("nav");
+			for (i=0; i<navRoot.childNodes.length; i++){
+				node = navRoot.childNodes[i];
+				if (node.nodeName=="LI"){
+					//alert(node.nodeName)
+					node.onmouseover=function()
+					{
+						this.className+="over";
+					}
+				node.onmouseout=function() {
+				this.className=this.className.replace("over", "");
+				}
+			}
+		}
+	}
+}
+window.onload=startList;
+</script>
+<!-- </template.en.Agent.Header.html> -->
+			
+			
+			<!-- <template.en.AgentBase.html> -->
+<!-- <template.en.AgentBase.AgentHomeAvailability.html> -->
+<table cellpadding="0" cellspacing="0" border="0" class="base">
+	<tbody><tr>
+		<td><!-- <template.en.AgentBase.AgentHome.AgentFlightAvailability.html> -->
+
+<!-- <template.en.AgentBase.AgentHome.AgentFlightAvailability.Result.html> -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tbody><tr>
+		<td>
+			<div class="headers">	
+				Hasil pencarian
+			</div>
+			<!-- <template.en.Booking.FlightAvailabilityBase.FlightAvailabilityGrid.html> -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tbody><tr>
+		<td>
+			<div class="YourFight">Your flight options from
+				<span class="a"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_labOriginName">JAKARTA</span> (<span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_LabOriginCode">CGK</span>)</span> to <span class="a"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_LabDestinationName">DENPASAR</span> (<span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_LabDestinationCode">DPS</span>)</span>
+			</div>
+			<div>
+				<div id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_FlightAvailabilityTab" class="tab">
+	<ul><li class="TabLink"><a id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_20111120" href="javascript:__doPostBack('ctrAgentBase$ctrAgentHome$ctrAgentFlightAvailability$ctrFlightAvailabilityBase$ctrAvailabilityGridOutward$ctrFlightAvailabilityTab$20111120','')">Sun, 20/11</a></li><li class="TabLink"><a id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_20111121" href="javascript:__doPostBack('ctrAgentBase$ctrAgentHome$ctrAgentFlightAvailability$ctrFlightAvailabilityBase$ctrAvailabilityGridOutward$ctrFlightAvailabilityTab$20111121','')">Mon, 21/11</a></li><li class="TabLabel"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_20111122">Tue, 22/11</span></li><li class="TabLink"><a id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_20111123" href="javascript:__doPostBack('ctrAgentBase$ctrAgentHome$ctrAgentFlightAvailability$ctrFlightAvailabilityBase$ctrAvailabilityGridOutward$ctrFlightAvailabilityTab$20111123','')">Wed, 23/11</a></li><li class="TabLink"><a id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_ctrFlightAvailabilityTab_20111124" href="javascript:__doPostBack('ctrAgentBase$ctrAgentHome$ctrAgentFlightAvailability$ctrFlightAvailabilityBase$ctrAvailabilityGridOutward$ctrFlightAvailabilityTab$20111124','')">Thu, 24/11</a></li></ul>
+</div>
+				<!-- <template.en.FlightAvailability.Header.Seat0.html> -->
+<table id="FlightAvailability0" class="grid" style="WIDTH: 100%; BORDER-COLLAPSE: collapse" cellspacing="0" rules="rows" border="1">
+	<tbody><tr class="gridHeader">
+		<td align="center">Pesawat</td>
+		<td align="right"></td>
+		<td align="center">Tanggal</td>
+		<td align="center">Keberangkatan</td>
+		<td align="center">Kedatangan</td>
+		<td align="center">Waktu terbang</td>
+		<td align="center">Kelas</td>
+		<td align="center">Kursi</td>
+		<td align="right">Dewasa</td>
+		<td align="center"> </td>
+	</tr>
+<!-- </template.en.FlightAvailability.Header.Seat0.html> -->
+				
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right">GA 080</td>
+	<td align="right"></td>
+	<td align="center">22/11/2011</td>
+	<td align="center">12:40</td>
+	<td align="center">15:25</td>
+	<td align="center">01:45</td>
+	<td align="center">T </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">250,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|b0a07e2c-5f05-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">S </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|b0a07e2c-5f05-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">332,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|b0a07e2c-5f05-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|ed218cc7-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">R </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|ed218cc7-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">377,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|ed218cc7-5f03-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|d0e2507d-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">Q </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|d0e2507d-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">428,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|d0e2507d-5f03-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|98ca5d07-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">P </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|98ca5d07-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">478,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|98ca5d07-5f03-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|53198049-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">O </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|53198049-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">3</td>
+	<td align="right">529,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect5" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|53198049-5f03-11df-8e35-18a905e04790" checked="checked"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|3bf007f3-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">N </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|3bf007f3-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">579,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect6" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|3bf007f3-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|24816b6a-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">M </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|24816b6a-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">629,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect7" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|24816b6a-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|05368e2b-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">L </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|05368e2b-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">680,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect8" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|05368e2b-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|e734b56f-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">K </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|e734b56f-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">730,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect9" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|e734b56f-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|ceeac08f-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">H </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|ceeac08f-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">781,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect10" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|ceeac08f-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|aac0f570-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">G </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|aac0f570-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">831,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect11" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|aac0f570-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|336c62df-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">F </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|336c62df-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">882,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect12" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|336c62df-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|1947fa09-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">E </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|1947fa09-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">932,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect13" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|1947fa09-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|0447a342-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">D </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|0447a342-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">983,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect14" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|0447a342-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|db7822b6-5f01-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">B </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|db7822b6-5f01-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">1,033,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect15" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|db7822b6-5f01-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|eaefc4e8-5f00-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">A </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_4a6c63e7-d1c7-11df-8f38-18a905e04790|00000000-0000-0000-0000-000000000000|eaefc4e8-5f00-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">1,134,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect16" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="4a6c63e7-d1c7-11df-8f38-18a905e04790|eaefc4e8-5f00-11df-8e35-18a905e04790"><input id="" name="2011,11,22,12,40|2011,11,22,16,25|2011,11,22,13,40" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right">GA 082</td>
+	<td align="right"></td>
+	<td align="center">22/11/2011</td>
+	<td align="center">17:30</td>
+	<td align="center">20:15</td>
+	<td align="center">01:45</td>
+	<td align="center">T </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlClose">C</td>
+	<td align="right">250,000.00 IDR</td>
+	<td align="center"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"><span id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|c49108df-5f05-11df-8e35-18a905e04790_RowMessage">Closed</span></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|b0a07e2c-5f05-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">S </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|b0a07e2c-5f05-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">3</td>
+	<td align="right">332,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect18" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|b0a07e2c-5f05-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|ed218cc7-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">R </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|ed218cc7-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">377,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect19" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|ed218cc7-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|d0e2507d-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">Q </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|d0e2507d-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">428,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect20" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|d0e2507d-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|98ca5d07-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">P </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|98ca5d07-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">478,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect21" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|98ca5d07-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|53198049-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">O </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|53198049-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">529,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect22" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|53198049-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|3bf007f3-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">N </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|3bf007f3-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">579,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect23" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|3bf007f3-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|24816b6a-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">M </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|24816b6a-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">629,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect24" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|24816b6a-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|05368e2b-5f03-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">L </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|05368e2b-5f03-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">680,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect25" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|05368e2b-5f03-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|e734b56f-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">K </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|e734b56f-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">730,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect26" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|e734b56f-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|ceeac08f-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">H </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|ceeac08f-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">781,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect27" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|ceeac08f-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|aac0f570-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">G </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|aac0f570-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">831,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect28" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|aac0f570-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|336c62df-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">F </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|336c62df-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">882,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect29" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|336c62df-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|1947fa09-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">E </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|1947fa09-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">932,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect30" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|1947fa09-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|0447a342-5f02-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">D </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|0447a342-5f02-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">983,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect31" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|0447a342-5f02-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|db7822b6-5f01-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">B </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|db7822b6-5f01-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">1,033,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect32" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|db7822b6-5f01-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<tr id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|eaefc4e8-5f00-11df-8e35-18a905e04790_RowId" class="GridItems0">
+	<td align="right"></td>
+	<td align="right"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center"></td>
+	<td align="center">01:45</td>
+	<td align="center">A </td>
+	<td id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_cd74fe69-6c27-45a6-b383-c3b2d8b6d536|00000000-0000-0000-0000-000000000000|eaefc4e8-5f00-11df-8e35-18a905e04790_RowAvailableSeat" align="center" class="AvlSeat">4</td>
+	<td align="right">1,134,000.00 IDR</td>
+	<td align="center"><input id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect33" type="radio" name="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_ctrAvailabilityGridOutward_GrdAvailabilityFights_FlightSelect" value="cd74fe69-6c27-45a6-b383-c3b2d8b6d536|eaefc4e8-5f00-11df-8e35-18a905e04790"><input id="" name="2011,11,22,17,30|2011,11,22,21,15|2011,11,22,18,30" type="hidden"></td>
+</tr>
+		
+			
+				<!-- <template.en.FlightAvailability.Footer.html> -->
+</tbody></table>
+<!-- </template.en.FlightAvailability.Footer.html> -->
+				
+			</div>
+		</td>
+	</tr>
+</tbody></table>
+
+<!-- </template.en.Booking.FlightAvailabilityBase.FlightAvailabilityGrid.html> -->
+			
+		</td>
+	</tr>
+	<tr>
+		<td align="right" valign="bottom" height="30" style="padding-right:3px;"><input type="image" name="ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightAvailabilityBase:btmSubmitFlightSelect" id="ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase_btmSubmitFlightSelect" class="Button" onclick="ValidFlightSelection(&#39;ctrAgentBase_ctrAgentHome_ctrAgentFlightAvailability_ctrFlightAvailabilityBase&#39;);" src="./Citilink_files/bne.gif" alt="" border="0"></td>
+	</tr>
+</tbody></table>
+<!-- </template.en.AgentBase.AgentHome.AgentFlightAvailability.Result.html> -->
+
+
+<!-- </template.en.AgentBase.AgentHome.AgentFlightAvailability.html> --></td>
+	</tr>
+</tbody></table>
+
+
+<!-- </template.en.AgentBase.AgentHomeAvailability.html> -->
+
+<!-- </template.en.AgentBase.html> -->
+			
+			<!-- <template.en.Agent.Footer.html> -->
+			</td>
+		</tr>
+	<tr>
+		<td valign="bottom">
+			<div align="center" style="width:100%;">
+				<div class="footer" style="width:760px; background-color:#FFFFFF;"> 
+				  <img src="./Citilink_files/hft.jpg" border="0" align="right" usemap="#Map">
+				  <map name="Map">
+					<area shape="rect" coords="604,4,746,27" href="http://www.tiksystems.com/" target="_blank">
+				  </map>
+				</div>	
+			</div>
+		</td>
+	</tr>
+</tbody></table>
+<!-- </template.en.Agent.Footer.html> -->
+			
+		<script language="javascript">
+	var CalendarPopup_Array_ctrAgentBase_ctrAgentHome_ctrAgentSalesReport_ctlAgentSalesReportSearch_ctlFlightFrom_outer = null;
+</script>
+
+	<script language="javascript">
+	var CalendarPopup_Array_ctrAgentBase_ctrAgentHome_ctrAgentSalesReport_ctlAgentSalesReportSearch_ctlFlightTo_outer = null;
+</script>
+
+	<script language="javascript">
+	var CalendarPopup_Array_ctrAgentBase_ctrAgentHome_ctrAgentSalesReport_ctlAgentSalesReportSearch_ctlTicketingFrom_outer = null;
+</script>
+
+	<script language="javascript">
+	var CalendarPopup_Array_ctrAgentBase_ctrAgentHome_ctrAgentSalesReport_ctlAgentSalesReportSearch_ctlTicketingTo_outer = null;
+</script>
+
+</form>
+		<script language="javascript" src="./Citilink_files/Agent.js"></script>
+	
+
+</body></html>
