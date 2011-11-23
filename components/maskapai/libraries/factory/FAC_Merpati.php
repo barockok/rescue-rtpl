@@ -184,7 +184,8 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				}
 			}
 			//return array('b', 'm');
-			return $dataPenerbanganBerangkat;
+			//return $dataPenerbanganBerangkat;
+			print_r($dataPenerbanganBerangkat);
 		}
 	
 	//don't delete this

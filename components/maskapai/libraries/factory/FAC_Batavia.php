@@ -152,8 +152,8 @@ class Batavia extends Factory {
 			
 		}
 		$data_dep = $data;
-		//print_r($data_dep);
-		return $data_dep;
+		print_r($data_dep);
+		//return $data_dep;
 	}
 	
 	function detail(){
@@ -203,7 +203,9 @@ class Batavia extends Factory {
 		$data['price'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
 		$data['class']	= $post_data['classPergi'];
 		$data['maskapai'] = 'Batavia';
-		return $data;
+	
+	//	return $data;
+	print_r($data);
 
 	}
 	public function srcFlight()
