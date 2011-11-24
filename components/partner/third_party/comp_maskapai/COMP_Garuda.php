@@ -19,8 +19,8 @@ class Garuda extends Comp_maskapai_base {
 		
 		//opt
 		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-11-25';
-		$this->_opt->date_return = '2011-11-27';
+		$this->_opt->date_depart =  '2011-11-26';
+		$this->_opt->date_return = null;
 		$this->_opt->passengers = 1;
 		$this->_opt->route_from = 'BTJ';
 		$this->_opt->route_to = 'PKY';
@@ -75,13 +75,11 @@ class Garuda extends Comp_maskapai_base {
 		}else{
 			$depart_flight = $this->src('depart');
 		}
-		/*		
-		echo "<h2>Depart</h2>";
-		print_r($depart_flight);
-		echo "<h2>Return</h2>";
-		print_r($return_flight);
-		*/
-			return array_merge($depart_flight, $return_flight);
+		
+		//print_r($depart_flight);				
+		//print_r($return_flight);
+		
+		return array_merge($depart_flight, $return_flight);
 	}
 	
 	function src($flight_type){
@@ -89,6 +87,8 @@ class Garuda extends Comp_maskapai_base {
 		//define variable
 		$this->ssx = $this->login(); //get session id
 		$this->idd = '170111A';		
+		
+		
 		
 		$idx=0;										
 		
@@ -163,13 +163,11 @@ class Garuda extends Comp_maskapai_base {
 		$res_eco = $res_all[0];
 		$res_exe = $res_all[1];									
 		
-		$final_data_eco = array();
-		$final_data_exe = array();
 		
 		
 		//get flight and fare info (economy)
-		if(isset(json_decode($res_eco)->AvailabilityResult)){ //ensure there is a flight available
-			
+		$final_data_eco = array();
+		if(isset(json_decode($res_eco)->AvailabilityResult)){ //ensure there is a flight available			
 			$data_eco = json_decode($res_eco)->AvailabilityResult->Depart->AvailabilityInformation->Option; //get available flight
 			$fare_eco = json_decode($res_eco)->AvailabilityResult->FareInfomation->FareInfo; //get available fare
 			$fare_list = str_split(json_decode($res_eco)->AvailabilityResult->FareInfomation->FareList); //get fare class list		
@@ -183,8 +181,8 @@ class Garuda extends Comp_maskapai_base {
 							foreach($fare_eco as $fare){					
 								if($fare->FareClass==$fare_list[$i]){//find the match 'fare class'						
 									//define return variable
-									$final_data_exe[$idx] = array(
-										'company' => 'Garuda',
+									$final_data_eco[$idx] = array(
+										'company' => 'GARUDA',
 										't_depart' => $r->FlightSegment[0]->DepartureTime,
 										't_transit_arrive' => $r->FlightSegment[0]->ArrivalTime,
 										't_transit_depart' => $r->FlightSegment[1]->DepartureTime,
@@ -212,7 +210,7 @@ class Garuda extends Comp_maskapai_base {
 								if($fare->FareClass==$fare_list[$i]){	//find the match 'fare class'											
 									//define return variable
 									$final_data_eco[$idx]= array(
-										'company' => 'Garuda',
+										'company' => 'GARUDA',
 										't_depart' => $r->FlightSegment->DepartureTime,
 										't_transit_arrive' => '',
 										't_transit_depart' => '',
@@ -244,8 +242,8 @@ class Garuda extends Comp_maskapai_base {
 						foreach($fare_eco as $fare){					
 							if($fare->FareClass==$fare_list[$i]){//find the match 'fare class'						
 								//define return variable
-								$final_data_exe[$idx] = array(
-									'company' => 'Garuda',
+								$final_data_eco[$idx] = array(
+									'company' => 'GARUDA',
 									't_depart' => $r->FlightSegment[0]->DepartureTime,
 									't_transit_arrive' => $r->FlightSegment[0]->ArrivalTime,
 									't_transit_depart' => $r->FlightSegment[1]->DepartureTime,
@@ -273,7 +271,7 @@ class Garuda extends Comp_maskapai_base {
 							if($fare->FareClass==$fare_list[$i]){	//find the match 'fare class'											
 								//define return variable
 								$final_data_eco[$idx]= array(
-									'company' => 'Garuda',
+									'company' => 'GARUDA',
 									't_depart' => $r->FlightSegment->DepartureTime,
 									't_transit_arrive' => '',
 									't_transit_depart' => '',
@@ -302,7 +300,8 @@ class Garuda extends Comp_maskapai_base {
 										
 		
 		//get flight and fare info (executive)--------------------------------------//
-		if(isset(json_decode($res_exe)->AvailabilityResult)){
+		$final_data_exe = array();
+		if(isset(json_decode($res_exe)->AvailabilityResult)){ //ensure there is a flight available			
 			$data_exe = json_decode($res_exe)->AvailabilityResult->Depart->AvailabilityInformation->Option;
 			$fare_exe = json_decode($res_exe)->AvailabilityResult->FareInfomation->FareInfo;
 			
@@ -311,13 +310,13 @@ class Garuda extends Comp_maskapai_base {
 					if(is_array($s->FlightSegment)){ //check whether the flight is undirect							
 							//define return variable for undirect route
 							$final_data_exe[$idx] = array(
-								'company' => 'Garuda',
+								'company' => 'GARUDA',
 								't_depart' => $s->FlightSegment[0]->DepartureTime,
 								't_transit_arrive' => $s->FlightSegment[0]->ArrivalTime,
 								't_transit_depart' => $s->FlightSegment[1]->DepartureTime,
 								't_arrive' => $s->FlightSegment[1]->ArrivalTime,
 								'type' => $flight_type,							
-								'class' => $fare_exe->FareClass." (Executive)",
+								'class' => $fare_exe->FareClass,
 								'price' => $fare_exe->PublishFare,
 								'route' => $s->FlightSegment[0]->DepartureAirport.",".$s->FlightSegment[0]->ArrivalAirport.",".$s->FlightSegment[1]->ArrivalAirport,
 								'meta_data' => json_encode(array(
@@ -331,13 +330,13 @@ class Garuda extends Comp_maskapai_base {
 					}else{	
 						//define return variable					
 						$final_data_exe[$idx] = array(								
-							'company' => 'Garuda',
+							'company' => 'GARUDA',
 							't_depart' => $s->FlightSegment->DepartureTime,
 							't_transit_arrive' => '',
 							't_transit_depart' => '',
 							't_arrive' => $s->FlightSegment->ArrivalTime,
 							'type' => $flight_type,							
-							'class' => $fare_exe->FareClass." (Executive)",
+							'class' => $fare_exe->FareClass,
 							'price' => $fare_exe->PublishFare,
 							'route' => $s->FlightSegment->DepartureAirport.",".$s->FlightSegment->ArrivalAirport,
 							'meta_data' => json_encode(array(
@@ -356,13 +355,13 @@ class Garuda extends Comp_maskapai_base {
 				if(is_array($s->FlightSegment)){ //check whether the flight is undirect							
 						//define return variable for undirect route
 						$final_data_exe[$idx] = array(
-							'company' => 'Garuda',
+							'company' => 'GARUDA',
 							't_depart' => $s->FlightSegment[0]->DepartureTime,
 							't_transit_arrive' => $s->FlightSegment[0]->ArrivalTime,
 							't_transit_depart' => $s->FlightSegment[1]->DepartureTime,
 							't_arrive' => $s->FlightSegment[1]->ArrivalTime,
 							'type' => $flight_type,							
-							'class' => $fare_exe->FareClass." (Executive)",
+							'class' => $fare_exe->FareClass,
 							'price' => $fare_exe->PublishFare,
 							'route' => $s->FlightSegment[0]->DepartureAirport.",".$s->FlightSegment[0]->ArrivalAirport.",".$s->FlightSegment[1]->ArrivalAirport,
 							'meta_data' => json_encode(array(
@@ -376,16 +375,16 @@ class Garuda extends Comp_maskapai_base {
 				}else{	
 					//define return variable					
 					$final_data_exe[$idx] = array(								
-						'company' => 'Garuda',
+						'company' => 'GARUDA',
 						't_depart' => $s->FlightSegment->DepartureTime,
 						't_transit_arrive' => '',
 						't_transit_depart' => '',
 						't_arrive' => $s->FlightSegment->ArrivalTime,
 						'type' => $flight_type,							
-						'class' => $fare_exe->FareClass." (Executive)",
+						'class' => $fare_exe->FareClass,
 						'price' => $fare_exe->PublishFare,
 						'route' => $s->FlightSegment->DepartureAirport.",".$s->FlightSegment->ArrivalAirport,
-						'meta_data' => json_encode(array(
+						'meta_key' => json_encode(array(
 							'flight_number' => $s->FlightSegment->FlightNumber,
 							'flight_number_transit' => '',
 							'passenger' => $this->_opt->passengers,
@@ -399,8 +398,6 @@ class Garuda extends Comp_maskapai_base {
 		}// end outer if
 				
 		//-----------------end of processing data executive-------------------------------------//
-						
-		$final_data = array_merge($final_data_eco,$final_data_exe);
 	/*	
 		//print_r($final_data);			
 		echo "<h2>Full Res Executive</h2>";
@@ -408,6 +405,9 @@ class Garuda extends Comp_maskapai_base {
 		echo "<h2>Full Res Economy</h2>";
 		echo $res_eco;
 	*/
+	
+		$final_data = array_merge($final_data_eco,$final_data_exe);
+		
 		return $final_data;		
 	}
 	
