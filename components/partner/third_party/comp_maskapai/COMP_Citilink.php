@@ -51,13 +51,15 @@ class Citilink extends Comp_maskapai_base {
 			//change depart date
 			$this->_opt->date_depart = $this->_opt->date_return;
 			
-			print_r($return_flight = $this->src('return'));
+	//		print_r($return_flight = $this->src('return'));
 		}else{
-			print_r($depart_flight = $this->src('depart'));
+	//		print_r($depart_flight = $this->src('depart'));
 		}	
+		return array_merge($return_flight, $depart_flight );
+	/*
 		$this->addResFlight($return_flight);
 		$this->addResFlight($depart_flight);
-		
+	*/	
 	}
 	
 	function src($flight_type){		
