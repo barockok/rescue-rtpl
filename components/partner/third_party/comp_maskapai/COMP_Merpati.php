@@ -142,8 +142,8 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 					$t_return = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',1)->plaintext).','.preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',2)->plaintext);
 					$type = 'Return';
 				}else{
-					$t_return = 'Depart';
-					$type = 'Not Roundtrip';
+					$t_return = '';
+					$type = 'Depart';
 				}
 				
 				$date = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',1)->find('td',1)->plaintext);
@@ -152,35 +152,39 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				$class = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',5)->plaintext);
 				$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',7)->plaintext);
 				
+				$cprice = str_replace(',','',$price);
+				$cleanPrice = explode('.',$cprice);
 				$cnt_jml_kursi = str_split($jml_kursi[6]->plaintext);
-
+				$cdate = explode('/',$date);
+				$formatedDate = $cdate[2].'-'.$cdate[1].'-'.$cdate[0];
+				
 				if (count($cnt_jml_kursi) == 1) { 
-					$t_transit_depart = ' - ';
-					$t_transit_arive = ' - ';
+					$t_transit_depart = NULL;
+					$t_transit_arive = NULL;
 					$t_arive = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',3)->plaintext);
 					$cnt_jml_kursi = str_split($p->find('table[id=tabOutward] tbody tr',2)->find('td',6)->plaintext);
-					$d_t_arrive = '-';
-					$d_t_depart = '-';
+					$d_t_arrive = NULL;
+					$d_t_depart = NULL;
 				}else{
-					$t_transit_depart =element(1, $departTime);
+					
+					
+					$t_transit_depart = element(1, $departTime);
 					$t_transit_arive =  element(0, $arrivalTime);
 					$t_arive = element(1, $arrivalTime);
-					$d_t_arrive = $date;
-					$d_t_depart = $date;
+					$d_t_arrive = $formatedDate;
+					$d_t_depart = $formatedDate;
 				}
 				
-				$dataPenerbanganBerangkat[$i]['company'] 			= 'Merpati Airlines';		
-				$dataPenerbanganBerangkat[$i]['t_depart'] 			= $date.','.element(0, $departTime);
-				$dataPenerbanganBerangkat[$i]['t_transit_arrive'] 	= $d_t_arrive.','.$t_transit_arive;
-				$dataPenerbanganBerangkat[$i]['t_transit_depart']   = $d_t_depart.','.$t_transit_depart;
-				$dataPenerbanganBerangkat[$i]['t_arrive']			= $date.','.$t_arive;
+				$dataPenerbanganBerangkat[$i]['company'] 			= 'MERPATI';		
+				$dataPenerbanganBerangkat[$i]['t_depart'] 			= $formatedDate.' '.element(0, $departTime);
+				$dataPenerbanganBerangkat[$i]['t_transit_arrive'] 	= $d_t_arrive.' '.$t_transit_arive;
+				$dataPenerbanganBerangkat[$i]['t_transit_depart']   = $d_t_depart.' '.$t_transit_depart;
+				$dataPenerbanganBerangkat[$i]['t_arrive']			= $formatedDate.' '.$t_arive;
 				$dataPenerbanganBerangkat[$i]['type'] 				= $type;
 				$dataPenerbanganBerangkat[$i]['class'] 				= $class;
-				$dataPenerbanganBerangkat[$i]['price'] 				= $price;
+				$dataPenerbanganBerangkat[$i]['price'] 				= $cleanPrice[0];
 				$dataPenerbanganBerangkat[$i]['route'] 				= $post_data['fromAirport'].','.$post_data['toAirport'];
-				$dataPenerbanganBerangkat[$i]['t_return'] 			= $t_return;
-				
-
+				$dataPenerbanganBerangkat[$i]['meta_key']			= '';
 				}
 			}
 			//return array('b', 'm');
