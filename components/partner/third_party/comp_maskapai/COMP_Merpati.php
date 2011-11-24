@@ -157,7 +157,6 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				
 				$cnt_jml_kursi = str_split($jml_kursi[6]->plaintext);
 				$cdate = explode('/',$date);
-				print_r($cdate);
 				$formatedDate = $cdate[2].'-'.$cdate[1].'-'.$cdate[0];
 				
 				if (count($cnt_jml_kursi) == 1) { 
