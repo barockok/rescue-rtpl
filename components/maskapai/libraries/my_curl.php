@@ -66,8 +66,7 @@ class My_Curl {
 	function exc(){
 		$cu = curl_init();
 		curl_setopt_array($cu, $this->opt);
-		$exec = curl_exec($cu);
-		echo curl_error($cu);	
+		$exec = curl_exec($cu);		
 		curl_close($cu);		
 		return $exec;
 	}
@@ -115,7 +114,7 @@ class My_Curl {
 		curl_multi_remove_handle($cu_all,$cu_1);
 		curl_multi_remove_handle($cu_all,$cu_2);
 		
-		echo $curl_result = array(curl_multi_getcontent($cu_1),curl_multi_getcontent($cu_2));
+		$curl_result = array(curl_multi_getcontent($cu_1),curl_multi_getcontent($cu_2));
 		//close curl
 		curl_multi_close($cu_all);
 		

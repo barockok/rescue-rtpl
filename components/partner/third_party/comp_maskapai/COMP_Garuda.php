@@ -20,7 +20,7 @@ class Garuda extends Comp_maskapai_base {
 		//opt
 		$this->_opt = new stdClass();
 		$this->_opt->date_depart =  '2011-11-26';
-		$this->_opt->date_return = null;
+		$this->_opt->date_return = '2011-11-29';
 		$this->_opt->passengers = 1;
 		$this->_opt->route_from = 'BTJ';
 		$this->_opt->route_to = 'PKY';
