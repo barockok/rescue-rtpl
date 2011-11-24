@@ -72,6 +72,8 @@ class Lion extends Comp_maskapai_base {
 			$this->_opt->route_from = $this->_opt->route_to;
 			$this->_opt->route_to = $temp;
 			
+			$this->_opt->date_depart = $this->_opt->date_return;
+			
 			$return_flight = $this->src('return');
 		}else{
 			$depart_flight = $this->src('depart');
@@ -181,7 +183,7 @@ class Lion extends Comp_maskapai_base {
 								continue;
 							}//end if
 							$final_data[$idx] = array(
-								'company' => 'Lion Air',
+								'company' => 'LION',
 								't_depart' => $this->_opt->date_depart." ".$dep_time,//depart from origin location
 								't_transit_arrive' => $this->_opt->date_depart." ".$arr_trans_time, //arrive in transit airport
 								't_transit_depart' => $this->_opt->date_depart." ".$dep_trans_time, //depart from transit airport
@@ -225,7 +227,7 @@ class Lion extends Comp_maskapai_base {
 							continue;
 						}//end if
 						$final_data[$idx] = array(
-							'company' => 'Lion Air',
+							'company' => 'LION',
 							't_depart' => $this->_opt->date_depart." ".$dep_time,//depart from origin location
 							't_transit_arrive' => '', //arrive in transit airport
 							't_transit_depart' => '', //depart from transit airport
