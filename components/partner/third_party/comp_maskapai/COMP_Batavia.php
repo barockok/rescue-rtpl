@@ -95,7 +95,10 @@ class Batavia extends Comp_maskapai_base {
 		$page = str_get_html($html);
 		$qty = $post_data['jmlPenumpang'];
 		if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return array();
-		$date = $page->find('div[id=pilihPenerbanganPergi] table tbody',0)->find('tr',2)->plaintext;	
+		$date = $page->find('div[id=pilihPenerbanganPergi] table tbody',0)->find('tr',2)->plaintext;
+		$cdate = explode(':',$date);
+		$fullDate = explode('-',$cdate[1]);
+		$month = $this->monthConvert($fullDate[1]);		
 		$cnt_flight = count($go_wrap->find('tr'));
 		$cnt_class = count($go_wrap->find('tr', 0)->find('td'));
 		$data = array();
@@ -117,8 +120,14 @@ class Batavia extends Comp_maskapai_base {
 				$arr = explode(' ', str_replace('&nbsp;', '', $go_wrap->find('tr', $j)->find('td', 2)->plaintext));
 				$arr = element('0', $arr);
 				$price = element('2', $head).'000';
-				$t_Return = str_replace('Tanggal : ','',$date).' '.$arr;
-					
+				
+				$timeDep = str_replace('.',':',$dep);
+				$timeArr = str_replace('.',':',$arr);
+				$year = preg_replace('/\s+/', '',$fullDate[2]);
+				$day = 	preg_replace('/\s+/', '',$fullDate[0]);
+				$t_arrive = $year.'-'.$month.'-'.$day.' '.$timeArr;	
+				$t_depart = $year.'-'.$month.'-'.$day.' '.$timeDep;
+				
 				if ($roundTrip) {
 					$type = 'Return';				
 				}else{
@@ -133,13 +142,14 @@ class Batavia extends Comp_maskapai_base {
 					$t_transit_arive 	= 'Unknown';
 					$t_transit_depart 	= 'Unknown';
 				}else{
-					$t_transit_arive 	= 'No Transit';
-					$t_transit_depart	= 'No Transit';
+					$t_transit_arive 	= NULL;
+					$t_transit_depart	= NULL;
 				}			
 				
+				
 				$data[$j][$index]['company'] 			='Batavia Airlines';
-				$data[$j][$index]['t_depart']			= str_replace('','Tanggal : ',$date).' '.$dep;
-				$data[$j][$index]['t_arive']			= $t_Return;
+				$data[$j][$index]['t_depart']			= $t_depart;
+				$data[$j][$index]['t_arive']			= $t_arrive;
 				$data[$j][$index]['t_transit_arive']	= $t_transit_arive;
 				$data[$j][$index]['t_transit_depart']	= $t_transit_depart;
 				$data[$j][$index]['type']				= $type;
@@ -205,6 +215,18 @@ class Batavia extends Comp_maskapai_base {
 		$data['maskapai'] = 'Batavia';
 		return $data;
 
+	}
+
+	
+	function monthConvert($month){
+		$month_number = "";
+		for($i=1;$i<=12;$i++){ 
+			if(date("F", mktime(0, 0, 0, $i, 1, 0)) == $month){ 
+				$month_number = $i; 
+				break; 
+			} 
+		}
+		return $month_number;
 	}
 	
 	// API REQUIREMENT
