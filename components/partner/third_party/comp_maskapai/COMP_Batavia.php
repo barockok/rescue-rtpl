@@ -163,7 +163,16 @@ class Batavia extends Comp_maskapai_base {
 		}
 		$data_dep = $data;
 		//print_r($data_dep);
-		return $data_dep;
+		//return $data_dep;
+		$finnal = array();
+		
+		foreach ($data_dep as $dta => $item) {
+			foreach ($item as $fare) {
+				$final[$i]	=	$fare;
+				$i++;
+			}
+		}
+		return $final;
 	}
 	
 	function detail(){

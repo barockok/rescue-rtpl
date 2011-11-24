@@ -90,7 +90,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			"./components/partner/third_party/comp_maskapai/sriwijaya_html/sriwijayaSingleFlight/createpnr.jsp.html",
 		);
 		
-		$page = file_get_html($htmlFile[1]);
+		$page = file_get_html($htmlFile[0]);
 		$table = $page->find('div[id=pagewrapper] div[id=mainWrapper]',0)->find('form[action=./PNRAction]',0);
 		$flight = $page->find('table[id=table_go]',0)->find('tr table[class=flightInfo]');
 		$class = $page->find('table[id=table_go] table[class=classTable] td');
@@ -107,6 +107,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$index=0;
 		//echo $cnt_classFlight;
 		$cellStatus = array();
+		
 		for ($i=0; $i < $cnt_classFlight/$cnt_flight; $i++) {
 			$cell = $class[$i]->find('input',0);
 			if ($cell->getAttribute('disabled') == 'disabled') {
@@ -153,7 +154,17 @@ class Sriwijaya extends Comp_maskapai_base{
 			} 
 			$index++;
 		}
-		return $data;
+		
+		$final = array();
+		$i  = 0;
+		foreach($data as $fl => $item ){
+			foreach($item as $fare){
+				$final[$i] = $fare;
+				$i++;
+			}
+		}
+		
+		return $final;
 	}
 	
 	function monthConvert($month){
