@@ -127,7 +127,7 @@ class Sriwijaya extends Comp_maskapai_base{
 				
 				if ($cnt_flight == 1 || $cntInsideFlight ==1) {
 					$route_arr = $flight[$j]->find('tr',0)->find('td',2)->find('span',0)->plaintext;
-					$route_transit = '-';
+					$route_transit = ' ';
 					$t_transit_arrive_time = 'No Transit';
 					$t_transit_depart_time = 'No Transit';
 					$t_arival = $flight[$j]->find('tr',0)->find('td',2)->find('span',1)->plaintext;
@@ -138,14 +138,15 @@ class Sriwijaya extends Comp_maskapai_base{
 					$t_transit_depart_time = $dateFormated.' '.$flight[$j]->find('tr',1)->find('td',1)->find('span',1)->plaintext;
 					$t_arival = $flight[$j]->find('tr',1)->find('span',5)->plaintext;
 				}
-				
+				$cprice = explode(',',$price);
+				//print_r($cprice);
 				
 				$data[$j][$index]['company'] 				= 'SRIWIJAYA';
 				$data[$j][$index]['t_depart'] 				= $dateFormated.' '.$t_depart;
 				$data[$j][$index]['t_arrival']				= $dateFormated.' '.$t_arival;
 				$data[$j][$index]['type'] 					= $type;
 				$data[$j][$index]['class'] 					= $clas;
-				$data[$j][$index]['price'] 					= $price.'000';
+				$data[$j][$index]['price'] 					= $cprice[0].$cprice[1].'000';
 				$data[$j][$index]['route'] 					= $route_from.','.$route_arr.','.$route_transit;
 				$data[$j][$index]['t_transit_arive'] 		= $t_transit_arrive_time;
 				$data[$j][$index]['t_transit_depart_time'] 	= $t_transit_depart_time;
