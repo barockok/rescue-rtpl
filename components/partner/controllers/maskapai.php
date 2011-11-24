@@ -10,7 +10,9 @@ class Maskapai extends Platform_Controller {
 	function index(){
 		$this->load->library('comp/partner/comp_maskapai');
 		$this->comp_maskapai->doSearch();
+		echo '<textarea style="width:100%; height: 100%; border: none">';
 		print_r($this->comp_maskapai->base->getResult());
+		echo '</textarea>';
 	}
 	
 
