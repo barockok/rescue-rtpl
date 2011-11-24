@@ -21,7 +21,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 	
 	function __construct() {
 		parent::__construct();
-		$this->_ci->load->library('comp/maskapai/my_curl');
+		$this->_ci->load->library('my_curl');
 		$this->_cookies_file = "./components/partner/third_party/comp_maskapai/cookies/merpati_airline.txt";
 		
 		$this->_headerData = array(

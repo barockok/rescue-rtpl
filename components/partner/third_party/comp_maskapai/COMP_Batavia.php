@@ -18,7 +18,7 @@ class Batavia extends Comp_maskapai_base {
 	//php 5 constructor
 	function __construct() {
 		parent::__construct();
-		$this->_ci->load->library('comp/maskapai/my_curl');
+		$this->_ci->load->library('my_curl');
 		$this->_cookies_file 	= "./components/partner/third_party/comp_maskapai/cookies/batavia_airline.txt";
 		$this->login();
 		$this->_opt = new stdClass();

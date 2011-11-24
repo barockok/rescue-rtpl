@@ -24,7 +24,7 @@ class Garuda extends Factory {
 		$this->_opt->passengers = 1;
 		$this->_opt->route_from = 'BTJ';
 		$this->_opt->route_to = 'PKY';
-		$this->_ci->load->library('comp/maskapai/my_curl');
+		$this->_ci->load->library('my_curl');
 	}
 	
 		
