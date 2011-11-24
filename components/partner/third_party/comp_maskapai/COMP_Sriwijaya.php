@@ -148,6 +148,7 @@ class Sriwijaya extends Comp_maskapai_base{
 				$data[$j][$index]['route'] 					= $route_from.','.$route_arr.','.$route_transit;
 				$data[$j][$index]['t_transit_arive'] 		= $t_transit_arrive_time;
 				$data[$j][$index]['t_transit_depart_time'] 	= $t_transit_depart_time;
+				$data[$j][$index]['meta_key']				= '';
 				
 			} 
 			$index++;

@@ -184,7 +184,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				$dataPenerbanganBerangkat[$i]['class'] 				= $class;
 				$dataPenerbanganBerangkat[$i]['price'] 				= $cleanPrice[0];
 				$dataPenerbanganBerangkat[$i]['route'] 				= $post_data['fromAirport'].','.$post_data['toAirport'];
-				$dataPenerbanganBerangkat[$i]['metadata']			= '';
+				$dataPenerbanganBerangkat[$i]['meta_key']			= '';
 				}
 			}
 			//return array('b', 'm');

@@ -156,7 +156,7 @@ class Batavia extends Comp_maskapai_base {
 				$data[$j][$index]['price'] 				= $price;
 				$data[$j][$index]['class']				= element('0', $head);
 				$data[$j][$index]['route']				= $post_data['ruteBerangkat'].','.$post_data['ruteTujuan'].','.$tl;				
-				$data[$j][$index]['metadata'] 			= $cell->find('input', 0 )->getAttribute('value');
+				$data[$j][$index]['meta_key'] 			= $cell->find('input', 0 )->getAttribute('value');
 				$index ++;
 			}
 			
