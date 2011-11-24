@@ -214,9 +214,9 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 		echo $table2;
 		print_r($data);
 	}
-	public function srcFlight()
+	public function doSearch()
 	{
-		$this->addResFlight($this->search());
+		$this->addResult($this->search());
 	}
 
 }

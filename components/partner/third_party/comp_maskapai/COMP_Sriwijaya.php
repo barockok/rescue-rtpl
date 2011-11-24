@@ -149,7 +149,11 @@ class Sriwijaya extends Comp_maskapai_base{
 			} 
 			$index++;
 		}
-		print_r($data);
+		return $data;
+	}
+	public function doSearch()
+	{
+		$this->addresult($this->search());
 	}
 
 }?>

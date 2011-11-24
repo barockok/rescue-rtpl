@@ -20,7 +20,11 @@ class Debug extends MX_Controller {
 		if( $fac == false ){
 			echo 'Somthing wrong Func or Class Not Exist';
 		}
+		print_r($this->comp_maskapai->base->getResult());
 		
+		
+	}
+	function maskapai_search(){
 		
 	}
 

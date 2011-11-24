@@ -74,11 +74,14 @@ class Garuda extends Comp_maskapai_base {
 			$return_flight = $this->src('return');
 		}else{
 			$depart_flight = $this->src('depart');
-		}		
+		}
+		/*		
 		echo "<h2>Depart</h2>";
 		print_r($depart_flight);
 		echo "<h2>Return</h2>";
 		print_r($return_flight);
+		*/
+			return array_merge($depart_flight, $return_flight);
 	}
 	
 	function src($flight_type){
@@ -398,13 +401,13 @@ class Garuda extends Comp_maskapai_base {
 		//-----------------end of processing data executive-------------------------------------//
 						
 		$final_data = array_merge($final_data_eco,$final_data_exe);
-		
+	/*	
 		//print_r($final_data);			
 		echo "<h2>Full Res Executive</h2>";
 		echo $res_exe;				
 		echo "<h2>Full Res Economy</h2>";
 		echo $res_eco;
-		
+	*/
 		return $final_data;		
 	}
 	
@@ -443,6 +446,11 @@ class Garuda extends Comp_maskapai_base {
 	
 	function index(){
 		echo 'index';
+	}
+	// API REQUIREMENT
+	public function doSearch()
+	{
+		$this->addResult($this->src_flight());
 	}
 	
 	

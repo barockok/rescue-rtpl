@@ -206,8 +206,10 @@ class Batavia extends Comp_maskapai_base {
 		return $data;
 
 	}
-	public function srcFlight()
+	
+	// API REQUIREMENT
+	public function doSearch()
 	{
-		$this->addResFlight($this->search());
+		$this->addResult($this->search());
 	}
 }

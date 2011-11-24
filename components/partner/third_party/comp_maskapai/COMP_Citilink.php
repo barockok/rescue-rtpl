@@ -142,6 +142,11 @@ class Citilink extends Comp_maskapai_base {
 	function index(){
 		echo 'index';
 	}
+	// API REQUIREMNET 
+	public function doSearch()
+	{
+		$this->addResult($this->src_flight());
+	}
 	
 	
 

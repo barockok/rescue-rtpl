@@ -75,11 +75,14 @@ class Lion extends Comp_maskapai_base {
 			$return_flight = $this->src('return');
 		}else{
 			$depart_flight = $this->src('depart');
-		}		
+		}
+		/*		
 		echo "<h2>Depart</h2>";
 		//print_r($depart_flight);
 		echo "<h2>Return</h2>";
 		//print_r($return_flight);
+		*/
+		return array_merge($depart_flight, $return_flight);
 	}
 	
 	function src($flight_type){
@@ -170,7 +173,7 @@ class Lion extends Comp_maskapai_base {
 						$arr_time = $arr_time_b.":".$arr_time_a;
 						
 						$class_avail = $dom->find('table[id=tblOutFlightBlocks] tbody',0)->find($row_id,0)->find('td[class=step2farecell]');
-						print_r($class_avail);
+						//print_r($class_avail);
 						
 						foreach ($class_avail as $j => $class) {
 							$class_cell = $dom->find('table[id=tblOutFlightBlocks] tbody',0)->find($row_id,0)->find('td[class=step2farecell]',$j);
@@ -242,7 +245,7 @@ class Lion extends Comp_maskapai_base {
 			} //end outer for
 		}//end if
 						
-		print_r($final_data);
+	//	print_r($final_data);
 		
 		return $final_data;
 	}
@@ -309,6 +312,11 @@ class Lion extends Comp_maskapai_base {
 		}
 		$this->dep_month = $this->dep_month." ".$this->dep_year;
 		$this->dep_date = $this->dep_day." ".$this->dep_month;		
+	}
+	// API REQUIREMENT 
+	public function doSearch()
+	{
+		$this->addResult($this->src_flight());
 	}
 	
 }
