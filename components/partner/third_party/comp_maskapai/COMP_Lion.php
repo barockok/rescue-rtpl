@@ -113,7 +113,8 @@ class Lion extends Comp_maskapai_base {
 		$file_arr = array(
 			'./components/partner/third_party/comp_maskapai/lion_html/li_1/lion.htm',			
 			'./components/partner/third_party/comp_maskapai/lion_html/li_3/lion.htm',
-			'./components/partner/third_party/comp_maskapai/lion_html/li_4/lion.htm'
+			'./components/partner/third_party/comp_maskapai/lion_html/li_4/lion.htm',
+			'./components/partner/third_party/comp_maskapai/lion_html/li_5/lion.htm',
 		);				
 		
 		$final_data = array();
@@ -179,6 +180,7 @@ class Lion extends Comp_maskapai_base {
 						
 						foreach ($class_avail as $j => $class) {
 							$class_cell = $dom->find('table[id=tblOutFlightBlocks] tbody',0)->find($row_id,0)->find('td[class=step2farecell]',$j);
+							
 							if($class_cell->find('input[type=radio]',0)->getAttribute('disabled') == 'disabled'){
 								continue;
 							}//end if
@@ -223,7 +225,8 @@ class Lion extends Comp_maskapai_base {
 					
 					foreach ($class_avail as $j => $class) {
 						$class_cell = $dom->find('table[id=tblOutFlightBlocks] tbody',0)->find($row_id,0)->find('td[class=step2farecell]',$j);
-						if($class_cell->find('input[type=radio]',0)->getAttribute('disabled') == 'disabled'){						
+						//echo $class_cell->plaintext;
+						if($class_cell->plaintext == 'No Fares' || $class_cell->find('input[type=radio]',0)->getAttribute('disabled') == 'disabled'){						
 							continue;
 						}//end if
 						$final_data[$idx] = array(
