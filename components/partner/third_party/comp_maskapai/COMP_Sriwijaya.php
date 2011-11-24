@@ -95,6 +95,9 @@ class Sriwijaya extends Comp_maskapai_base{
 		$flight = $page->find('table[id=table_go]',0)->find('tr table[class=flightInfo]');
 		$class = $page->find('table[id=table_go] table[class=classTable] td');
 		$class1 = $page->find('table[id=table_go] table[class=classTable] td',0);
+		$date = $page->find('span[class=avTableLabel2]',0)->plaintext;
+		$cdate = explode('-',$date);
+		$dateFormated = '20'.$cdate[2].'-'.$this->monthConvert($cdate[1]).'-'.$cdate[0];
 		$insideFlight = $flight[0]->find('tr');
 		$cntInsideFlight = count($insideFlight);
 		$cnt_flight = count($flight);
@@ -120,6 +123,7 @@ class Sriwijaya extends Comp_maskapai_base{
 				$t_depart = $flight[$j]->find('tr',0)->find('td',1)->find('span',1)->plaintext;
 				$route_from = $flight[$j]->find('tr',0)->find('td',1)->find('span',0)->plaintext;
 				$light_number = $flight[$j]->find('tr',0)->find('td',0)->find('span',0)->plaintext;
+				
 				if ($cnt_flight == 1 || $cntInsideFlight ==1) {
 					$route_arr = $flight[$j]->find('tr',0)->find('td',2)->find('span',0)->plaintext;
 					$route_transit = '-';
@@ -129,19 +133,18 @@ class Sriwijaya extends Comp_maskapai_base{
 				}else {
 					$route_arr = $flight[$j]->find('tr',1)->find('span',4)->plaintext;
 					$route_transit =  $flight[$j]->find('tr',0)->find('td',2)->find('span',0)->plaintext;
-					$t_transit_arrive_time = $flight[$j]->find('tr',0)->find('td',2)->find('span',1)->plaintext;
-					$t_transit_depart_time = $flight[$j]->find('tr',1)->find('td',1)->find('span',1)->plaintext;
+					$t_transit_arrive_time = $dateFormated.' '.$flight[$j]->find('tr',0)->find('td',2)->find('span',1)->plaintext;
+					$t_transit_depart_time = $dateFormated.' '.$flight[$j]->find('tr',1)->find('td',1)->find('span',1)->plaintext;
 					$t_arival = $flight[$j]->find('tr',1)->find('span',5)->plaintext;
 				}
 				
 				
-				$data[$j][$index]['flight']					= $light_number;
-				$data[$j][$index]['company'] 				= 'Sriwijaya Airlines';
-				$data[$j][$index]['t_depart'] 				= $t_depart;
-				$data[$j][$index]['t_arrival']				= $t_arival;
+				$data[$j][$index]['company'] 				= 'SRIWIJAYA';
+				$data[$j][$index]['t_depart'] 				= $dateFormated.' '.$t_depart;
+				$data[$j][$index]['t_arrival']				= $dateFormated.' '.$t_arival;
 				$data[$j][$index]['type'] 					= $type;
 				$data[$j][$index]['class'] 					= $clas;
-				$data[$j][$index]['price'] 					= $price.',000';
+				$data[$j][$index]['price'] 					= $price.'000';
 				$data[$j][$index]['route'] 					= $route_from.','.$route_arr.','.$route_transit;
 				$data[$j][$index]['t_transit_arive'] 		= $t_transit_arrive_time;
 				$data[$j][$index]['t_transit_depart_time'] 	= $t_transit_depart_time;
@@ -151,6 +154,18 @@ class Sriwijaya extends Comp_maskapai_base{
 		}
 		return $data;
 	}
+	
+	function monthConvert($month){
+		$month_number = "";
+		for($i=1;$i<=12;$i++){ 
+			if(date("M", mktime(0, 0, 0, $i, 1, 0)) == $month){ 
+				$month_number = $i; 
+				break; 
+			} 
+		}
+		return $month_number;
+	}
+	
 	public function doSearch()
 	{
 		$this->addresult($this->search());

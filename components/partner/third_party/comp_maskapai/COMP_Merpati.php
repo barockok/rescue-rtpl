@@ -154,7 +154,6 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				
 				$cprice = str_replace(',','',$price);
 				$cleanPrice = explode('.',$cprice);
-				
 				$cnt_jml_kursi = str_split($jml_kursi[6]->plaintext);
 				$cdate = explode('/',$date);
 				$formatedDate = $cdate[2].'-'.$cdate[1].'-'.$cdate[0];
@@ -176,7 +175,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 					$d_t_depart = $formatedDate;
 				}
 				
-				$dataPenerbanganBerangkat[$i]['company'] 			= 'Merpati Airlines';		
+				$dataPenerbanganBerangkat[$i]['company'] 			= 'MERPATI';		
 				$dataPenerbanganBerangkat[$i]['t_depart'] 			= $formatedDate.' '.element(0, $departTime);
 				$dataPenerbanganBerangkat[$i]['t_transit_arrive'] 	= $d_t_arrive.' '.$t_transit_arive;
 				$dataPenerbanganBerangkat[$i]['t_transit_depart']   = $d_t_depart.' '.$t_transit_depart;

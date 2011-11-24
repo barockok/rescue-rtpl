@@ -147,7 +147,7 @@ class Batavia extends Comp_maskapai_base {
 				}			
 				
 				
-				$data[$j][$index]['company'] 			='Batavia Airlines';
+				$data[$j][$index]['company'] 			='BATAVIA';
 				$data[$j][$index]['t_depart']			= $t_depart;
 				$data[$j][$index]['t_arive']			= $t_arrive;
 				$data[$j][$index]['t_transit_arive']	= $t_transit_arive;
