@@ -48,6 +48,9 @@ class Citilink extends Comp_maskapai_base {
 			$this->_opt->route_from = $this->_opt->route_to;
 			$this->_opt->route_to = $temp;
 			
+			//change depart date
+			$this->_opt->date_depart = $this->_opt->date_return;
+			
 			print_r($return_flight = $this->src('return'));
 		}else{
 			print_r($depart_flight = $this->src('depart'));
@@ -116,11 +119,11 @@ class Citilink extends Comp_maskapai_base {
 			
 			//define return variable
 			$final_data[$i-1]=array(
-				'company' => 'Citilink',
-				't_depart' => $departure_date." ".$departure_time,	//depart from origin location
+				'company' => 'CITILINK',
+				't_depart' => $this->_opt->date_depart." ".$departure_time,	//depart from origin location
 				't_transit_arrive' => '', //arrive in transit airport
 				't_transit_depart' => '', //depart from transit airport
-				't_arrive' => $arrival_date." ".$arrival_time,
+				't_arrive' => $this->_opt->date_depart." ".$arrival_time,
 				'type' => $flight_type, //depart or return
 				'class' => str_replace(' ','',$dom->find('table[id=FlightAvailability0] tbody tr',$i)->find('td',6)->plaintext),
 				'price' => $price,
