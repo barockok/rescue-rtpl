@@ -92,6 +92,8 @@ class Lion extends Comp_maskapai_base {
 				'header'		=> 0,
 				'nobody'	=> false,
 				'returntransfer' => 1,
+				'SSL_VERIFYPEER'	=> 0,
+				'ssl_verifyhost'	=> 0,
 			//	'returntransfer' => 1
 			);
 		$this->_ci->my_curl->setup($conf);
@@ -167,6 +169,7 @@ class Lion extends Comp_maskapai_base {
 			'post'				=> true,
 			'referer'			=> $this->_refer_url,
 			'ssl_verifyhost'	=> 0,
+			'SSL_VERIFYPEER'	=> 0,
 		);
 		
 		$this->_ci->my_curl->setup($conf);
