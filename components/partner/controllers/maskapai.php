@@ -14,6 +14,11 @@ class Maskapai extends Platform_Controller {
 		print_r($this->comp_maskapai->base->getResult());
 		echo '</textarea>';
 	}
+	function doSearch($conf){
+		$this->load->library('comp/partner/comp_maskapai');
+		$this->comp_maskapai->doSearch($conf);
+		return $this->comp_maskapai->base->getResult();
+	}
 	
 
 }

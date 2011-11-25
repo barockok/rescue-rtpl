@@ -13,13 +13,9 @@ class Lion extends Comp_maskapai_base {
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		//$this->src_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		
-		//define variable
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-11-17';
-		$this->_opt->date_return =  null;
-		$this->_opt->passengers = 1;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'DPS';
+		foreach(parent::$_opt as $key => $val ){
+			$this->_opt->$key = $val;
+		}
 		
 	}
 	
@@ -321,7 +317,7 @@ class Lion extends Comp_maskapai_base {
 	// API REQUIREMENT 
 	public function doSearch()
 	{
-		$this->addResult($this->src_flight());
+			$this->addResult($this->cleanObject('Lion/src_flight', array()));
 	}
 	
 }

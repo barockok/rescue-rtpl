@@ -18,14 +18,15 @@ class Batavia extends Comp_maskapai_base {
 	//php 5 constructor
 	function __construct() {
 		parent::__construct();
+		
+		foreach(parent::$_opt as $key => $val ){
+			$this->_opt->$key = $val;
+		}
+	
 		$this->_ci->load->library('my_curl');
 		$this->_cookies_file 	= "./components/partner/third_party/comp_maskapai/cookies/batavia_airline.txt";
 		$this->login();
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-12-30';
-		$this->_opt->passengers = 1;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'PLM';
+	
 	}
 	function test(){
 		echo 'tester';
@@ -141,9 +142,11 @@ class Batavia extends Comp_maskapai_base {
 				if ($tl != '-') {
 					$t_transit_arive 	= 'Unknown';
 					$t_transit_depart 	= 'Unknown';
+					$transitLocation	= ','.$tl;
 				}else{
 					$t_transit_arive 	= NULL;
 					$t_transit_depart	= NULL;
+					$transitLocation	= '';
 				}			
 				
 				
@@ -155,7 +158,7 @@ class Batavia extends Comp_maskapai_base {
 				$data[$j][$index]['type']				= $type;
 				$data[$j][$index]['price'] 				= $price;
 				$data[$j][$index]['class']				= element('0', $head);
-				$data[$j][$index]['route']				= $post_data['ruteBerangkat'].','.$post_data['ruteTujuan'].','.$tl;				
+				$data[$j][$index]['route']				= $post_data['ruteBerangkat'].','.$post_data['ruteTujuan'].$transitLocation;				
 				$data[$j][$index]['meta_key'] 			= $cell->find('input', 0 )->getAttribute('value');
 				$index ++;
 			}
@@ -241,6 +244,6 @@ class Batavia extends Comp_maskapai_base {
 	// API REQUIREMENT
 	public function doSearch()
 	{
-		$this->addResult($this->search());
+		$this->addResult($this->cleanObject('Batavia/search', array()));
 	}
 }

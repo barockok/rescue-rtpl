@@ -12,13 +12,9 @@ class Citilink extends Comp_maskapai_base {
 		$this->_refer_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		$this->src_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		
-		//define variable
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-11-19';
-		$this->_opt->date_return =  '2011-11-20';
-		$this->_opt->passengers = 5;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'DPS';
+		foreach(parent::$_opt as $key => $val ){
+			$this->_opt->$key = $val;
+		}
 		
 	}
 	
@@ -150,7 +146,7 @@ class Citilink extends Comp_maskapai_base {
 	// API REQUIREMNET 
 	public function doSearch()
 	{
-		$this->addResult($this->src_flight());
+			$this->addResult($this->cleanObject('Citilink/src_flight', array()));
 	}
 	
 	
