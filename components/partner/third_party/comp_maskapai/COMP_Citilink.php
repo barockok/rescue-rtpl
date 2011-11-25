@@ -3,7 +3,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Citilink extends Comp_maskapai_base {
 
-	var $_opt;
+	
 
 	function __construct(){
 		parent::__construct();
@@ -12,9 +12,10 @@ class Citilink extends Comp_maskapai_base {
 		$this->_refer_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		$this->src_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		
-		foreach(parent::$_opt as $key => $val ){
-			$this->_opt->$key = $val;
-		}
+		//define variable
+			foreach(parent::$_opt as $key => $val ){
+				$this->_opt->$key = $val;
+			}
 		
 	}
 	
@@ -36,6 +37,8 @@ class Citilink extends Comp_maskapai_base {
 	function src_flight(){
 		$depart_flight = array();
 		$return_flight = array();		
+		$depart_flight = $this->src('depart');
+		
 		if($this->_opt->date_return!=null){
 			$depart_flight = $this->src('depart');
 			
@@ -51,6 +54,7 @@ class Citilink extends Comp_maskapai_base {
 		}else{
 	//		print_r($depart_flight = $this->src('depart'));
 		}	
+		
 		return array_merge($return_flight, $depart_flight );
 	/*
 		$this->addResFlight($return_flight);

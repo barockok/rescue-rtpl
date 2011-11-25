@@ -4,7 +4,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Lion extends Comp_maskapai_base {
 
-	var $_opt;
 
 	function __construct(){
 		parent::__construct();
