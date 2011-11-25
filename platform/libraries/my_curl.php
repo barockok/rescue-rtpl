@@ -66,9 +66,19 @@ class My_Curl {
 	function exc(){
 		$cu = curl_init();
 		curl_setopt_array($cu, $this->opt);
-		$exec = curl_exec($cu);		
+		$exec = curl_exec($cu);	
+		$this->_res			= $exec;
+		$this->_res_info 	= json_decode(json_encode(curl_getinfo($cu))); 	
 		curl_close($cu);		
 		return $exec;
+	}
+	function res(){
+		return $this->_res;
+	}
+	public function res_info($key = null)
+	{
+		if($key!= null) return $this->_res_info->$key;
+		return $this->_res_info;
 	}
 	
 	function setup_($conf=array()){
