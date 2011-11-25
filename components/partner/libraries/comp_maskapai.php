@@ -51,5 +51,9 @@ class Comp_maskapai {
 		return true;
 		
 	}
+	public function closing()
+	{
+		#please overwrite me
+	}
 
 }
