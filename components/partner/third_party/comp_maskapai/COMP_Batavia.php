@@ -60,6 +60,24 @@ class Batavia extends Comp_maskapai_base {
 		$this->_ci->my_curl->exc();
 	}
 	
+	function logout(){
+		$conf = array(
+			'url'				=> $this->_referer_url,
+			'timeout'			=> 30,
+			'header'			=> 0,
+			'followlocation'	=> 1,
+			'cookiejar'			=> $this->_cookies_file,
+			'cookiefile'		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'referer'			=> $this->_referer_url,
+			'ssl_verifyhost'	=> 0,
+			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+		);
+		$this->_ci->my_curl->setup($conf);
+		$this->_ci->my_curl->exc();	
+	}
+	
+	
 	function search(){
 		$roundTrip = false;
 		$dateExplode = explode('-',$this->_opt->date_depart);
@@ -241,6 +259,11 @@ class Batavia extends Comp_maskapai_base {
 		return $month_number;
 	}
 	
+	public function closing(){
+		$this->logout();
+	}
+	
+
 	// API REQUIREMENT
 	public function doSearch()
 	{
