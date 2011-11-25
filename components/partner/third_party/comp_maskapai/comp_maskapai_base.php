@@ -45,6 +45,10 @@ class Comp_maskapai_base {
 		$buffer = ob_get_clean();
 		return ($output !== NULL) ? $output : $return;
 	}
+	public function closing()
+	{
+		# please override me
+	}
 	
 	
 	
