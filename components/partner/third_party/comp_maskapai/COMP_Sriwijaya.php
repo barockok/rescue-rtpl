@@ -11,27 +11,22 @@ class Sriwijaya extends Comp_maskapai_base{
 	private $_src_action_url 	= 'https://agent.sriwijayaair.co.id/b2b/secure/AvailabilityAction';
 	private $_src_result_url 	= 'https://agent.sriwijayaair.co.id/b2b/secure/createpnr.jsp';
 	private $_start_url 		= 'https://agent.sriwijayaair.co.id/b2b/secure/';
-	var $route_from;
-	var $route_to;
-	var $date_depart;
-	var $date_return;
 	
 	function __construct() {
 		parent::__construct();
+		
 		foreach(parent::$_opt as $key => $val ){
 			$this->_opt->$key = $val;
 		}
+		
 		$this->_cookies_file = "./components/partner/third_party/comp_maskapai/cookies/sriwijaya_airline.txt";
 		$this->_ci->load->library('my_curl');
 		$this->login();
 	}
 	
 	function index() {
-		echo $this->_opt->date_depart;
-		$date = explode('-',$this->_opt->date_depart);
-		print_r($date);
+		
 	}
-
 	function mainPage(){
 		$conf = array(
 			'url'				=> $this->_default_url,
@@ -47,30 +42,30 @@ class Sriwijaya extends Comp_maskapai_base{
 		$this->_ci->my_curl->setup($conf);
 		return $this->_ci->my_curl->exc();
 	}
-	
 	function topage($url , $return = true){
 		$conf = array(
-				'url' 				=> $url,
+				'url' => $url,
 				'cookiejar' 		=> $this->_cookies_file,
 				'cookiefile' 		=> $this->_cookies_file,
-				'header'			=> 0,
-				'nobody'			=> false,
-				'returntransfer' 	=> 1,
+				'header'		=> 0,
+				'nobody'	=> false,
+				'returntransfer' => 1,
+			//	'returntransfer' => 1
 			);
 		$this->_ci->my_curl->setup($conf);
 		$exc = $this->_ci->my_curl->exc();
 		if($return = true ) return $this->_ci->my_curl;
 		echo $exc;
 	}
-	
 	public function start()
 	{
 		$conf = array(
 			'url' => $this->_start_url,
 			'cookiejar' 		=> $this->_cookies_file,
 			'cookiefile' 		=> $this->_cookies_file,
-			'header'			=> 0,
-			'nobody'			=> true,
+			'header'		=> 0,
+			'nobody'	=> true,
+		//	'returntransfer' => 1
 		);
 		$this->_ci->my_curl->setup($conf);
 		$this->_ci->my_curl->exc();
@@ -83,10 +78,10 @@ class Sriwijaya extends Comp_maskapai_base{
 			'j_password' => 'indonesia',
 			
 		);
-		
 		$conf = array(
 			'url' 				=> $this->_login_url,
 			'timeout' 			=> 30,
+		
 			'header' 			=> 1,
 			'nobody' 			=> false,
 			'followlocation' 	=> 1,
@@ -96,36 +91,42 @@ class Sriwijaya extends Comp_maskapai_base{
 			'post' 				=> true,
 			'MAXREDIRS' 		=> 10,
 			'ssl_verifyhost' 	=> 0,
+			//'referer' 			=> $this->referer_url,
 			'AUTOREFERER' 		=> true,
 			'FAILONERROR' 		=> false,
 			'postfields' 		=> http_build_query( $post_data , NULL, '&' ),
 		);
-		
 		$this->_ci->my_curl->setup($conf);
 		$this->_ci->my_curl->exc();
 		
-	}
+		
+		//https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp
 	
+		
+	}
 	function somepage(){
 		$conf = array(
 				'url' => 'https://agent.sriwijayaair.co.id/b2b/secure/home.jsp',
 				'cookiejar' 		=> $this->_cookies_file,
 				'cookiefile' 		=> $this->_cookies_file,
-				'header'			=> 0,
-				'nobody'			=> false,
+				'header'		=> 0,
+				'nobody'	=> false,
+			//	'returntransfer' => 1
 			);
 		$this->_ci->my_curl->setup($conf);
 		echo $this->_ci->my_curl->exc();
 	}
-	
 	function logout(){
 		
 			$conf = array(
-					'url' 				=> 'https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp',
+					'url' => 'https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp',
 					'cookiejar' 		=> $this->_cookies_file,
 					'cookiefile' 		=> $this->_cookies_file,
-					'header'			=> 0,
-					'nobody'			=> true,
+					'header'		=> 0,
+					'nobody'	=> true,
+
+
+				//	'returntransfer' => 1
 				);
 			$this->_ci->my_curl->setup($conf);
 			$this->_ci->my_curl->exc();
@@ -133,19 +134,19 @@ class Sriwijaya extends Comp_maskapai_base{
 	
 	public function _search()
 	{
-		$date = explode('-',$this->_opt->date_depart);
+
 		
 		$posted = array(
-			'isReturn' 			=> false,
-			'from'		 		=> $this->_opt->route_from,
-			'to'				=> $this->_opt->route_to,
-			'departDate1' 		=> $date[2],
-			'departDate2'		=> $date[1].'-'.$date[0],
-			'adult' 			=> $this->_opt->passengers,
-			'child' 			=> 0,
-			'infant'			=> 0,
-			'returndaterange' 	=> 0,
-			'Submit' 			=> 'Search',
+			'isReturn' => false,
+			'from' => $this->_opt->route_from,
+			'to'=> $this->_opt->route_to,
+			'departDate1' => 30,
+			'departDate2'=>	'10-2011',
+			'adult' => 1,
+			'child' => 0,
+			'infant'=> 0,
+			'returndaterange' => 0,
+			'Submit' => 'Search',
 		);
 		
 		$conf = array(
@@ -165,21 +166,33 @@ class Sriwijaya extends Comp_maskapai_base{
 		);
 		
 		$this->_ci->my_curl->setup($conf);
-		$res  = $this->_ci->my_curl->exc();
-		$info = $this->_ci->my_curl->res_info();		
-		if($info->httpcode == 302) return $this->topage($info->url);
-		return $res;
+		$this->_ci->my_curl->exc();
+		$res = $this->topage($this->_ci->my_curl->res_info('url'));
+		
+		return $res->res();
+	
+		
+		
+		
 	}
 	
 	function search(){
+		
+		
 		$roundTrip = false;
 		if ($roundTrip) {
 			$type = 'return';
 		}else{
 			$type = 'depart';
 		}
+		$htmlFile = array(
+			"./components/partner/third_party/comp_maskapai/sriwijaya_html/sriwijaya_airlines/createpnr.jsp.html",
+			"./components/partner/third_party/comp_maskapai/sriwijaya_html/sriwijaya_noTransit/noreturn.html",
+			"./components/partner/third_party/comp_maskapai/sriwijaya_html/sriwijayaSingleFlight/createpnr.jsp.html",
+		);
 		
 		$page = str_get_html($this->_search());
+		echo $page;
 		$table = $page->find('div[id=pagewrapper] div[id=mainWrapper]',0)->find('form[action=./PNRAction]',0);
 		$flight = $page->find('table[id=table_go]',0)->find('tr table[class=flightInfo]');
 		$class = $page->find('table[id=table_go] table[class=classTable] td');
@@ -191,9 +204,10 @@ class Sriwijaya extends Comp_maskapai_base{
 		$cntInsideFlight = count($insideFlight);
 		$cnt_flight = count($flight);
 		$cnt_classFlight = count($class);
-		if (!$flight && !$class) return array();
+		if (!$page) return array();
 		$data = array();
 		$index=0;
+		//echo $cnt_classFlight;
 		$cellStatus = array();
 		
 		for ($i=0; $i < $cnt_classFlight/$cnt_flight; $i++) {
@@ -202,6 +216,9 @@ class Sriwijaya extends Comp_maskapai_base{
 				continue;
 			}
 			for ($j=0; $j < $cnt_flight; $j++) {
+				//$data[$j][$index]['cell']	=  $cell;
+				//if ( ($cellStatus[$j][$index] = $cell)  == 'disabled') { continue;}
+				//echo $cell[$j];
 				
 				$clas = $class[$i]->find('span',0)->plaintext;
 				$price = $class[$i]->find('span',2)->plaintext;
@@ -224,6 +241,8 @@ class Sriwijaya extends Comp_maskapai_base{
 					$t_arival = $flight[$j]->find('tr',1)->find('span',5)->plaintext;
 				}
 				$cprice = explode(',',$price);
+				//print_r($cprice);
+				
 				$data[$j][$index]['company'] 				= 'SRIWIJAYA';
 				$data[$j][$index]['t_depart'] 				= $dateFormated.' '.$t_depart;
 				$data[$j][$index]['t_arrival']				= $dateFormated.' '.$t_arival;
@@ -267,9 +286,5 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->addResult($this->cleanObject('Sriwijaya/search', array()));
 			$this->logOut();
 	}
-	public function closing()
-	{
-		$this->logOut();
-	}
 
-}
+}?>
