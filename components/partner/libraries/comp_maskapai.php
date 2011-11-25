@@ -45,6 +45,9 @@ class Comp_maskapai {
 		$fac = new $class;
 		if(!method_exists($fac, $func)) return false;
 		call_user_func(array($fac, $func));
+		
+		// Closing
+		call_user_func(array($fac, 'closing'));
 		return true;
 		
 	}
