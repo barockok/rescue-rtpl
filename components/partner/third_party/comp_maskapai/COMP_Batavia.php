@@ -21,11 +21,6 @@ class Batavia extends Comp_maskapai_base {
 		$this->_ci->load->library('my_curl');
 		$this->_cookies_file 	= "./components/partner/third_party/comp_maskapai/cookies/batavia_airline.txt";
 		$this->login();
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-12-30';
-		$this->_opt->passengers = 1;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'PLM';
 	}
 	function test(){
 		echo 'tester';
@@ -243,6 +238,6 @@ class Batavia extends Comp_maskapai_base {
 	// API REQUIREMENT
 	public function doSearch()
 	{
-		$this->addResult($this->search());
+		$this->addResult($this->cleanObject('Batavia/search', array()));
 	}
 }

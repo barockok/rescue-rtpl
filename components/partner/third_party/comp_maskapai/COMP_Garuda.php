@@ -3,7 +3,6 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Garuda extends Comp_maskapai_base {
 
-	var $_opt;	
 
 	function __construct(){
 		parent::__construct();		
@@ -18,12 +17,8 @@ class Garuda extends Comp_maskapai_base {
 		$this->password = 'mandiri01';
 		
 		//opt
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart =  '2011-11-26';
-		$this->_opt->date_return = '2011-11-29';
-		$this->_opt->passengers = 1;
-		$this->_opt->route_from = 'BTJ';
-		$this->_opt->route_to = 'PKY';
+
+	
 		$this->_ci->load->library('my_curl');
 	}
 	
@@ -450,7 +445,7 @@ class Garuda extends Comp_maskapai_base {
 	// API REQUIREMENT
 	public function doSearch()
 	{
-		$this->addResult($this->src_flight());
+			$this->addResult($this->cleanObject('Garuda/src_flight', array()));
 	}
 	
 	

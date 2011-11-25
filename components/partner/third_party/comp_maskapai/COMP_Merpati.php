@@ -28,11 +28,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 			'Content-Type: application/json; charset=UTF-8',
 		);
 		
-		$this->_opt = new stdClass();
-		$this->_opt->date_depart = '2011-11-30';
-		$this->_opt->passengers = 1;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'PLM';
+	
 	}
 	
 	
@@ -154,6 +150,9 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 				
 				$cprice = str_replace(',','',$price);
 				$cleanPrice = explode('.',$cprice);
+			
+				if(!is_numeric($cleanPrice[0])) continue;
+			
 				$cnt_jml_kursi = str_split($jml_kursi[6]->plaintext);
 				$cdate = explode('/',$date);
 				$formatedDate = $cdate[2].'-'.$cdate[1].'-'.$cdate[0];
@@ -220,7 +219,7 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 	}
 	public function doSearch()
 	{
-		$this->addResult($this->search());
+		$this->addResult($this->cleanObject('Merpati/search', array()));
 	}
 
 }

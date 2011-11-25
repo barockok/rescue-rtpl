@@ -17,13 +17,11 @@ class Comp_maskapai_base {
 			$this->_opt->route_to = 'PKY';
 
 	}
-	public function setSearch($array)
+	public function setSearch($array = array())
 	{
-		/*
 		foreach($array as $key => $val){
 			$this->_opt->$key = $val;
 		}
-		*/
 	}
 	public function addResult($array = array())
 	{

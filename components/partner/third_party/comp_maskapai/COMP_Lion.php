@@ -318,7 +318,7 @@ class Lion extends Comp_maskapai_base {
 	// API REQUIREMENT 
 	public function doSearch()
 	{
-		$this->addResult($this->src_flight());
+			$this->addResult($this->cleanObject('Lion/src_flight', array()));
 	}
 	
 }
