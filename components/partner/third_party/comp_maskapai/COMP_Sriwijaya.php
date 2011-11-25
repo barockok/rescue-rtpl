@@ -164,10 +164,12 @@ class Sriwijaya extends Comp_maskapai_base{
 		);
 		
 		$this->_ci->my_curl->setup($conf);
-		$this->_ci->my_curl->exc();
-		$res = $this->topage($this->_ci->my_curl->res_info('url'));
-		
-		return $res->res();
+		$res  = $this->_ci->my_curl->exc();
+		$info = $this->_ci->my_curl->res_info();		
+	
+		if($info->httpcode == 302) return $this->topage($info->url);
+
+		return $res;
 	
 		
 		
@@ -284,5 +286,9 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->addResult($this->cleanObject('Sriwijaya/search', array()));
 			$this->logOut();
 	}
+	public function closing()
+	{
+		$this->logOut();
+	}
 
-}?>
+}
