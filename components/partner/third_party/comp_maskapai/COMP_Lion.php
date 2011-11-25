@@ -7,31 +7,59 @@ class Lion extends Comp_maskapai_base {
 
 	function __construct(){
 		parent::__construct();
-		$this->_cookies_file = realpath('./components/partner/third_party/comp_maskapai/cookies/lion_air.txt');
+		$this->_cookies_file = './components/partner/third_party/comp_maskapai/cookies/lion_air.txt';
 		$this->login_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
-		//$this->src_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
+		$this->src_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step1.aspx';
+		$this->_start_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		
+	
+		/*
 		foreach(parent::$_opt as $key => $val ){
 			$this->_opt->$key = $val;
 		}
+		*/
+			//define variable
+			$this->_opt = new stdClass();
+			$this->_opt->date_depart =  '2011-11-17';
+			$this->_opt->date_return =  null;
+			$this->_opt->passengers = 1;
+			$this->_opt->route_from = 'CGK';
+			$this->_opt->route_to = 'DPS';
+			$this->_ci->load->library('my_curl');
+				$this->login();
 		
 	}
 	
 	function index(){
 		echo "Lion";
 	}
-	
+	public function sp()
+	{
+		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=45753', false);
+		echo $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);
+	}
+	function start(){
+		return str_get_html($this->topage($this->_start_url, false));
+	}
+	function logout(){
+		$this->topage($this->_start_url);
+	}
 	function login(){
+	//	if(!is_string($vkey = $this->start()->find('input[id=__VIEWSTATE]', 0)->getAttribute('value'))) return false;
+		$start = $this->start();
+		$vkey = $start->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
+		$vVal = $start->find('input[id=__EVENTVALIDATION]', 0)->getAttribute('value');
 		$post_data = array(		
-			'__EVENTTARGET' => '',
-			'__EVENTARGUMENT' => '',
-			'__VIEWSTATEKEY' => '',
-			'__VIEWSTATE' => '',
-			'txtLoginName' => 'toplima',
-			'txtPassword' => 'mitra2011',
-			'chkRememberMe' => 'on',
-			'NameReqExtend_ClientState' => '',
+			'__EVENTTARGET' 				=> 'btnLogin',
+			'__EVENTARGUMENT' 				=> '',
+			'__VIEWSTATEKEY' 				=> '',
+			'__VIEWSTATE' 					=> $vkey,
+			'__EVENTVALIDATION'				=> $vVal,
+			'txtLoginName' 					=> 'toplima',
+			'txtPassword' 					=> 'mitra2011',
+			'chkRememberMe' 				=> 'on',
+			'NameReqExtend_ClientState' 	=> '',
 			'PasswordReqExtend_ClientState' => ''
 		);
 		
@@ -39,8 +67,8 @@ class Lion extends Comp_maskapai_base {
 			'url' 				=> $this->login_url,
 			'timeout'			=> 30,
 			'header'			=> 0,
-			'nobody'			=> true,
-			'followlocation'	=> 1,
+			'nobody'			=> false,
+			'followlocation'	=> true,
 			'cookiejar' 		=> $this->_cookies_file,
 			'cookiefile' 		=> $this->_cookies_file,
 			'returntransfer'	=> 1,
@@ -48,11 +76,27 @@ class Lion extends Comp_maskapai_base {
 			'referer' 			=> $this->_refer_url,
 			'postfields' 		=> http_build_query($post_data , NULL, '&'),
 			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-			'SSL_VERIFYPEER'    => false
+		
 		);
 		
-		$data = $this->my_curl->setup($conf);
-		$res = $this->my_curl->exc($data);
+		$this->_ci->my_curl->setup($conf);
+		$res = $this->_ci->my_curl->exc();
+	}
+	function topage($url , $return = true){
+
+		$conf = array(
+				'url' => $url,
+				'cookiejar' 		=> $this->_cookies_file,
+				'cookiefile' 		=> $this->_cookies_file,
+				'header'		=> 0,
+				'nobody'	=> false,
+				'returntransfer' => 1,
+			//	'returntransfer' => 1
+			);
+		$this->_ci->my_curl->setup($conf);
+		$exc = $this->_ci->my_curl->exc();
+		if($return == true ) return $this->_ci->my_curl;
+		return $exc;
 	}
 	
 	
@@ -82,40 +126,74 @@ class Lion extends Comp_maskapai_base {
 		return array_merge($depart_flight, $return_flight);
 	}
 	
-	function src($flight_type){
+	function _search(){
+
+		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=45753', false);
+		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);
+		echo $vKey = str_get_html($start)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
 		
 		$this->format_date(); //adjust the date format
-		/*$post_data = array(
-			'__EVENTTARGET' => '',
+		$post_data = array(
+			'__EVENTTARGET' => 'UcFlightSelection$lbSearch',
 			'__EVENTARGUMENT' => '',
-			'__VIEWSTATEKEY' => '',
+			'__VIEWSTATEKEY' => $vKey,
 			'__VIEWSTATE' => '',
 			'UcFlightSelection$TripType' => 'rbOneWay',
 			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
-			'UcFlightSelection$txtSelOri' => $this->_opt->route_from,
+			'UcFlightSelection$txtSelOri' => 'DPS',
 			'UcFlightSelection$txtOri' => 'Denpasar (Bali) (DPS)',
-			'UcFlightSelection$ddlDepMonth' => $this->dep_month, //Nov 2011
-			'UcFlightSelection$ddlDepDay' => $this->dep_day, //17
-			'UcFlightSelection$ddlADTCount' => $this->_opt->passengers,
-			'UcFlightSelection$txtSelDes' => $this->_opt->route_from,
+			'UcFlightSelection$ddlDepMonth' => 'Nov 2011',//$this->dep_month, //Nov 2011
+			'UcFlightSelection$ddlDepDay' => '30', //$this->dep_day, //17
+			'UcFlightSelection$ddlADTCount' => '1', //$this->_opt->passengers,
+			'UcFlightSelection$txtSelDes' => 'CGK', //$this->_opt->route_from,
 			'UcFlightSelection$txtDes' => 'Jakarta (CGK)',
 			'UcFlightSelection$ddlCNNCount' => '0',
 			'UcFlightSelection$ddlINFCount' => '0',
-			'UcFlightSelection$txtDepartureDate' => $this->dep_date,  //17 Nov 2011
-			'UcFlightSelection$txtReturnDate' => $this->dep_date, //
-		);*/
+			'UcFlightSelection$txtDepartureDate' => '30 Nov 2011', //$this->dep_date,  //17 Nov 2011
+			'UcFlightSelection$txtReturnDate' => '30 Nov 2011' //$this->dep_date, //
+		);
 		
+		$conf = array(
+			'url' 				=> $this->src_url,
+			'post' 				=> true,
+			'postfields' 		=> http_build_query($post_data),
+			'timeout'			=> 30,
+			'header'			=> 1,
+			'followlocation'	=> true,
+			'maxredirs'			=> 10,
+			'cookiefile'		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'post'				=> true,
+			'referer'			=> $this->_refer_url,
+			'ssl_verifyhost'	=> 0,
+		);
+		
+		$this->_ci->my_curl->setup($conf);
+		$res  = $this->_ci->my_curl->exc();
+		$info = $this->_ci->my_curl->res_info();		
+		print_r($res);
+		if($info->httpcode == 302) return $this->topage($info->url);
+		
+		return $res;
+	}
+	
+	function src($flight_type){
+		
+		
+		/*
 		$file_arr = array(
 			'./components/partner/third_party/comp_maskapai/lion_html/li_1/lion.htm',			
 			'./components/partner/third_party/comp_maskapai/lion_html/li_3/lion.htm',
 			'./components/partner/third_party/comp_maskapai/lion_html/li_4/lion.htm',
 			'./components/partner/third_party/comp_maskapai/lion_html/li_5/lion.htm',
 		);				
-		
+		*/
 		$final_data = array();
-		shuffle($file_arr);	
+		//shuffle($file_arr);	
 		
-		$dom = file_get_html(realpath($file_arr[1]));
+		
+		echo $dom = str_get_html($this->_search());
+		//$dom = file_get_html(realpath($file_arr[1]));
 		
 		$flight_table = $dom->find('table[id=tblOutFlightBlocks] tbody',0);				
 		$total_flight = count($dom->find('table[id=tblOutFlightBlocks] tbody tr')) - 4; //get total flight by count rows in table
@@ -316,7 +394,12 @@ class Lion extends Comp_maskapai_base {
 	// API REQUIREMENT 
 	public function doSearch()
 	{
-			$this->addResult($this->cleanObject('Lion/src_flight', array()));
+		//	$this->addResult($this->cleanObject('Lion/src_flight', array()));
+		$this->addResult($this->src_flight());
+	}
+	public function closing()
+	{
+		$this->logout();
 	}
 	
 }
