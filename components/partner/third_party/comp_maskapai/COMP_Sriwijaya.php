@@ -284,7 +284,10 @@ class Sriwijaya extends Comp_maskapai_base{
 	public function doSearch()
 	{
 			$this->addResult($this->cleanObject('Sriwijaya/search', array()));
-			$this->logOut();
+				
+	}
+	function closing(){
+		$this->logOut();
 	}
 
 }?>
