@@ -9,15 +9,7 @@ class Merpati extends Comp_maskapai_base {
 	private $_search_url = 'https://www.merpati.co.id/b2b/WebService/BaseService.asmx/getFlightAvailabilityForm';
 	private $_detail_flight_url = 'https://www.merpati.co.id/b2b/WebService/BaseService.asmx/GetSelectFlight';
 	private $_load_step_url = 'https://www.merpati.co.id/b2b/WebService/UtilService.asmx/loadstep3';
-	
-/*dummy
-$dataPenerbanganBerangkat[$i]['cadanganKursi'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',8)->plaintext);
-$dataPenerbanganBerangkat[$i]['kursi'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',6)->plaintext);
-//$dataPenerbanganBerangkat[$i]['waktuKeberangakatan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',2)->plaintext);
-//$dataPenerbanganBerangkat[$i]['waktuKedatangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',3)->plaintext);
-$dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',0)->plaintext);
-
-*/
+	private $_logout_url = 'https://www.merpati.co.id/b2b/WebService/BaseService.asmx/Logout';
 	
 	function __construct() {
 		parent::__construct();
@@ -30,8 +22,6 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
 		);
-		
-	
 	}
 	
 	
@@ -65,6 +55,24 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 		$this->_ci->my_curl->setup($conf);
 		$this->_ci->my_curl->exc();
 		//echo $this->mainPage();
+	}
+	
+	function logout(){
+		$conf = array(
+			'httpheader'		=> $this->_headerData,
+			'url'				=> $this->_logout_url,
+			'timeout'			=> 30,
+			'header'			=> 0,
+			'followlocation'	=> 1,
+			'cookiejar'			=> $this->_cookies_file,
+			'cookiefile'		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'referer'			=> $this->_refer,
+			'ssl_verifyhost'	=> 0,
+			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+		);
+		$this->_ci->my_curl->setup($conf);
+		$this->_ci->my_curl->exc();
 	}
 	
 	function mainPage(){
@@ -219,6 +227,10 @@ $dataPenerbanganBerangkat[$i]['codePenerbangan'] = preg_replace(array('/\s{2,}/'
 		echo $table1;
 		echo $table2;
 		print_r($data);
+	}
+	
+	public function closing(){
+		$this->logout();
 	}
 	public function doSearch()
 	{
