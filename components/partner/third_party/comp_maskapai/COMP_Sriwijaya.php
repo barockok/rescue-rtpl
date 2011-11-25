@@ -10,6 +10,9 @@ class Sriwijaya extends Comp_maskapai_base{
 	
 	function __construct() {
 		parent::__construct();
+		foreach(parent::$_opt as $key => $val ){
+			$this->_opt->$key = $val;
+		}
 		$this->_cookies_file = "./components/partner/third_party/comp_maskapai/cookies/sriwijaya_airline.txt";
 	}
 	

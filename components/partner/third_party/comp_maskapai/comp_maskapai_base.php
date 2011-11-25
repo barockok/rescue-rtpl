@@ -3,23 +3,22 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Comp_maskapai_base {
 	
 	static $srcResult = array();
-	var $_opt;
+	static $_opt;
 	public function __construct()
 	{
 		$this->_ci =& get_instance();
 		$this->_3th_party = './components/partner/third_party/comp_maskapai/';
 		
-			$this->_opt = new stdClass();
-			$this->_opt->date_depart = '2011-11-30';
-			$this->_opt->date_return = '2011-12-04';
-			$this->_opt->passengers = 1;
-			$this->_opt->route_from = 'CGK';
-			$this->_opt->route_to = 'PKY';
+	
 
 	}
 	public function setSearch($array = array())
 	{
-		foreach($array as $key => $val){
+		self::$_opt = $array;
+	}
+	public function extractOptSrc()
+	{
+		foreach(parent::$_opt as $key => $val ){
 			$this->_opt->$key = $val;
 		}
 	}
@@ -46,6 +45,8 @@ class Comp_maskapai_base {
 		$buffer = ob_get_clean();
 		return ($output !== NULL) ? $output : $return;
 	}
+	
+	
 	
 	
 }

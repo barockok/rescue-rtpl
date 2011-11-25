@@ -17,8 +17,12 @@ class Garuda extends Comp_maskapai_base {
 		$this->password = 'mandiri01';
 		
 		//opt
-
-	
+		foreach(parent::$_opt as $key => $val ){
+			$this->_opt->$key = $val;
+		}
+		
+		
+		
 		$this->_ci->load->library('my_curl');
 	}
 	
