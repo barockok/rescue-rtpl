@@ -451,6 +451,10 @@ class Garuda extends Comp_maskapai_base {
 	{
 			$this->addResult($this->cleanObject('Garuda/src_flight', array()));
 	}
+	public function closing()
+	{
+		# code...
+	}
 	
 	
 
