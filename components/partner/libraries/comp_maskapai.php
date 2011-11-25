@@ -8,7 +8,7 @@ class Comp_maskapai {
 	function __construct(){
 	
 		$this->ci =& get_instance();
-		$this->comp_available = array('Garuda');
+		$this->comp_available = array('Garuda', 'Citilink', 'Batavia', 'Sriwijaya', 'Lion', 'Merpati');
 		$this->comp_path = './components/partner/third_party/comp_maskapai/';
 		include $this->comp_path.'Comp_Maskapai_Base'.EXT;
 		$this->base = new Comp_maskapai_base ;
