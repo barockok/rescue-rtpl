@@ -10,24 +10,39 @@ class Merpati extends Comp_maskapai_base {
 	private $_detail_flight_url = 'https://www.merpati.co.id/b2b/WebService/BaseService.asmx/GetSelectFlight';
 	private $_load_step_url = 'https://www.merpati.co.id/b2b/WebService/UtilService.asmx/loadstep3';
 	private $_logout_url = 'https://www.merpati.co.id/b2b/WebService/BaseService.asmx/Logout';
+	var $route_from;
+	var $route_to;
+	var $date_depart;
+	var $date_return;
+	
 	
 	function __construct() {
 		parent::__construct();
+		$this->_opt->date_return = '';
 		foreach(parent::$_opt as $key => $val ){
 			$this->_opt->$key = $val;
 		}
 		$this->_ci->load->library('my_curl');
 		$this->_cookies_file = "./components/partner/third_party/comp_maskapai/cookies/merpati_airline.txt";
-		
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
 		);
+		
+		
 	}
 	
 	
 	function index() {
-		
 		echo 'Merpati';
+	}
+	
+	function dateAdd($date){
+		$length = strlen($date);
+		if ($length<2) {
+			return '0'.$date;
+		}else{
+			return $date;
+		}
 	}
 	
 	function login(){
@@ -92,14 +107,14 @@ class Merpati extends Comp_maskapai_base {
 	}
 	
 	function search(){
-		
 		$this->login();
 		$roundTrip = false;
+		$dateReturn = $this->_opt->date_return;
 		$dateExplode = explode('-',$this->_opt->date_depart);
 		$post_data = array(
 			'fromAirport'	=> $this->_opt->route_from, 
 			'toAirport'		=> $this->_opt->route_to,
-			'dateFrom'		=> $dateExplode[0].$dateExplode[1].$dateExplode[2], //Tanggal Keberangkatan
+			'dateFrom'		=> $dateExplode[0].$dateExplode[1].$this->dateAdd($dateExplode[2]), //Tanggal Keberangkatan
 			'dateTo'		=> '', //Tanggal Kembali di set jika pulang pergi
 			'iAdult' 		=> $this->_opt->passengers , //Jumlah tiket yang di pesan untuk orang dewasa (diatas 12 tahun)
 			'iChild'		=> 0, //Jumlah tiket yang dipesan untuk anak kecil (dari umur 2 tahun sampai 12 tahun)
@@ -109,7 +124,7 @@ class Merpati extends Comp_maskapai_base {
 			'FareSelect'	=> '',
 			'dayRange'		=> '0', //default
 		);
-		//echo $post_data['dateFrom'];
+		
 		$conf = array(
 			'httpheader'		=> $this->_headerData,
 			'url'				=> $this->_search_url,
@@ -125,11 +140,12 @@ class Merpati extends Comp_maskapai_base {
 			'postfields'		=> json_encode($post_data),
 			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
 		);
+		
 		$this->_ci->my_curl->setup($conf);
 		$this->_ci->my_curl->exc();		
 		$ret = $this->mainPage();
 	    $p = str_get_html($ret);
-		if (!$html = $p->find('table[id=tabOutward] tbody',0)) return array();
+		if (!$html = $p->find('table[id=tabOutward] tbody tr',1)) return array();
 
 		$jumlahPenerbangan = $p->find('table[id=tabOutward] tbody tr');
 		$dataPenerbangan = $p->find('table[id=tabOutward] tbody tr',0)->find('td');
@@ -198,7 +214,132 @@ class Merpati extends Comp_maskapai_base {
 				}
 			}
 			//return array('b', 'm');
-			return $dataPenerbanganBerangkat;
+			if ($dateReturn) {
+				$result = array_merge($dataPenerbanganBerangkat,$this->returnSearch());
+				return $result;
+			}else{
+				return $dataPenerbanganBerangkat;
+			}
+			//return $dataPenerbanganBerangkat;
+		}
+		
+		function returnSearch(){
+			$this->login();
+			$dateExplodeReturn = explode('-',$this->_opt->date_return);
+			$this->_ci->load->helper('array');
+			$yearReturn = str_split($dateExplodeReturn[0]);
+			
+			$temp = '';
+			$temp = $this->_opt->route_from;
+ 			$from = $this->_opt->route_from = $this->_opt->route_to;
+ 			$to	 = $this->_opt->route_to = $temp;
+			
+			$roundTrip = true;
+			$dateExplode = explode('-',$this->_opt->date_depart);
+			
+			$post_data = array(
+				'fromAirport'	=> $from, 
+				'toAirport'		=> $to,
+				'dateFrom'		=> $dateExplode[0].$dateExplode[1].$this->dateAdd($dateExplode[2]), //Tanggal Keberangkatan
+				'dateTo'		=> '', //Tanggal Kembali di set jika pulang pergi
+				'iAdult' 		=> $this->_opt->passengers , //Jumlah tiket yang di pesan untuk orang dewasa (diatas 12 tahun)
+				'iChild'		=> 0, //Jumlah tiket yang dipesan untuk anak kecil (dari umur 2 tahun sampai 12 tahun)
+				'iInfant'		=> 0, 
+				'BDClass'		=> 'Y', //value 'Y' untuk Ekonomi,value 'C' untuk bisnis
+				'isSearchGroup'	=> '0', //value bernilai 0 atau 1
+				'FareSelect'	=> '',
+				'dayRange'		=> '0', //default
+			);
+			//echo $post_data['dateFrom'];
+			$conf = array(
+				'httpheader'		=> $this->_headerData,
+				'url'				=> $this->_search_url,
+				'timeout'			=> 30,
+				'header'			=> 0,
+				'followlocation'	=> 1,
+				'cookiejar'			=> $this->_cookies_file,
+				'cookiefile'		=> $this->_cookies_file,
+				'returntransfer'	=> 1,
+				'post'				=> true,
+				'referer'			=> $this->_refer,
+				'ssl_verifyhost'	=> 0,
+				'postfields'		=> json_encode($post_data),
+				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+			);
+			$this->_ci->my_curl->setup($conf);
+			$this->_ci->my_curl->exc();		
+			$ret = $this->mainPage();
+		    $p = str_get_html($ret);
+			if (!$html = $p->find('table[id=tabOutward] tbody',0)) return array();
+
+			$jumlahPenerbangan = $p->find('table[id=tabOutward] tbody tr');
+			$dataPenerbangan = $p->find('table[id=tabOutward] tbody tr',0)->find('td');
+
+			$cntPenerbangan = count($jumlahPenerbangan);
+			$cntDataPenerbangan = count($dataPenerbangan);
+			$dataPenerbanganBerangkat = array();
+			$index = 0;
+			$this->_ci->load->helper('array');
+			for ($i= 1; $i < $cntPenerbangan; $i++) { 
+				for ($j=0; $j <= $cntDataPenerbangan; $j++) {
+					$jml_kursi = $p->find('table[id=tabOutward] tbody tr',$i)->find('td');
+
+					if ($jml_kursi[6] == 'C') { continue;}
+
+					if ($roundTrip) {
+						$t_return = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',1)->plaintext).','.preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',2)->plaintext);
+						$type = 'Return';
+					}else{
+						$t_return = '';
+						$type = 'Depart';
+					}
+
+					$date = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',1)->find('td',1)->plaintext);
+					$departTime = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',2)->plaintext),5);
+					$arrivalTime = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',3)->plaintext),5);
+					$class = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',5)->plaintext);
+					$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',7)->plaintext);
+
+					$cprice = str_replace(',','',$price);
+					$cleanPrice = explode('.',$cprice);
+
+					if(!is_numeric($cleanPrice[0])) continue;
+
+					$cnt_jml_kursi = str_split($jml_kursi[6]->plaintext);
+					$cdate = explode('/',$date);
+					$formatedDate = $cdate[2].'-'.$cdate[1].'-'.$cdate[0];
+
+					if (count($cnt_jml_kursi) == 1) { 
+						$t_transit_depart = NULL;
+						$t_transit_arive = NULL;
+						$t_arive = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$p->find('table[id=tabOutward] tbody tr',$i)->find('td',3)->plaintext);
+						$cnt_jml_kursi = str_split($p->find('table[id=tabOutward] tbody tr',2)->find('td',6)->plaintext);
+						$d_t_arrive = NULL;
+						$d_t_depart = NULL;
+					}else{
+
+
+						$t_transit_depart = element(1, $departTime);
+						$t_transit_arive =  element(0, $arrivalTime);
+						$t_arive = element(1, $arrivalTime);
+						$d_t_arrive = $formatedDate;
+						$d_t_depart = $formatedDate;
+					}
+
+					$dataPenerbanganBerangkat[$i]['company'] 			= 'MERPATI';		
+					$dataPenerbanganBerangkat[$i]['t_depart'] 			= $formatedDate.' '.element(0, $departTime);
+					$dataPenerbanganBerangkat[$i]['t_transit_arrive'] 	= $d_t_arrive.' '.$t_transit_arive;
+					$dataPenerbanganBerangkat[$i]['t_transit_depart']   = $d_t_depart.' '.$t_transit_depart;
+					$dataPenerbanganBerangkat[$i]['t_arrive']			= $formatedDate.' '.$t_arive;
+					$dataPenerbanganBerangkat[$i]['type'] 				= $type;
+					$dataPenerbanganBerangkat[$i]['class'] 				= $class;
+					$dataPenerbanganBerangkat[$i]['price'] 				= $cleanPrice[0];
+					$dataPenerbanganBerangkat[$i]['route'] 				= $post_data['fromAirport'].','.$post_data['toAirport'];
+					$dataPenerbanganBerangkat[$i]['meta_key']			= '';
+					}
+				}
+				//return array('b', 'm');
+				return $dataPenerbanganBerangkat;
 		}
 	
 	//don't delete this
