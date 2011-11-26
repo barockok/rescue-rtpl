@@ -7,35 +7,108 @@ class Citilink extends Comp_maskapai_base {
 
 	function __construct(){
 		parent::__construct();
-		$this->_cookies_file = realpath('./cookies/citilink_airline.txt');
-		$this->login_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
-		$this->_refer_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
-		$this->src_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
+		$this->_cookies_file = realpath('./components/partner/third_party/comp_maskapai/cookies/citilink.txt');
+		$this->_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		
 		//define variable
 		$this->_opt = new stdClass();
 		$this->_opt->date_depart =  '2011-11-19';
-		$this->_opt->date_return =  '2011-11-20';
+		$this->_opt->date_return =  null;
 		$this->_opt->passengers = 5;
 		$this->_opt->route_from = 'CGK';
 		$this->_opt->route_to = 'DPS';
 		
+		$this->_ci->load->library('my_curl');
+	}
+	
+	function topage($url , $return = true){
+		$conf = array(
+				'url' 				=> $url,
+				'cookiejar' 		=> $this->_cookies_file,
+				'cookiefile' 		=> $this->_cookies_file,
+				'header'			=> 0,
+				'nobody'			=> false,
+				'returntransfer' 	=> 1,
+				'SSL_VERIFYPEER'	=> 0,
+				'ssl_verifyhost'	=> 0,
+		);
+		$this->_ci->my_curl->setup($conf);
+		$exc = $this->_ci->my_curl->exc();
+		if($return == true ) return $this->_ci->my_curl;
+		return $exc;
 	}
 	
 	function login(){
-		//$this->dom->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');	
+		$start = str_get_html($this->topage($this->_url,false));
+		$vKey = $start->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');
+		
+		
 		$post_data = array(		
-			'__EVENTTARGET' => 'ctrPageHeader:lnkAgentAvailability',
+			'__EVENTTARGET' => '',
 			'__EVENTARGUMENT' => '',
-			'__VIEWSTATEKEY' => $this->dom->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value'),			
+			'__VIEWSTATEKEY' => $vKey,
 			'__VIEWSTATE' => '',
 			'ctrLogonBase:tboAgentLogon' => 'mandiri4',
 			'ctrLogonBase:tboAgentPassword' => 'booking',
 			'ctrLogonBase:tboAgentAgencyCode' => 'cgkprimaag01',
-			'ctrLogonBase:btmLogonTravelAgent.x' => '0',
-			'ctrLogonBase:btmLogonTravelAgent.y' => '0'
+			'ctrLogonBase:btmLogonTravelAgent.x' => '38',
+			'ctrLogonBase:btmLogonTravelAgent.y' => '7'
+		);		
+		
+		$conf = array(
+			'url' 				=> $this->_url,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'timeout'			=> 30,
+			'header'			=> 0,
+			'nobody'			=> false,
+			'returntransfer' 	=> 1,
+			'maxredirs'			=> 10,
+			'followlocation'	=> 1,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> '__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATEKEY='.$vKey.'&__VIEWSTATE=&ctrLogonBase%3AtboAgentLogon=mandiri4&ctrLogonBase%3AtboAgentPassword=booking&ctrLogonBase%3AtboAgentAgencyCode=cgkprimaag01&ctrLogonBase%3AbtmLogonTravelAgent.x=38&ctrLogonBase%3AbtmLogonTravelAgent.y=7',
+			//'postfields'		=> http_build_query($post_data),
+			'post'				=> true,
+			'referer'			=> $this->_url,
+			'useragent'			=> 'User-Agent:Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2'
 		);
+		
+//		echo $conf['postfields']."<br/> <br/>";
+//		echo http_build_query($post_data)."<br/><br/>";
+		
+		$this->_ci->my_curl->setup($conf);
+		return $exc = str_get_html($this->_ci->my_curl->exc());
+		
 	}
+	
+	
+	function toSearchForm(){
+		$vKey = $this->login()->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');
+		
+		$conf = array(
+			'url' 				=> $this->_url,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'timeout'			=> 30,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'returntransfer' 	=> 1,
+			'maxredirs'			=> 10,
+			'followlocation'	=> 1,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> '__EVENTTARGET=ctrPageHeader%3AlnkAgentAvailability&__EVENTARGUMENT=&__VIEWSTATEKEY='.$vKey.'&__VIEWSTATE=',
+			'post'				=> true,
+			'referer'			=> $this->_url,
+			'useragent'			=> 'User-Agent:Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2'
+		);
+		
+		$this->_ci->my_curl->setup($conf);
+		return $exc = str_get_html($this->_ci->my_curl->exc());
+	}
+	
+	
 	
 	function src_flight(){
 		$depart_flight = array();
@@ -53,17 +126,16 @@ class Citilink extends Comp_maskapai_base {
 			
 	//		print_r($return_flight = $this->src('return'));
 		}else{
-	//		print_r($depart_flight = $this->src('depart'));
+			print_r($depart_flight = $this->src('depart'));
 		}	
-		return array_merge($return_flight, $depart_flight );
+		//return array_merge($return_flight, $depart_flight);
 	/*
 		$this->addResFlight($return_flight);
 		$this->addResFlight($depart_flight);
 	*/	
 	}
 	
-	function src($flight_type){		
-		//$this->login();
+	function src($flight_type){				
 		/*$post_data = array(		
 			'__EVENTTARGET' => 'ctrPageHeader:lnkAgencySalesReport',
 			'__EVENTARGUMENT' => '',
@@ -83,17 +155,32 @@ class Citilink extends Comp_maskapai_base {
 			'ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightSearchBase:btmSearchm.x' => '33',
 			'ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightSearchBase:btmSearchm.y' => '5'
 		);*/
+					
+		$vKey = $this->toSearchForm()->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');		
+		$conf = array(
+			'url' 				=> $this->_url,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'timeout'			=> 30,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'returntransfer' 	=> 1,
+			'maxredirs'			=> 10,
+			'followlocation'	=> 1,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> '__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATEKEY='.$vKey.'&__VIEWSTATE=&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AFlightType=rdoOneway&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AcmbOrigin=CGK&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AcmbDestination=BDJ&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlDepatureDate%3AcmbMonthYear=201111&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlDepatureDate%3AcmbDay=29&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlReturnDate%3AcmbMonthYear=201111&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlReturnDate%3AcmbDay=26&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbAdult=1&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbChild=0&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbInfant=0&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ACmbAvailabilityModes=111&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AbtmSearchm.x=40&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AbtmSearchm.y=12',
+			'post'				=> true,
+			'referer'			=> $this->_url,
+			'useragent'			=> 'User-Agent:Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.121 Safari/535.2'
+		);
 		
-		$file_arr = array(
-			'./components/partner/third_party/comp_maskapai/citilink_html/ct_1/Citilink.htm',
-			'./components/partner/third_party/comp_maskapai/citilink_html/ct_2/Citilink.htm',
-			'./components/partner/third_party/comp_maskapai/citilink_html/ct_3/Citilink.htm',
-			'./components/partner/third_party/comp_maskapai/citilink_html/ct_4/Citilink.htm'
-		);				
-		
-		shuffle($file_arr);		
+		$this->_ci->my_curl->setup($conf);
+		$dom = str_get_html($this->_ci->my_curl->exc());	
 						
-		$dom = file_get_html($file_arr[1]);
+		//$dom = file_get_html($file_arr[1]);
+		
+		
 		if (!$html = $dom->find('table[id=FlightAvailability0] tbody',0)) return array(); 
 		
 		$total_flight = count($dom->find('table[id=FlightAvailability0] tbody tr')); //get total flight by count rows in table
@@ -150,7 +237,8 @@ class Citilink extends Comp_maskapai_base {
 	// API REQUIREMNET 
 	public function doSearch()
 	{
-			$this->addResult($this->cleanObject('Citilink/src_flight', array()));
+			//$this->addResult($this->cleanObject('Citilink/src_flight', array()));
+			$this->addResult($this->src_flight());
 	}
 	
 	
