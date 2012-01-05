@@ -15,6 +15,12 @@ $hook['pre_system']					= array(
 			                                'filename' => 'app_hook.php',
 			                                'filepath' => 'hooks/'
 			                                );
+$hook['pre_controller'][] 			= array(
+										    'class'    => '',
+										    'function' => 'initialize_php_activerecord',
+										    'filename' => 'ActiveRecord.php',
+										    'filepath' => 'third_party/php-activerecord'                                
+										);
 
 
 /* End of file hooks.php */

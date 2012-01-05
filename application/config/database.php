@@ -49,9 +49,9 @@ $active_group = 'default';
 $active_record = TRUE;
 
 $db['default']['hostname'] = 'localhost';
-$db['default']['username'] = '';
-$db['default']['password'] = '';
-$db['default']['database'] = '';
+$db['default']['username'] = 'root';
+$db['default']['password'] = 'root';
+$db['default']['database'] = 'rt_baseapp_bck';
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
@@ -63,6 +63,22 @@ $db['default']['dbcollat'] = 'utf8_general_ci';
 $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
+
+$db['api']['hostname'] = 'localhost';
+$db['api']['username'] = 'root';
+$db['api']['password'] = 'root';
+$db['api']['database'] = 'rt_api';
+$db['api']['dbdriver'] = 'mysql';
+$db['api']['dbprefix'] = '';
+$db['api']['pconnect'] = TRUE;
+$db['api']['db_debug'] = TRUE;
+$db['api']['cache_on'] = FALSE;
+$db['api']['cachedir'] = '';
+$db['api']['char_set'] = 'utf8';
+$db['api']['dbcollat'] = 'utf8_general_ci';
+$db['api']['swap_pre'] = '';
+$db['api']['autoinit'] = TRUE;
+$db['api']['stricton'] = FALSE;
 
 
 /* End of file database.php */
