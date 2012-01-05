@@ -8,7 +8,7 @@ class Partner extends MX_Controller
 	}
 	public function index()
 	{
-		echo 'Added Bithc';
+		echo phpinfo();
 	}
 	public function test()
 	{

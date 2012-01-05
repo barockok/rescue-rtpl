@@ -9,7 +9,12 @@
 |	http://codeigniter.com/user_guide/general/hooks.html
 |
 */
-
+$hook['pre_system']					= array(
+                                			'class'    => 'App_hook',
+			                                'function' => 'setting_locale',
+			                                'filename' => 'app_hook.php',
+			                                'filepath' => 'hooks/'
+			                                );
 
 
 /* End of file hooks.php */
