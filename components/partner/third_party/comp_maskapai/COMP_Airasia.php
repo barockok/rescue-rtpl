@@ -9,6 +9,7 @@ class Airasia extends Comp_maskapai_base {
 	public function doSearch()
 	{
 	//	$this->addResult(array('a', 'b', 'c'));
+	return array('sug', 'sih');
 	}
 	
 }

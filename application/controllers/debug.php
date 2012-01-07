@@ -10,10 +10,25 @@ class Debug extends MX_Controller
 	{
 		parent::__construct();
 	}
-	public function test1()
+	public function maskapai()
 	{
-		$clients = Client::find(1);
-		printDebug($clients);
+		$maskapai 	= $this->uri->rsegment(3);
+		$func 	 	= $this->uri->rsegment(4);
+		if(!$maskapai){
+			echo ('no maskapai specify');
+			exit;
+		}
+		$this->load->library('partner/comp_maskapai');
+		$fac = $this->comp_maskapai->load($maskapai);
+		
+		if(!$func){
+			 echo ('not function specify');
+		}else{
+			printDebug($fac->$func());
+		}
+		$fac->closing();
+		
+		
 	}
 	
 }

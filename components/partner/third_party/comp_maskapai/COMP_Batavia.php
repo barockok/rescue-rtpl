@@ -352,7 +352,7 @@ class Batavia extends Comp_maskapai_base {
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id				= 1;
 			
-			foreach($opt as $key => $val ) $this->_opt->$key = $val;
+			//foreach($opt as $key => $val ) $this->_opt->$key = $val;
 						
 			if ($this->_opt->date_return) {
 				$result1 = $this->search();
