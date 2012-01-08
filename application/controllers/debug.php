@@ -95,4 +95,71 @@ class Debug extends MX_Controller
 	{
 		echo CURLAUTH_ANY;
 	}
+
+	public function test2()
+	{
+	//	$this->load->library('acurl');
+		$this->load->library('rest', array(
+			'server' => 'http://app.dev-rumahtiket.com/', 
+			'http_user' => 'admin',
+			'http_pass' => '1234',
+			'http_auth' => 'basic',
+			)
+		);
+		
+		$this->rest->api_key('abc', 'X-API-KEY');
+		$conf = array(
+					'options' => 
+							array(
+								'conditions' => array('id = ?' ,82),
+								'limit' => 1
+							),
+					'serialize' => array(
+						'include' => array('items'),
+					)
+				
+				);
+		$res = $this->rest->post('db/find/search_fare_log/all', $conf, 'json');
+//		$res = $this->rest->get('debug/test4',null, 'json');
+		$this->rest->debug();
+		printDebug($res);
+		
+	}
+	public function test4()
+	{
+		$tes = Search_fare_item::all(array('include' => array('log')));
+		$res = array();
+		/*
+		foreach($tes as $item){
+			array_push($res, $item->to_array() );
+		}
+		*/
+		printDebug($tes);
+	}
+	public function test3()
+	{
+		http://app.dev-rumahtiket.com/
+		$this->load->library('rest', array(
+			'server' => 'http://app.dev-rumahtiket.com/', 
+			'http_user' => 'admin',
+			'http_pass' => '1234',
+			'http_auth' => 'basic',
+			)
+		);
+		$this->rest->api_key('abc', 'X-API-KEY');
+		$res = $this->rest->get('partner/search/?id=1&route_to=SUB&route_from=CGK&date_depart=2012-02-15&passengers=1&maskapai=sriwijaya', null, 'json');
+			printDebug($res);
+		
+		
+	}
+	public function test5()
+	{
+		
+		printDebug($digest);
+	}
+	public function test6()
+	{
+		echo CURLAUTH_ANY;
+	}
+
 }
