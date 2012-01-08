@@ -6,7 +6,7 @@ class Citilink extends Comp_maskapai_base {
 
 	function __construct(){
 		parent::__construct();
-		$this->_cookies_file = './components/partner/third_party/comp_maskapai/cookies/citilink.txt';
+		$this->_cookies_file = dirname(__FILE__).'/cookies/citilink.txt';
 		$this->_url = 'https://www.citilink.co.id/giaidb2b/agent.aspx';
 		$this->agency_code = 'cgkprimaag01';
 		$this->username = 'mandiri4';

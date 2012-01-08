@@ -10,7 +10,7 @@ class Comp_maskapai {
 		$this->ci =& get_instance();
 		$this->comp_available = array('Citilink');
 		shuffle($this->comp_available);
-		$this->comp_path = './components/partner/third_party/comp_maskapai/';
+		$this->comp_path = dirname(__FILE__).'/../third_party/comp_maskapai/';
 		include $this->comp_path.'COMP_Maskapai_Base'.EXT;
 		$this->base = new Comp_maskapai_base ;
 	}

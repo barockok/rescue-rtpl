@@ -7,7 +7,7 @@ class Garuda extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();		
 		//define variable
-		$this->_cookies_file = './components/partner/third_party/comp_maskapai/cookies/garuda.txt';
+		$this->_cookies_file = dirname(__FILE__).'/cookies/garuda.txt';
 		$this->login_url = 'http://gos.garuda-indonesia.com/saci/client.php';
 		$this->_refer_url = 'http://gos.garuda-indonesia.com/sac/';
 		$this->src_url = 'http://gos.garuda-indonesia.com/saci/clientavail.php';

@@ -6,4 +6,5 @@ class Flight_booking_data extends ActiveRecord\Model
 		array('fare_data', 'class_name' => 'Search_fare_item', 'foreign_key' => 'fare_id'),
 	);
 	
+	
 }

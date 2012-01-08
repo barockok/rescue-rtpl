@@ -16,7 +16,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	function __construct() {
 		parent::__construct();
 		$this->roundTrip = false;
-		$this->_cookies_file = "./components/partner/third_party/comp_maskapai/cookies/sriwijaya_airline.txt";
+		$this->_cookies_file = dirname(__FILE__)."/cookies/sriwijaya_airline.txt";
 		$this->_ci->load->library('my_curl');
 		$this->login();
 	}

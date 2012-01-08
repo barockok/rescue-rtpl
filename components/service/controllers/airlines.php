@@ -75,6 +75,7 @@ class Airlines extends REST_Controller
 				}
 			
 		}
+		$this->response($result);
 		
 		
 		// START RETRIVE RESULT FROM DB
@@ -87,6 +88,42 @@ class Airlines extends REST_Controller
 		if($res == FALSE) $this->response('null', 500);
 		$res['log'] = $param;
 		$this->response($res);
+		
+	}
+	public function book_post()
+	{
+	
+		try {
+			$fare = Search_fare_item::find($this->input('fare_id'));
+			$fare_data = $fare->to_array(array('include' => array('log')));
+		} catch (Exception $e) {
+			$this->response('there is no valid fare with id posted' ,500);
+		}
+		
+		$this->load->library('comp_maskapai');
+		$maskapai = $this->comp_maskapai->load( element('company', $fare_data) );
+		$book = $maskapai->doBooking($fare_data, $passengers_data, $customer_data);
+		
+		switch (TRUE) {
+			case (is_numeric($book)):
+				// price change ..
+				// update selected fare price
+				$fare->price = $book;
+				$fare->save();
+				// need tobe rebook
+				$this->response(array('info' => 'price change', 'new_price' => $fare->price ), 500);
+				break;
+			case(is_array($book)):
+				// book success
+				
+				break;
+			default:
+				// book failed
+				break;
+		}
+		
+		
+		
 		
 	}
 	
@@ -154,10 +191,7 @@ class Airlines extends REST_Controller
 			return FALSE;
 		}
 	}
-	public function book_post()
-	{
-		# code...
-	}
+	
 	private function _count_flight($model)
 	{
 		$flight_coll = array();

@@ -81,7 +81,7 @@ class Debug extends MX_Controller
 			)
 		);
 		$this->rest->api_key('abc', 'X-API-KEY');
-		$res = $this->rest->get('partner/airlines/search?id=150&airlines=garuda', null, 'json');
+		$res = $this->rest->get('service/airlines/search?id=150&airlines=batavia', null, 'json');
 		
 		
 		printDebug($res);
@@ -98,5 +98,21 @@ class Debug extends MX_Controller
 	{
 		echo CURLAUTH_ANY;
 	}
-
+	public function test7()
+	{
+		$conf = array(
+			'bill_name' => 'Zidni Mubarock',
+			'bill_phone' => '62363269',
+			'bill_mobile' => '49648939',
+			'bill_email' => 'zidmubarock@gmail.com',
+			'user_id'	=> '26',
+			'depart_fare_id' => '189',
+			'return_fare_id' => '300',
+			
+		);
+		$fare_data = new Flight_booking($conf);
+		if(!$fare_data->is_valid()){
+			printDebug($fare_data->errors->full_messages());
+		}
+	}
 }
