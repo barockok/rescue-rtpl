@@ -1,6 +1,6 @@
 <?
 if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Partner extends MX_Controller
+class Partner extends REST_Controller
 {
 	public function __construct()
 	{
@@ -30,5 +30,15 @@ class Partner extends MX_Controller
 		$this->benchmark->mark('code_end');
 		printDebug($result);
 		echo 'Running Time : '.$this->benchmark->elapsed_time('code_start', 'code_end');
+	}
+	public function search_get()
+	{
+		$params = elements(array('route_from', 'route_to', 'date_depart', 'date_return', 'id', 'passengers'), $this->get(), NULL);
+		$this->load->library('comp_maskapai');
+		$comp 	= $this->comp_maskapai->_load($this->get('maskapai'));
+		$result = $comp->doSearch($params);
+		if(count($result) == 0) $this->response('null', 500);
+		$this->response($result, 200);
+		
 	}
 }

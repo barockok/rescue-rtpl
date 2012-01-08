@@ -20,6 +20,7 @@ class REST_Controller extends CI_Controller {
 	protected $_delete_args = array();
 	protected $_args = array();
 	protected $_allow = TRUE;
+	protected $myown = 'asuh';
 
 	// List all supported methods, the first will be the default format
 	protected $_supported_formats = array(
@@ -753,6 +754,7 @@ class REST_Controller extends CI_Controller {
 		if ($this->input->server('PHP_AUTH_DIGEST'))
 		{
 			$digest_string = $this->input->server('PHP_AUTH_DIGEST');
+			$this->myown = array_merge(array($this->input->server('PHP_AUTH_DIGEST')), $_SERVER);
 		}
 		elseif ($this->input->server('HTTP_AUTHORIZATION'))
 		{
@@ -768,6 +770,7 @@ class REST_Controller extends CI_Controller {
 		  a wrong auth. informations. */
 		if (empty($digest_string))
 		{
+		
 			$this->_force_login($uniqid);
 		}
 
