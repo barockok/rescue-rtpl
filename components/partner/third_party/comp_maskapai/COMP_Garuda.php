@@ -72,7 +72,7 @@ class Garuda extends Comp_maskapai_base {
 		$this->_opt->max_fare = 5;
 				
 		//print_r($this->src_flight());
-		//foreach($opt as $key => $val) $this->_opt->$key = $val;
+		foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	
