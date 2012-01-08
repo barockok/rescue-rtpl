@@ -81,15 +81,18 @@ class Debug extends MX_Controller
 			)
 		);
 		$this->rest->api_key('abc', 'X-API-KEY');
-		$res = $this->rest->get('partner/search/?id=1&route_to=DPS&route_from=CGK&date_depart=2012-02-15&passengers=1&maskapai=garuda', null, 'json');
-			printDebug($res);
+		$res = $this->rest->get('partner/airlines/search?id=150&airlines=garuda', null, 'json');
+		
+		
+		printDebug($res);
+		$this->rest->debug();
 		
 		
 	}
 	public function test5()
 	{
-		$degest = Search_fare_item::last();
-		printDebug($digest);
+		$digest = Search_fare_item::last();
+		printDebug($digest->to_array());
 	}
 	public function test6()
 	{
