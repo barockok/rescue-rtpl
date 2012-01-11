@@ -205,8 +205,14 @@ class Table
 		$sql = $this->options_to_sql($options);
 		$readonly = (array_key_exists('readonly',$options) && $options['readonly']) ? true : false;
 		$eager_load = array_key_exists('include',$options) ? $options['include'] : null;
-
-		return $this->find_by_sql($sql->to_s(),$sql->get_where_values(), $readonly, $eager_load);
+		$res = $this->find_by_sql($sql->to_s(),$sql->get_where_values(), $readonly, $eager_load);
+		
+		/* Adding function to get the data for pagination
+		$options_b = $options;
+		if(array_key_exists('limit', $option_b)) unset($option_b['limit']);
+		if(array_key_exists('offset', $option_b)) unset($option_b['offset']);
+		*/
+		return $res;
 	}
 
 	public function find_by_sql($sql, $values=null, $readonly=false, $includes=null)

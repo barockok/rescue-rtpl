@@ -81,7 +81,7 @@ class Debug extends MX_Controller
 			)
 		);
 		$this->rest->api_key('abc', 'X-API-KEY');
-		$res = $this->rest->get('service/airlines/search?id=150&airlines=batavia', null, 'json');
+		$res = $this->rest->get('service/airlines/search?id=163&airlines=garuda', null, 'json');
 		
 		
 		printDebug($res);

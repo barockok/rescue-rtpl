@@ -50,21 +50,39 @@ class Db extends REST_Controller
 		try {
 			
 			$q = ($params != FALSE ) ? $class_name::$method($params) : $class_name::$method() ;
+			$param_b = $params;
+			
+			if(array_key_exists('limit', $param_b)) unset($param_b['limit']);
+			if(array_key_exists('offset', $param_b)) unset($param_b['offset']);
+			
+			$q_count = ($params != FALSE ) ? $class_name::count($param_b) : 1 ; 
+			
 			$res = array();
+			
 			if($this->post('serialize')){
 				$serialize = elements(array('only', 'except', 'methods' , 'include', 'only_method', 'skip_instruct'), $this->post('serialize'), FALSE);
 				foreach($serialize as $key => $val ) if($val == false ) unset($serialize[$key]) ;
 			}else{
 				$serialize = false;
 			}
-			foreach($q as $item){
-				if($serialize != false){
-					array_push($res, $item->to_array($serialize));
-				}else{
-					array_push($res, $item->to_array());
-				}
+			if($method == 'all'){
+			
+				foreach($q as $item){
+					if($serialize != false){
+						array_push($res, $item->to_array($serialize));
+					}else{
+						array_push($res, $item->to_array());
+					}
 				
+				}
+				$res = array(
+					'results' => $res,
+					'found_rows' => $q_count, 
+				);
+			}else{
+				$res = (!$serialize) ? $q : $q->to_array($serialize);
 			}
+			
 			$this->response($res, 200);
 			
 		} catch (Exception $e) {
@@ -74,11 +92,35 @@ class Db extends REST_Controller
 	}
 	public function create_post()
 	{
-		# code...
+		if(! $table = $this->uri->rsegment(3) ) $this->response('no table specify', 500);
+		if( ! $data = $this->post('data') ) $this->response('no data passed', 500);
+		
+		$table_name = ucfirst($table);
+		try {
+			$q = new $table_name($data);
+			if(!$q->is_valid())
+				$this->response(array('error' => $q->errors->full_messages()), 500);
+			else
+				$q->save();
+			$this->response($q->to_array(),200);
+		} catch (Exception $e) {
+			$this->response('something not good, sorry : ( )', 500);
+		}
 	}
 	public function update_put()
 	{
-		# code...
+		if(! $table = $this->uri->rsegment(3) ) $this->response('no table specify', 500);
+		if(! $id = $this->uri->rsegment(4)) $this->response('no ID provide', 500);
+		if(! $data = $this->post('data') ) $this->response('no data passed', 500);
+		try {
+			try {
+				
+			} catch (Exception $e) {
+				
+			}
+		} catch (Exception $e) {
+			
+		}
 	}
 	public function delete_delete()
 	{

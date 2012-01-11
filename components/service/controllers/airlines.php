@@ -75,7 +75,7 @@ class Airlines extends REST_Controller
 				}
 			
 		}
-		$this->response($result);
+	//	$this->response($result);
 		
 		
 		// START RETRIVE RESULT FROM DB
