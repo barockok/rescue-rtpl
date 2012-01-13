@@ -74,14 +74,14 @@ class Debug extends MX_Controller
 	{
 		http://app.dev-rumahtiket.com/
 		$this->load->library('rest', array(
-			'server' => 'http://app.dev-rumahtiket.com/', 
+			'server' => 'http://api.rumahtiket.com/', 
 			'http_user' => 'admin',
 			'http_pass' => '1234',
 			'http_auth' => 'basic',
 			)
 		);
 		$this->rest->api_key('abc', 'X-API-KEY');
-		$res = $this->rest->get('service/airlines/search?id=163&airlines=garuda', null, 'json');
+		$res = $this->rest->post('db/find/user/all');
 		
 		
 		printDebug($res);
