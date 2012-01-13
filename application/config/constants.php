@@ -36,6 +36,18 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
+// DATABASE CONSTANT //
+define('DB_DEF_HOST', 'localhost');
+define('DB_DEF_USER', 'root');
+define('DB_DEF_PASS', 'root');
+define('DB_DEF_NAME', 'rt_baseapp_bck');
+
+define('DB_API_HOST', 'localhost');
+define('DB_API_USER', 'root');
+define('DB_API_PASS', 'root');
+define('DB_API_NAME', 'rt_api');
+
+
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

@@ -5,6 +5,9 @@ class User extends ActiveRecord\Model
 	static $belongs_to = array(
 		array('role','class_name' => 'Role', 'foreign_key' => 'role_id')
 	);
+	static $has_many = array(
+		array('pages', 'class_name' => 'Page', 'foreign_key' => 'author')
+		);
 	static $has_one = array(
 		array('user_detail', 'class_name' => 'User_detail', 'foreign_key' => 'user_id')
 	);

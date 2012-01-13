@@ -115,4 +115,11 @@ class Debug extends MX_Controller
 			printDebug($fare_data->errors->full_messages());
 		}
 	}
+	public function test8()
+	{
+		$q = Flight_booking_data::find('all');
+		foreach($q as $item){
+		printDebug($item->to_array(array('include' => array('fare_data', 'flight_booking'))));
+		}
+	}
 }

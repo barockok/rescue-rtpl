@@ -48,10 +48,10 @@
 $active_group = 'default';
 $active_record = TRUE;
 
-$db['default']['hostname'] = 'localhost';
-$db['default']['username'] = 'root';
-$db['default']['password'] = 'root';
-$db['default']['database'] = 'rt_baseapp_bck';
+$db['default']['hostname'] = DB_DEF_HOST;
+$db['default']['username'] = DB_DEF_USER;
+$db['default']['password'] = DB_DEF_PASS;
+$db['default']['database'] = DB_DEF_NAME;
 $db['default']['dbdriver'] = 'mysql';
 $db['default']['dbprefix'] = '';
 $db['default']['pconnect'] = TRUE;
@@ -64,10 +64,10 @@ $db['default']['swap_pre'] = '';
 $db['default']['autoinit'] = TRUE;
 $db['default']['stricton'] = FALSE;
 
-$db['api']['hostname'] = 'localhost';
-$db['api']['username'] = 'root';
-$db['api']['password'] = 'root';
-$db['api']['database'] = 'rt_api';
+$db['api']['hostname'] = DB_API_HOST;
+$db['api']['username'] = DB_API_USER;
+$db['api']['password'] = DB_API_PASS;
+$db['api']['database'] = DB_API_NAME;
 $db['api']['dbdriver'] = 'mysql';
 $db['api']['dbprefix'] = '';
 $db['api']['pconnect'] = TRUE;
