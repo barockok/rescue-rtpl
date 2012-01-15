@@ -38,6 +38,9 @@ class REST_Controller extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		set_error_handler('REST_Controller::_error_handler', E_ALL);
+		register_shutdown_function('REST_Controller::_shutdown_handler');
+		
 
 		// Lets grab the config and get ready to party
 		$this->load->config('rest');
@@ -231,6 +234,7 @@ class REST_Controller extends CI_Controller {
 	 */
 	public function response($data = array(), $http_code = null)
 	{
+		
 		// If data is empty and not code provide, error and bail
 		if (empty($data) && $http_code === null)
     	{
@@ -851,5 +855,89 @@ class REST_Controller extends CI_Controller {
 	protected function _format_jsonp($data = array())
 	{
 		return $this->get('callback') . '(' . json_encode($data) . ')';
+	}
+	
+	public function php_erro_handler()
+	{
+		
+	}
+	static function _error_handler($errno, $errstr, $errfile, $errline)
+	{
+		error_reporting(E_ALL);
+		ini_set('display_errors','Off'); 
+		if (!(error_reporting() & $errno)) {
+		        // This error code is not included in error_reporting
+		        return;
+		    }
+		
+			// prepare data
+			$return = array(
+				'ERROR_NO' => $errno,
+				'ERROR_MESSAGE' => $errstr,
+				'ERROR_FILE' => $errfile,
+				'ERROR_LINE' => $errline, 
+			);
+			switch ($errno) {
+				case E_NOTICE:
+				case E_USER_NOTICE:
+				break;
+			    case E_USER_ERROR:
+					$return['error_constant'] = 'E_USER_ERROR';
+			     	self::_output_error(array('error' => 'unknow'), 500, $return , TRUE, TRUE, TRUE);
+			        break;
+
+			    case E_USER_WARNING:
+					$return['error_constant'] = 'E_USER_ERROR';
+		      		self::_output_error(array('error' => 'unknow'), 500, $return , FALSE);
+			        break;
+
+			    case E_USER_NOTICE:
+					$return['error_constant'] = 'E_USER_ERROR';
+			      	self::_output_error(array('error' => 'unknow'),  500, $return, FALSE );
+			        break;
+
+			    default:
+					$return['error_constant'] = 'E_UNKNOW';
+			     	self::_output_error(array('error' => 'unknow'),  500, $return , TRUE, TRUE, TRUE);
+			        break;
+			    }
+
+	 	return true;
+	
+	}
+	public function _output_error($data = array(), $http_code = 500, $error_data = FALSE, $db = FALSE, $exit = FALSE , $email = FALSE)
+	{	
+
+			if($db == TRUE):
+				// put to database
+				$dbdata = array(
+					'meta' => json_encode($error_data),
+					'type' => $error_data['error_constant'],
+				);
+				$log = new Error_log($dbdata);
+				$log->save();
+			endif;
+			
+			// sending email
+
+			$output = json_encode($data);
+			header('HTTP/1.1: ' . $http_code);
+			header('Status: ' . $http_code);
+			header('Content-Length: ' . strlen($output));
+			if($exit == TRUE) exit($output);
+			echo $output;
+		
+	}
+
+	static function _shutdown_handler()
+	{
+		$error = error_get_last();
+		if($error['type'] == E_ERROR){
+			self::_output_error(array('error' => 'unknow'), 500,  $error, TRUE, TRUE, TRUE);
+		}
+		
+	}
+	static function _exception_handler(){
+		
 	}
 }

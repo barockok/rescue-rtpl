@@ -11,19 +11,32 @@ class Db extends REST_Controller
 		$table 	= $this->uri->rsegment(3);
 		$id 	= (!$this->uri->rsegment(4)) ? 'all' : $this->uri->rsegment(4);
 		
+		$option = $this->get('options');
+		$serialize = $this->get('serialize');	
 		$class_name = ucfirst($table);
 		try {
-			$q = $class_name::find($id);
+			
+			$q = $class_name::find($id);		
 			
 			if($id == 'all'){
 				$res = array();
-				foreach($q as $i)
-					array_push($res, $i->to_array());	
+				foreach($q as $i){	
+					if($serialize)
+						array_push($res, $i->to_array($serialize));	
+					else
+						array_push($res, $i->to_array());
+				}
 			}else{
-				$res = $q->to_array();
+				if($serialize)
+					$res = $q->to_array($serialize);
+				else
+					$res = $q->to_array();
 			}
-
+			
 			$this->response($res, 200);
+		
+		
+		
 			
 		} catch (Exception $e) {
 			$this->response(array($e->getMessage()), 500);

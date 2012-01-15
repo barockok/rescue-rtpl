@@ -122,4 +122,9 @@ class Debug extends MX_Controller
 		printDebug($item->to_array(array('include' => array('fare_data', 'flight_booking'))));
 		}
 	}
+	public function test9()
+	{
+			$data = $this->rest->get('db/find/error_log/all', array('options' => array('limit' => 10)));
+			printDebug($data);
+	}
 }
