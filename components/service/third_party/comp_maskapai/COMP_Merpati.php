@@ -20,7 +20,10 @@ class Merpati extends Comp_maskapai_base {
 	
 	function __construct() {
 		parent::__construct();
+		/*
 		$this->_ci->load->library('my_curl');
+		$this->_ci->load->helper('array');
+		*/
 		$this->_cookies_file = dirname(__FILE__)."/cookies/merpati_airline.txt";		
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
@@ -29,9 +32,7 @@ class Merpati extends Comp_maskapai_base {
 	}
 	
 	
-		function index() {
-			echo 'Merpati';
-		}
+		function index() {}
 
 		function dateAdd($date){
 			$length = strlen($date);
@@ -127,7 +128,7 @@ class Merpati extends Comp_maskapai_base {
 			$post_data = array(
 				'fromAirport'					=>	$this->_opt->route_from,
 				'toAirport'						=>	$this->_opt->route_to,
-				'dateFrom'						=>	$dateExplode[0].$this->dateAdd($dateExplode[1]).$this->dateAdd($dateExplode[2]),
+				'dateFrom'						=>	element('0',$dateExplode).$this->dateAdd(element('1',$dateExplode)).$this->dateAdd(element('2',$dateExplode)),
 				'dateTo'						=>	'',
 				'iAdult'						=>	$this->_opt->passengers,
 				'iChild'						=>	0,
@@ -174,13 +175,12 @@ class Merpati extends Comp_maskapai_base {
 		
 		function search(){
 			$page = str_get_html($this->_search());
-			if (!$page) {return array();}
+			if (!$page) {return false;}
 			$table = $page->find('div[id=dvGridFlight] table tbody',0);
-			if (!$table) return array();
-			
-			if ( $tr = count($table->find('tr')) < 2) { return array();}
+			if (!$table) {return false;}
+			if ( $tr = count($table->find('tr')) < 2) { return false;}
 			if ($table->find('tr',1)->find('td',0)->plaintext == 'We could not find any flights or seats available on the date selected') {
-				return array();
+				return false;
 			}
 			//echo $table;
 			$data = array();
@@ -208,14 +208,17 @@ class Merpati extends Comp_maskapai_base {
 					$flightNo = $flight_number[0].' '.$flight_number[1];
 					$time_depart = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',2)->plaintext),5);
 					$time_arrive = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',3)->plaintext),5);
-					$t_depart = $time_depart[0];
-					$t_arrive = $time_arrive[1];
-					$t_transit_depart = $time_depart[1];
-					$t_transit_arrive = $time_arrive[0];
+					$t_depart = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.element('0',$time_depart);
+					$t_arrive = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.element('1',$time_arrive);
+					$t_transit_depart = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.element('1',$time_depart);
+					$t_transit_arrive = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.element('0',$time_arrive);
+					
 				}else{
-					$flightNo = $flightNum	 ;
-					$t_depart = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',2)->plaintext);
-					$t_arrive = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',3)->plaintext);
+					$flightNo = $flightNum;
+					$t_d_depart = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',2)->plaintext);
+					$t_d_arrive = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',3)->plaintext);
+					$t_depart = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.$t_d_depart;
+					$t_arrive = element('2',$date).'-'.element('1',$date).'-'.element('0',$date).' '.$t_d_arrive;
 					$t_transit_depart = NULL;
 					$t_transit_arrive = NULL;
 				}
@@ -230,10 +233,10 @@ class Merpati extends Comp_maskapai_base {
 				$meta = array(
 					'company'			=>	'MERPATI',
 					'flight_no'			=>	$flightNo,
-					't_depart'			=>	$date[2].'-'.$date[1].'-'.$date[0].' '.$t_depart,
-					't_arrive'			=>	$date[2].'-'.$date[1].'-'.$date[0].' '.$t_arrive,
-					't_transit_depart'	=>	$date[2].'-'.$date[1].'-'.$date[0].' '.$t_transit_depart,
-					't_transit_arrive'	=>	$date[2].'-'.$date[1].'-'.$date[0].' '.$t_transit_arrive,					
+					't_depart'			=>	$t_depart,
+					't_arrive'			=>	$t_arrive,
+					't_transit_depart'	=>	$t_transit_depart,
+					't_transit_arrive'	=>	$t_transit_arrive,					
 					'type'				=>	$type,
 					'class'				=>	$class,
 					'price'				=>	$price,
@@ -241,15 +244,15 @@ class Merpati extends Comp_maskapai_base {
 					'radio_value'		=>	$radio_value,
 					'log_id'			=>	$this->_opt->id,
 					'arrayIndex'		=>	$i,
-					'time_depart'		=>	$date[2].'-'.$date[1].'-'.$date[0],
+					'time_depart'		=>	element('2',$date).'-'.element('1',$date).'-'.element('0',$date),
 					'passangers'		=>	$this->_opt->passengers,
 				);
 				$data[$i]['company'] 			= 'MERPATI';
 				$data[$i]['flight_no'] 			= $flightNo;
-				$data[$i]['t_depart'] 			= $date[2].'-'.$date[1].'-'.$date[0].' '.$t_depart;
-				$data[$i]['t_arrive']			= $date[2].'-'.$date[1].'-'.$date[0].' '.$t_arrive;
-				$data[$i]['t_transit_depart']   = $date[2].'-'.$date[1].'-'.$date[0].' '.$t_transit_depart;
-				$data[$i]['t_transit_arrive'] 	= $date[2].'-'.$date[1].'-'.$date[0].' '.$t_transit_arrive;
+				$data[$i]['t_depart'] 			= $t_depart;
+				$data[$i]['t_arrive']			= $t_arrive;
+				$data[$i]['t_transit_depart']   = $t_transit_depart;
+				$data[$i]['t_transit_arrive'] 	= $t_transit_arrive;
 				$data[$i]['type'] 				= $type;
 				$data[$i]['class'] 				= $class;
 				$data[$i]['price'] 				= $price;
@@ -258,7 +261,7 @@ class Merpati extends Comp_maskapai_base {
 				$data[$i]['meta_data']			= json_encode($meta);
 				
 			}
-			return $data;	
+			return $data;
 		}			
 		//don't delete this
 
@@ -268,7 +271,7 @@ class Merpati extends Comp_maskapai_base {
 			$post_data = array(
 				'OutwardFlightFareId'	=>	$this->_opt->radioValue,
 				'ReturnFlightFareID'	=>	'',
-				'OutWardDateFligh'		=>	$time[0].$time[1].$time[2].'_05_30',
+				'OutWardDateFligh'		=>	element('0',$time).element('1',$time).element('2',$time).'_05_30',
 				'OutSelectType'			=>	'FIRM',
 				'RetSelectType'			=>	'FIRM',
 			);
@@ -299,7 +302,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$this->_ci->my_curl->exc();
 			//$page = json_decode($html,1);
-			//echo implode($page);		
+			//echo implode($page);
 		}
 		
 		function detail(){
@@ -330,6 +333,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$f = $this->_ci->my_curl->exc();
 			$array = json_decode($f,1);
+			if (!is_array($array)) {return false;}
 			$html = implode($array);
 			$page = str_get_html($html);
 			$errPage = $page->find('div[class=WrapperTBLStep3] span[id=ctl00_GridItinerary]',0)->plaintext;
@@ -372,7 +376,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->logout();
 		}
 		
-		public function doSearch($opt)
+		public function doSearch($opt = array())
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
@@ -400,6 +404,9 @@ class Merpati extends Comp_maskapai_base {
 			}else{
 				$final = $this->search();
 				$this->closing();
+			}
+			if (!is_array($final)) {
+				return array();
 			}
 			return array_values($final);
 		}
@@ -446,10 +453,11 @@ class Merpati extends Comp_maskapai_base {
 			$html =  $this->_ci->my_curl->exc();
 			$array = json_decode($html,1);
 			//print_r($array);
+			if (!is_array($array)){return false;}			
 			$html = implode($array);
 			$page = str_get_html($html);
 			$table =$page->find('table[id=PassengerList] tbody',0);
-			if (!$table) {return array();}
+			if (!$table) {return false;}
 			$passangerId = array();
 			$passId = $table->find('input[id=uxPassengerID]');
 			for ($i=0; $i < count($passId); $i++) { 
@@ -517,9 +525,9 @@ class Merpati extends Comp_maskapai_base {
 				
 				
 			$contactXML = array(
-				'ContactPerson'		=>	$this->user['f_name'].' '.$this->user['l_name'],
+				'ContactPerson'		=>	element('f_name',$this->user).' '.element('l_name',$this->user),
 				'HomePhone'			=>	'HomePhone',
-				'Email'				=>	$this->user['email'],
+				'Email'				=>	element('email',$this->user),
 				'MobilePhone'		=>	$this->user['user_detail']['mobile'],
 				'BusinessPhone'		=>	$this->user['user_detail']['mobile'],
 				'Language'			=>	'ID',
@@ -598,6 +606,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$f = $this->_ci->my_curl->exc();
 			$array = json_decode($f,1);
+			if (!is_array($array)) {return false;}
 			$html = implode($array);
 		}
 		
@@ -626,6 +635,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$f = $this->_ci->my_curl->exc();
 			$array = json_decode($f,1);
+			if (!is_array($array)) {return false;}
 			$html = implode($array);
 		}
 		
@@ -654,6 +664,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$f = $this->_ci->my_curl->exc();
 			$array = json_decode($f,1);
+			if (!is_array($array)) {return false;}
 			$html = implode($array);
 		}
 		
@@ -682,12 +693,13 @@ class Merpati extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$f = $this->_ci->my_curl->exc();
 			$array = json_decode($f,1);
+			if (!is_array($array)) {return false;}
 			$html = implode($array);
 			return $html;
 		}
 		
 		function booking(){
-			//$html = "./components/partner/third_party/comp_maskapai/ojankillbooking_data/HTML/merpati/booking.html";
+			//$html = "./mod_office/o_partner/third_party/comp_maskapai/ojankillbooking_data/HTML/merpati/booking.html";
 			$page = str_get_html($this->abooking());
 			if (!$page) {return array();}
 			$table = $page->find('div[class=WrapperBody] table');
@@ -705,7 +717,7 @@ class Merpati extends Comp_maskapai_base {
 			$routeFrom = $bookingInfo->find('tr',1)->find('td',1)->plaintext;
 			$routeTo = $bookingInfo->find('tr',1)->find('td',2)->plaintext;
 			$date = explode('/',$bookingInfo->find('tr',1)->find('td',3)->plaintext);
-			$time = $date[2].'-'.$date[1].'-'.$date[0];
+			$time = element('2',$date).'-'.element('1',$date).'-'.element('0',$date);
 			$departTime = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$bookingInfo->find('tr',1)->find('td',4)->plaintext);
 			$arrTime = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$bookingInfo->find('tr',1)->find('td',5)->plaintext);
 			$status = $bookingInfo->find('tr',1)->find('td',6)->plaintext;
@@ -714,7 +726,7 @@ class Merpati extends Comp_maskapai_base {
 			$data['fare_id']			=	$this->fare_id;
 			$data['meta_data']			=	json_encode($this->meta_data);
 			$data['passangers']			=	$this->passangers;
-			$data['final_price']		=	$this->meta_data['price'];
+			$data['final_price']		=	element('price',$this->meta_data);
 			//$data['flightNumber'] = $flightNumber;
 			//$data['price']	=	$price;
 			//$data['routeFrom'] = $routeFrom;
@@ -808,46 +820,46 @@ class Merpati extends Comp_maskapai_base {
 		
 		//function preBooking(){
 		function preBooking($fare_data){		
-			/*$fare_data = array(
-				'id'		=>	7323,
-				'log_id'	=>	34,
-				'company'	=>	'MERPATI',
-				't_depart'	=>	'2011-12-31 05:30',
-				't_arrive'	=>	'2011-12-31 08:10',
-				'type'		=>	'depart',
-				'class'		=>	'K',
-				'route'		=>	'CGK,DPS',
-				'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ640","t_depart":"2011-12-31 05:30","t_arrive":"2011-12-31 08:10","t_transit_depart":"2011-12-31 ","t_transit_arrive":"2011-12-31 ","type":"depart","class":"K","price":929000,"route":"CGK,DPS","radio_value":"{E50DFBFD-BD76-11DF-995B-0019DBB9D31C}|{FB651EAA-5CA7-11DF-9F19-0050BA01BA7A}||","log_id":1,"arrayIndex":11,"time_depart":"2011-12-31","passangers":2}',
-				't_transit_arrive'	=>	'',
-				't_transit_depart'	=>	'',
-				'price'				=>	'929000',
-				'flight_no'			=>	'MZ640',
-				'log'				=>	array(
-					'id'				=>	34,
-					'date_depart'		=>	'2011-12-31 00:00:00',
-					'date_return'		=>	'',
-					'route_from'		=>	'CGK',
-					'route_to'			=>	'DPS',
-					'passangers'		=>	1,
-					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-					'c_time'			=>	'2011-12-20 11:56:15',
-					'max_fare'			=>	5,
-					'actor'				=> 'CUS',
-				),
-			);*/
-
+				/*$fare_data = array(
+					'id'		=>	7323,
+					'log_id'	=>	34,
+					'company'	=>	'MERPATI',
+					't_depart'	=>	'2011-12-31 05:30',
+					't_arrive'	=>	'2011-12-31 08:10',
+					'type'		=>	'depart',
+					'class'		=>	'K',
+					'route'		=>	'CGK,DPS',
+					'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ640","t_depart":"2011-12-31 05:30","t_arrive":"2011-12-31 08:10","t_transit_depart":"2011-12-31 ","t_transit_arrive":"2011-12-31 ","type":"depart","class":"K","price":929000,"route":"CGK,DPS","radio_value":"{E50DFBFD-BD76-11DF-995B-0019DBB9D31C}|{FB651EAA-5CA7-11DF-9F19-0050BA01BA7A}||","log_id":1,"arrayIndex":11,"time_depart":"2011-12-31","passangers":2}',
+					't_transit_arrive'	=>	'',
+					't_transit_depart'	=>	'',
+					'price'				=>	'929000',
+					'flight_no'			=>	'MZ640',
+					'log'				=>	array(
+						'id'				=>	34,
+						'date_depart'		=>	'2011-12-31 00:00:00',
+						'date_return'		=>	'',
+						'route_from'		=>	'CGK',
+						'route_to'			=>	'DPS',
+						'passangers'		=>	1,
+						'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
+						'c_time'			=>	'2011-12-20 11:56:15',
+						'max_fare'			=>	5,
+						'actor'				=> 'CUS',
+					),
+				);*/
 			
 			$forBooking = json_decode($fare_data['meta_data'],1);
-			$route = explode(',',$forBooking['route']);
-			$route_from = $route[0];
-			$route_to = $route[count($route)-1];
+			//$route = explode(',',$forBooking['route']);
+			$log = element('log',$fare_data);
+			$route_from = element('route_from',$log);
+			$route_to = element('route_to',$log);
 			
 			$this->_opt->route_from 	= $route_from;
 			$this->_opt->route_to 		= $route_to;
-			$this->_opt->date_depart 	= $forBooking['time_depart'];
+			$this->_opt->date_depart 	= element('time_depart',$forBooking);
 			$this->_opt->date_return 	= NULL;
-			$this->_opt->passengers 	= $forBooking['passangers'];
-			$this->_opt->id				= $forBooking['log_id'];
+			$this->_opt->passengers 	= element('passangers',$forBooking);
+			$this->_opt->id				= element('log_id',$forBooking);
 			
 			//search again
 			$reSearch = $this->forBooking();
@@ -870,7 +882,7 @@ class Merpati extends Comp_maskapai_base {
 					return true;
 				}
 
-			}			
+			}		
 		}
 		
 		//function doBooking(){
@@ -941,23 +953,24 @@ class Merpati extends Comp_maskapai_base {
 			);*/
 			$this->passangers = $passangers_data;
 			$this->user = $customer_data;
-			
+		
 			$forBooking = json_decode($fare_data['meta_data'],1);
 			$route = explode(',',$forBooking['route']);
-			$route_from = $route[0];
-			$route_to = $route[count($route)-1];
-			$this->fare_id = $fare_data['id'];
+			$log = element('log',$fare_data);
+			$route_from = element('route_from',$log);
+			$route_to = element('route_to',$log);
+			$this->fare_id = element('id',$fare_data);
 			$this->meta_data = $forBooking;
-			
+
 			$this->_opt->route_from 	= $route_from;
 			$this->_opt->route_to 		= $route_to;
-			$this->_opt->date_depart 	= $forBooking['time_depart'];
+			$this->_opt->date_depart 	= element('time_depart',$forBooking);
 			$this->_opt->date_return 	= NULL;
-			$this->_opt->passengers 	= $forBooking['passangers'];
-			$this->_opt->id				= $forBooking['log_id'];
-			$this->_opt->radioValue		= $forBooking['radio_value'];
+			$this->_opt->passengers 	= element('passangers',$forBooking);
+			$this->_opt->id				= element('log_id',$forBooking);
+			$this->_opt->radioValue		= element('radio_value',$forBooking);
 			$this->forBooking();
-			
+
 			$booking = $this->booking();
 			$this->logout();
 			return $booking;
