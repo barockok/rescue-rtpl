@@ -43,6 +43,10 @@ class User extends ActiveRecord\Model
 			$this->password = md5($this->password);
 		}
 	}
+	public function get_full_name()
+	{
+		return $this->f_name.' '.$this->l_name;
+	}
 	public function validate()
 	{
 		// check duplicated email on register

@@ -3,7 +3,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
 * 
 */
-class Debug extends REST_Controller
+class Debug extends MX_Controller
 {
 	
 	function __construct()
@@ -18,7 +18,7 @@ class Debug extends REST_Controller
 			echo ('no maskapai specify');
 			exit;
 		}
-		$this->load->library('partner/comp_maskapai');
+		$this->load->library('service/comp_maskapai');
 		$fac = $this->comp_maskapai->load($maskapai);
 		
 		if(!$func){
@@ -29,6 +29,13 @@ class Debug extends REST_Controller
 		$fac->closing();
 		
 		
+	}
+	
+	public function test1()
+	{
+		
+		$q = Article::all(array('conditions' => array("content LIKE ?", '%garuda%')));
+		printDebug($q);
 	}
 	public function test2()
 	{
