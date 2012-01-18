@@ -80,6 +80,7 @@ class Tour_package_cont extends REST_Controller
 	}
 	public function view_get()
 	{
+	
 		$id = ($id = $this->uri->rsegment(3)) ? $id : 'all';
 		$options = ($opt = $this->get('options')) ? $opt : FALSE ;
 		

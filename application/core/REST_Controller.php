@@ -38,11 +38,12 @@ class REST_Controller extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		
+		/*
+		ini_set('display_errors', 'Off');
 		set_error_handler('REST_Controller::_error_handler', E_ALL);
 		register_shutdown_function('REST_Controller::_shutdown_handler');
-	
-
+		*/
+		
 		// Lets grab the config and get ready to party
 		$this->load->config('rest');
 
@@ -865,7 +866,7 @@ class REST_Controller extends CI_Controller {
 	static function _error_handler($errno, $errstr, $errfile, $errline)
 	{
 		error_reporting(E_ALL);
-		ini_set('display_errors','Off'); 
+		
 		if (!(error_reporting() & $errno)) {
 		        // This error code is not included in error_reporting
 		        return;
@@ -908,24 +909,18 @@ class REST_Controller extends CI_Controller {
 	}
 	public function _output_error($data = array(), $http_code = 500, $error_data = FALSE, $db = FALSE, $exit = FALSE , $email = FALSE)
 	{	
-
 			if($db == TRUE):
 				// put to database
-				try {
-						$dbdata = array(
-							'meta' => json_encode($error_data),
-							'type' => $error_data['error_constant'],
-						);
-						$log = new Error_log($dbdata);
-						$log->save();
-				} catch (Exception $e) {
-					echo $e->getMessage();
-				}
-			
+				$dbdata = array(
+					'meta' => json_encode($error_data),
+					'type' => "ERROR",
+				);
+				$log = new Error_log($dbdata);
+				$log->save();
 			endif;
 			
 			// sending email
-
+			mail('zidmubarock@gmail.com', 'error', 'check cuk');
 			$output = json_encode($data);
 			header('HTTP/1.1: ' . $http_code);
 			header('Status: ' . $http_code);
@@ -938,11 +933,15 @@ class REST_Controller extends CI_Controller {
 	static function _shutdown_handler()
 	{
 		$error = error_get_last();
-		$error['error_constant'] = 'FATAL_SHUTDOWN';
 		if($error['type'] == E_ERROR){
-			self::_output_error(array('error' => 'unknow'), 500,  $error, TRUE, TRUE, TRUE);
+			call_user_func_array(array(self, '_output_error'), array(array('error' => 'unknow'),  500, $return , FALSE, TRUE, TRUE));
 		}
+	
 		
+	}
+	public function _test()
+	{
+	
 	}
 	static function _exception_handler(){
 		

@@ -26,12 +26,13 @@ $hook['pre_controller'][] 			= array(
 										    'filepath' => 'third_party/php-activerecord'                                
 										);
 				
-$hook['pre_controller'][]			= array(
+$hook['pre_system'][]					= array(
                                 			'class'    => 'App_hook',
 			                                'function' => 'initial_overide_php_setting',
 			                                'filename' => 'app_hook.php',
 			                                'filepath' => 'hooks/'
-			                           );
+			                                );
+
 
 /* End of file hooks.php */
 /* Location: ./application/config/hooks.php */
