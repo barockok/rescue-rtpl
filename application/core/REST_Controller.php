@@ -38,9 +38,10 @@ class REST_Controller extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		
 		set_error_handler('REST_Controller::_error_handler', E_ALL);
 		register_shutdown_function('REST_Controller::_shutdown_handler');
-		
+	
 
 		// Lets grab the config and get ready to party
 		$this->load->config('rest');
@@ -910,12 +911,17 @@ class REST_Controller extends CI_Controller {
 
 			if($db == TRUE):
 				// put to database
-				$dbdata = array(
-					'meta' => json_encode($error_data),
-					'type' => $error_data['error_constant'],
-				);
-				$log = new Error_log($dbdata);
-				$log->save();
+				try {
+						$dbdata = array(
+							'meta' => json_encode($error_data),
+							'type' => $error_data['error_constant'],
+						);
+						$log = new Error_log($dbdata);
+						$log->save();
+				} catch (Exception $e) {
+					echo $e->getMessage();
+				}
+			
 			endif;
 			
 			// sending email
@@ -932,6 +938,7 @@ class REST_Controller extends CI_Controller {
 	static function _shutdown_handler()
 	{
 		$error = error_get_last();
+		$error['error_constant'] = 'FATAL_SHUTDOWN';
 		if($error['type'] == E_ERROR){
 			self::_output_error(array('error' => 'unknow'), 500,  $error, TRUE, TRUE, TRUE);
 		}

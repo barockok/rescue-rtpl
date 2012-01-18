@@ -38,7 +38,7 @@ function initialize_php_activerecord() {
 
     // Initialize ActiveRecord
     ActiveRecord\Config::initialize(function($cfg) use ($dsn, $active_group){
-        $cfg->set_model_directory(APPPATH.'models');
+        $cfg->set_model_directory('/'.APPPATH.'models');
         $cfg->set_connections($dsn);
         $cfg->set_default_connection($active_group);
     });

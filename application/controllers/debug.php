@@ -3,7 +3,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 /**
 * 
 */
-class Debug extends MX_Controller
+class Debug extends REST_Controller
 {
 	
 	function __construct()
@@ -91,8 +91,6 @@ class Debug extends MX_Controller
 	}
 	public function test5()
 	{
-		$digest = Search_fare_item::last();
-		printDebug($digest->to_array());
 	}
 	public function test6()
 	{
@@ -122,9 +120,8 @@ class Debug extends MX_Controller
 		printDebug($item->to_array(array('include' => array('fare_data', 'flight_booking'))));
 		}
 	}
-	public function test9()
-	{
-			$data = $this->rest->get('db/find/error_log/all', array('options' => array('limit' => 10)));
-			printDebug($data);
+	public function test9_get()
+	{	
+		hj;
 	}
 }

@@ -75,9 +75,6 @@ class Db extends REST_Controller
 			$q_count = ($params != FALSE ) ? $class_name::count($param_b) : 1 ; 
 			
 			$res = array();
-			
-			
-			
 			if($this->post('serialize')){
 				$serialize = elements(array('only', 'except', 'methods' , 'include', 'only_method', 'skip_instruct'), $this->post('serialize'), FALSE);
 				foreach($serialize as $key => $val ) if($val == false ) unset($serialize[$key]) ;
@@ -91,8 +88,7 @@ class Db extends REST_Controller
 						array_push($res, $item->to_array($serialize));
 					}else{
 						array_push($res, $item->to_array());
-					}
-				
+					}	
 				}
 				if(count($res) < 1) $this->response(array('error' => 'no records found'), 500);
 				
