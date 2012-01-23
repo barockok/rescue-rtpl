@@ -1,0 +1,556 @@
+@import url("global.css");
+@import url("bookings.css");
+@import url("PriceGuide.css");
+@import url("processing.css");
+@import url("autoComplete.css");
+@import url("FlightSearch.css");
+
+
+div#PassengerCounts
+{
+	float: left;
+	width: 200px;
+}
+
+table#tblPassengerCounts
+{
+	width: 180px;
+	border-collapse: collapse;
+}
+
+table#tblPassengerCounts th
+{
+	text-align: center;
+	background-color: #FDAC00;
+	padding: 0px;
+	color: White;
+	font-weight: bold;
+	/*border-bottom: #FDAC00;*/
+	height: 20px;
+	width: 33%;
+}
+
+
+table#tblPassengerCounts td
+{
+	background-color: #EDEDEB;
+	color: #333333;
+	height: 20px;
+	text-align: center;
+	border-top: solid 1px #FDAC00;
+	/*border-left: solid 1px #FFFFFF;
+	border-right: solid 1px #FFFFFF;*/
+}
+
+
+div#Step2Welcome
+{
+	float: left;
+	width: 480px;
+}
+
+div#Step2Welcome p
+{
+	padding: 0px;
+	margin: 4px 0px;
+}
+
+span#lblDepartureFlightOptions, span#lblReturnFlightOptions
+{
+	font-weight: bold;
+	font-size: 12px;
+}
+
+#tblOutFlightBlocks
+{
+	width: 95%;
+}
+
+#tblInFlightBlocks
+{
+	width: 95%;
+} 
+
+span.webOnlyFare
+{
+	color: #FF0000;
+}
+ 
+#tblOutBound, #tblInBound
+{
+	padding: 2px 0 2px 0px;
+	text-align: center;
+} 
+
+.returnFareCell
+{
+	background-color: #EBECFE;
+	text-align: right;
+}
+
+.flightColumn
+{
+	width: 80px;
+	text-align: left;
+}
+
+#tblFares td
+{
+	padding: 2px 5px 2px 5px;
+}
+
+#tblFares .fareCell
+{
+	background-color: #F7F7F7;
+	text-align: center;
+}
+
+.step2_SelectedFare
+{
+	font-weight: bold;
+}
+
+.flighttable
+{
+}
+
+.flighttable_Row
+{
+	background: #EEF7F9;
+}
+
+.step2Cell, .step2farecell
+{
+	text-align: center;
+	/*background: #EEF7F9;*/
+	padding: 5px 0px 5px 0px;
+}
+
+.step2_soldcell
+{
+	text-align: center;
+	color: #F00;
+	/*background: #EEF7F9;*/
+}
+
+.step2_noschedule
+{
+	color: #F00;
+	background: #EEF7F9;
+}
+
+.FlightTableFooter_text
+{
+	text-align: left;
+	background-color: #DEE7F9;
+	color: #8D8CAC;
+	vertical-align: middle;
+	padding-left: 5px;
+	height: 25px;
+}
+
+
+
+.FlightTableFooter_clear
+{
+	background-color: #DEE7F9;
+	text-align: right;
+	vertical-align: middle;
+	padding-right: 5px;
+}
+
+/*
+.infotable_heading_row
+{
+	background-color: #E0E0E0;
+	color: #d65433;
+	height: 24px;	
+	font-weight: bold;
+}
+
+.infotable_heading
+{
+	padding: 0;
+}
+
+.infotable_heading_left
+{
+	font-weight: bold;
+	text-align: left;
+}
+
+.infotable_heading_right
+{
+	text-align: right;
+
+}
+*/
+.flightInfo_middle
+{
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+	border-right: solid 1px #fff;
+	border-left: solid 1px #fff;
+}
+
+.flightInfo_left
+{
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+	border-right: solid 1px #fff;
+}
+
+.flightInfo_right
+{
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+	border-left: solid 1px #fff;
+}
+
+.fareInfo_middle
+{
+	border-right: solid 1px #fff;
+	border-left: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+}
+.fareInfo_middle_tconx
+{
+	border-top: solid 1px #fff;
+	border-right: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+}
+.fareInfo_middle_mconx
+{
+	border-right: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+	border-bottom: solid 1px #fff;
+}
+.fareInfo_middle_bconx
+{
+	border-bottom: solid 1px #ccc;
+	border-right: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+}
+
+.fareInfo_left
+{
+	border-right: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+}
+
+.fareInfo_right
+{
+	border-left: solid 1px #fff;
+	border-bottom: solid 1px #fff;
+}
+.fareInfo_right_tconx
+{
+	border-top: solid 1px #fff;
+	border-left: solid 1px #ccc;
+}
+.fareInfo_right_mconx
+{
+	border-left: solid 1px #ccc;
+	border-bottom: solid 1px #fff;
+}
+.fareInfo_right_bconx
+{
+	border-bottom: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+}
+
+
+.smallerText
+{
+	font-size: 8px;
+}
+/*
+.details_panel
+{
+	background-color: #DEE7F9;
+	position: static;
+	visibility: hidden;
+	border-style: solid;
+	border-color: Black;
+	border-width: 1px;
+	text-align: left;
+}
+*/
+.flightDetails
+{
+	text-align: center;
+	background-color: #fef3cc;
+	font-size: 10px;
+	height: 25px;
+	border-bottom: solid #FFFFFF 1px;
+	padding: 0px;
+	color: #000;
+	
+}
+/*
+#lnkPreviousDepDay, #lnkPreviousRetDay, #lnkNextDepDay, #lnkNextRetDay
+{
+	color: #666666;
+	text-decoration: none;
+}
+
+#lnkPreviousDepDay:hover, #lnkPreviousRetDay:hover, #lnkNextDepDay:hover, #lnkNextRetDay:hover
+{
+	color: #ffffff;
+	text-decoration: underline;
+}
+*/
+.step2_heading
+{
+	background: url(../images/Step2/bg_grey45.gif) repeat-x;
+	background-color: #E0E0E0;
+	font-weight: bold;
+	border: solid 1px #fff;
+	font-size: 12px;
+	height: 43px;
+	text-align: center;
+	padding: 1px;
+} 
+/*
+.step2_heading_left
+{
+	background: url(../images/thin-blue-tile.gif) repeat-x;
+	font-weight: bold;
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #ccc;
+	border-right: solid 1px #ccc;
+	font-size: 10px;
+	height: 25px;
+} 
+
+.step2_heading_right
+{
+	background: url(../images/thin-blue-tile.gif) repeat-x;
+	font-weight: bold;
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+	font-size: 10px;
+	height: 25px;
+} 
+
+.step2_heading_middle
+{
+	background: url(../images/thin-blue-tile.gif) repeat-x;
+	font-weight: bold;
+	border-top: solid 1px #fff;
+	border-bottom: solid 1px #ccc;
+	border-right: solid 1px #ccc;
+	border-left: solid 1px #ccc;
+	font-size: 10px;
+	height: 25px;
+}
+*/
+table#FareDetailsTable
+{
+	font-weight: bold;
+	width: 100%;
+}
+
+table#FareDetailsTable td
+{
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+}
+
+table#FareDetailsTable .CurrencyCol
+{
+	text-align: right;
+	padding-right: 1em;
+}
+
+
+table#FareDetailsTable .MoneyCol
+{
+	text-align: right;
+	padding-right: 1em;
+}
+
+table#FareDetailsTable tr#TripTotalRow td
+{
+	background-color: #FFEBC3;
+
+}
+
+div#ImportantNote
+{
+	background-color: #DFE7FB;
+	padding: 0px 20px 20px 20px;
+}
+div#ImportantNote h5
+{
+	margin: 10px 0px;
+}
+div#FareNote
+{
+	background-color: #FFEBC3;
+	padding: 10px 10px 10px 10px;
+	margin-top: 3px;
+	line-height: 18px;
+}
+
+div#FareNote p
+{
+	text-align:justify;
+	background-color: #FFEBC3;
+	padding: 0px 0px 0px 0px;
+	margin: 5px 0px 0px 0px;
+}
+
+span#lblPleaseReadNote
+{
+	color: #FF0000;
+	font-style: italic;
+}
+
+/*
+table#MilesInfo
+{
+	background-color: #DFE7FB;
+	width: 100%;
+}
+
+table#MilesInfo td
+{
+	padding: 3px 7px 3px 7px;
+}
+
+#lblMinimumMiles
+{
+	font-weight: bold;
+}*/
+
+
+.taxBDPopup 
+{
+	background-color: White;
+	margin: 10px;
+	width: 220px;
+	/*height: 140px;*/
+	padding-bottom: 20px;
+	text-align: center;
+}
+#TaxBD td
+{
+	padding: 2px 5px;
+}
+
+
+/* New Multi Matrix */
+div#pnlFlightSearch
+{
+	clear: both;
+}
+.fltMultiInf
+{
+	width: 100%;
+	border: solid 1px #FFFFFF;
+
+}
+/*
+.fltMultiInf th
+{
+	text-align: center;
+	background-color: #FEEBCD;
+	font-size: 10px;
+	height: 25px;
+	border-bottom: solid #FFFFFF 1px;
+	padding-left: 5px;
+	font-weight: bold;
+}
+*/
+/*
+.fltMultiInf th .fmiDetails
+{
+	padding-left: 30px;
+}
+*/
+.fltMultiInf th
+{
+	padding: 0px;
+	color: #000;
+}
+
+.fltMultiInf .fmiFlt
+{
+	padding-left: 75px;
+}
+.fltMultiInf .fmiPrev
+{
+	width: 15%;
+	text-align: right;
+}
+.fltMultiInf .fmiNext
+{
+	width: 10%;
+	text-align: center;
+}
+/*
+.fltMultiInf td
+{
+	font-weight: bold;
+}
+*/
+.fltMulti
+{
+	width: 100%;
+}
+/* New Multi Matrix - End*/
+/* AVL - start*/
+.step2avlCell
+{
+	width: 4%;
+	background: url(../images/Step2/bg_red22.gif) repeat-x;
+	text-align: center;
+	color: #FFF;
+	border-bottom: none;
+}
+.step2hdrCell
+{
+	background: url(../images/Step2/bg_red22.gif) repeat-x;
+	border-left: solid 1px #FFFFFF;
+	text-align: center;
+	color: #FFF;
+}
+.step2_selectedFlights
+{
+	width: 100%
+}
+.step2_selectedFlights td
+{
+	border-right: #ccc 1px solid;
+	padding-right: 5px;
+	border-top: #ccc 1px solid;
+	padding-left: 5px;
+	padding-bottom: 5px;
+	border-left: #ccc 1px solid;
+	padding-top: 5px;
+	border-bottom: #ccc 1px solid;
+	text-align: center
+}
+/* AVL - end*/
+
+/* Insurance Block Start */
+.InsuranceBlock
+{
+	background-color:#eef7f9;
+	border:#cc3333 1px solid;
+}
+
+.InsuranceBlock DIV.InsuranceBlockHeading
+{
+	background-color:#dfe7fb;
+	padding: 0 0 10px 5px;
+}
+
+.InsuranceBlock DIV.Padd5
+{
+	padding:5px;
+}
+/* Insurance Block End */
