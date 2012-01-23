@@ -22,8 +22,10 @@ class Batavia extends Comp_maskapai_base {
 	function __construct() {
 		parent::__construct();
 		$this->roundTrip = false;
-	
+		/* 
+		$this->_ci->load->helper('array');
 		$this->_ci->load->library('my_curl');
+		*/
 		$this->_cookies_file 	= dirname(__FILE__)."/cookies/batavia_airline.txt";
 		$this->login();
 	}
@@ -118,9 +120,9 @@ class Batavia extends Comp_maskapai_base {
 					'ruteBerangkat' 		=> $this->_opt->route_from,
 					'ruteTujuan' 			=> $this->_opt->route_to,
 					'ruteKembali' 			=> 'kembali',
-					'tglBerangkatPergi' 	=> $this->convertDayMonth($dateExplode[2]),
-					'blnBerangkatPergi' 	=> $this->convertDayMonth($dateExplode[1]),
-					'thnBerangkatPergi' 	=> $year[2].$year[3],
+					'tglBerangkatPergi' 	=> $this->convertDayMonth(element('2',$dateExplode)),
+					'blnBerangkatPergi' 	=> $this->convertDayMonth(element('1',$dateExplode)),
+					'thnBerangkatPergi' 	=> element('2',$year).element('3',$year),
 					'jmlPenumpang' 			=> $this->_opt->passengers,
 					'jmlInfant'				=> 0,
 				);
@@ -143,9 +145,9 @@ class Batavia extends Comp_maskapai_base {
 				$this->_ci->my_curl->setup($conf);
 				$html = $this->_ci->my_curl->exc();
 				$page = str_get_html($html);
-				if (!$page) {return array();}
+				if (!$page) {return false;}
 				$qty = $post_data['jmlPenumpang'];
-				if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return array();
+				if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return false;
 				$date = $page->find('div[id=pilihPenerbanganPergi] table tbody',0)->find('tr',2)->plaintext;
 				$cdate = explode(':',$date);
 				$fullDate = explode('-',$cdate[1]);
@@ -218,9 +220,9 @@ class Batavia extends Comp_maskapai_base {
 							'price'				=>	$fPrice,
 							'class'				=>	element('0', $head),
 							'route'				=>	$post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'],
-							'log_id'				=>	$this->_opt->id,
+							'log_id'			=>	$this->_opt->id,
 							'arrayIndex'		=>	$j.','.$i,
-							'passangers'			=>	$this->_opt->passengers,
+							'passangers'		=>	$this->_opt->passengers,
 							'time_depart'		=>	$year.'-'.$month.'-'.$day,
 							'radio_value'		=>	$cell->find('input', 0 )->getAttribute('value'),
 						);
@@ -234,9 +236,8 @@ class Batavia extends Comp_maskapai_base {
 						$data[$j][$index]['type']				= $type;
 						$data[$j][$index]['price'] 				= $fPrice;
 						$data[$j][$index]['class']				= element('0', $head);
-						$data[$j][$index]['route']				= $post_data['ruteBerangkat'].','.$post_data['ruteTujuan'].$transitLocation;
-						$data[$j][$index]['log_id']					= $this->_opt->id;				
-						$data[$j][$index]['route']				= $post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'];
+						$data[$j][$index]['route']				= element('ruteBerangkat',$post_data).','.element('ruteTujuan',$post_data);
+						$data[$j][$index]['log_id']				= $this->_opt->id;				
 						$data[$j][$index]['meta_data'] 			= json_encode($meta);
 						$index ++;
 					}
@@ -256,76 +257,78 @@ class Batavia extends Comp_maskapai_base {
 		}
 
 		function detail(){
-			/*$this->_opt->radio_value		= '25173255';
-			$this->_opt->route_from 		= 'CGK';
-			$this->_opt->route_to 			= 'DPS';
-			$this->_opt->date_depart 		= '2011-5-03';
-			$this->_opt->class 				= 'N';
-			$this->_opt->passangerscount	= 2;*/
-						
-			$date = explode('-',$this->_opt->date_depart);
-			$year = str_split($date[0]);
-			
-			$post_data = array(
-				'flightBerangkatPergi'		=> $this->_opt->radio_value,
-				'tglBerangkatPergi'			=> $this->convertDayMonth($date[2]),
-				'blnBerangkatPergi'			=> $this->convertDayMonth($date[1]),
-				'thnBerangkatPergi'			=> $year[2].$year[3],
-				'classPergi'				=> $this->_opt->class,
-				'jmlPenumpang'				=> $this->_opt->passangerscount,
-				'jmlInfant'					=> 0,
-				'ruteBerangkat'				=> $this->_opt->route_from,
-				'ruteTujuan'				=> $this->_opt->route_to,
-				'ruteKembali'				=> 'kembali',
-			);
-						
-			$conf = array(
-				'url'				=> $this->_detail_url,
-				'timeout'			=> 30,
-				'header'			=> 0,
-				'followlocation'	=> 1,
-				'cookiejar'			=> $this->_cookies_file,
-				'cookiefile'		=> $this->_cookies_file,
-				'returntransfer'	=> 1,
-				'post'				=> true,
-				'referer'			=> $this->_referer_url,
-				'ssl_verifyhost'	=> 0,
-				'SSL_VERIFYPEER'	=> 0,
-				'postfields'		=> http_build_query($post_data),
-				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-			);
+				/*$this->_opt->radio_value		= '25173255';
+				$this->_opt->route_from 		= 'CGK';
+				$this->_opt->route_to 			= 'DPS';
+				$this->_opt->date_depart 		= '2011-5-03';
+				$this->_opt->class 				= 'N';
+				$this->_opt->passangerscount	= 2;*/
 
-			$this->_ci->my_curl->setup($conf);
-			$html = $this->_ci->my_curl->exc();
+				$date = explode('-',$this->_opt->date_depart);
+				$year = str_split($date[0]);
+
+				$post_data = array(
+					'flightBerangkatPergi'		=> $this->_opt->radio_value,
+					'tglBerangkatPergi'			=> $this->convertDayMonth(element('2',$date)),
+					'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
+					'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
+					'classPergi'				=> $this->_opt->class,
+					'jmlPenumpang'				=> $this->_opt->passangerscount,
+					'jmlInfant'					=> 0,
+					'ruteBerangkat'				=> $this->_opt->route_from,
+					'ruteTujuan'				=> $this->_opt->route_to,
+					'ruteKembali'				=> 'kembali',
+				);
+
+				$conf = array(
+					'url'				=> $this->_detail_url,
+					'timeout'			=> 30,
+					'header'			=> 0,
+					'followlocation'	=> 1,
+					'cookiejar'			=> $this->_cookies_file,
+					'cookiefile'		=> $this->_cookies_file,
+					'returntransfer'	=> 1,
+					'post'				=> true,
+					'referer'			=> $this->_referer_url,
+					'ssl_verifyhost'	=> 0,
+					'SSL_VERIFYPEER'	=> 0,
+					'postfields'		=> http_build_query($post_data),
+					'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+				);
+
+				$this->_ci->my_curl->setup($conf);
+				$html = $this->_ci->my_curl->exc();
+
+				$page = str_get_html($html);
+				if (!$page) {return false;}
+				$table = $page->find('div[id=centerright] form[id=cekHarga] table');
+				if (count($table)==0) {return array();}
+				$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
+				$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
+				$countData = count($ret->find('tr',2)->find('td'));
+				$fp = explode(',',$ret1->find('tr',5)->find('td',1)->plaintext);
+				$mp = str_replace('.00 IDR','',$fp);
+				//$cp = explode(',',$mp);
+				/*if (count($mp) > 2) {
+					$cleanPrice = element('0',$mp).element('')$mp[1].$mp[2];
+				}else {
+					$cleanPrice = $mp[0].$mp[1];
+				}*/
+				$cleanPrice = $this->lastname($mp,0);		
+				$data['perjalanan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',0)->plaintext);
+				$data['tanggal'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',1)->plaintext);
+				$data['Hari'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',2)->plaintext);
+				$data['transit'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',3)->plaintext);
+				$data['rute'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',4)->plaintext);
+				$data['noPenerbangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
+				$data['keterangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',6)->plaintext);
+				$data['price'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
+				$data['class']	= $post_data['classPergi'];
+				$data['totalPrice']	= $cleanPrice;
+				$data['maskapai'] = 'Batavia';
+
+				return $data;
 			
-			$page = str_get_html($html);
-			if (!$page) {return array();}
-			$table = $page->find('div[id=centerright] form[id=cekHarga] table');
-			if (count($table)==0) {return array();}
-			$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
-			$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
-			$countData = count($ret->find('tr',2)->find('td'));
-			$fp = explode(',',$ret1->find('tr',5)->find('td',1)->plaintext);
-			$mp = str_replace('.00 IDR','',$fp);
-			//$cp = explode(',',$mp);
-			if (count($mp) > 2) {
-				$cleanPrice = $mp[0].$mp[1].$mp[2];
-			}else {
-				$cleanPrice = $mp[0].$mp[1];
-			}		
-			$data['perjalanan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',0)->plaintext);
-			$data['tanggal'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',1)->plaintext);
-			$data['Hari'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',2)->plaintext);
-			$data['transit'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',3)->plaintext);
-			$data['rute'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',4)->plaintext);
-			$data['noPenerbangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
-			$data['keterangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',6)->plaintext);
-			$data['price'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
-			$data['class']	= $post_data['classPergi'];
-			$data['totalPrice']	= $cleanPrice;
-			$data['maskapai'] = 'Batavia';
-			
-			return $data;
 
 		}
 
@@ -346,13 +349,13 @@ class Batavia extends Comp_maskapai_base {
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
-			$this->_opt->route_to 		= 'DPS';
+			$this->_opt->route_to 		= 'BPN';
 			$this->_opt->date_depart 	= '2012-01-31';
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id				= 1;
 			
-			//foreach($opt as $key => $val ) $this->_opt->$key = $val;
+			foreach($opt as $key => $val ) $this->_opt->$key = $val;
 						
 			if ($this->_opt->date_return) {
 				$result1 = $this->search();
@@ -377,24 +380,24 @@ class Batavia extends Comp_maskapai_base {
 			$dataPassanger = array();
 			$ip = 1;
 			foreach ($this->passangers as $key => $value){
-				$name = explode(' ',$value['name']);
-				if (count($name) > 1) {
+				$name = explode(' ',element('name',$value));
+				/*if (count($name) > 1) {
 					$namaDepan = $name[0];
 					$namaBelakang = $name[1];
 				}elseif (count($name) < 2){
 					$namaDepan = $name[0];
 					$namaBelakang = '';
-				}
+				}*/
 				
 				$dataPassanger['title'.$ip] = $value['title'].'.';
-				$dataPassanger['tfPaxdepan'.$ip] = $namaDepan;
-				$dataPassanger['tfPaxbelakang'.$ip] = $namaBelakang;
+				$dataPassanger['tfPaxdepan'.$ip] = element('0',$name);
+				$dataPassanger['tfPaxbelakang'.$ip] = $this->lastname($name,1);
 				$dataPassanger['noID'.$ip] = $value['no_id'];
 				$ip++;
 			}
 			
 			$dataContact = array(
-				'receivedF'			=>	$this->user['f_name'].' '.$this->user['l_name'],
+				'receivedF'			=>	element('f_name',$this->user).' '.element('l_name',$this->user),
 				'telp_pax'			=>	$this->user['user_detail']['mobile'],
 			);
 			
@@ -404,7 +407,7 @@ class Batavia extends Comp_maskapai_base {
 			);		
 			
 			$date = explode('-',$this->_opt->date_depart);
-			$year = str_split($date[0]);
+			$year = str_split(element('0',$date));
 			
 			$flightRouteInfoData = array(
 				'flightBerangkat'	=>	$this->_opt->radio_value, //value dari radio
@@ -414,7 +417,7 @@ class Batavia extends Comp_maskapai_base {
 				'childInt'			=>	'',
 				'tglBerangkat'		=>	$this->convertDayMonth($date[2]),
 				'blnBerangkat'		=>	$this->convertDayMonth($date[1]),
-				'thnBerangkat'		=>	$year[2].$year[3],
+				'thnBerangkat'		=>	element('2',$year).element('3',$year),
 				'ruteBerangkat'		=>	$this->_opt->route_from,
 				'ruteTujuan'		=>	$this->_opt->route_to,
 				'ruteKembali'		=>	'kembali',
@@ -456,13 +459,23 @@ class Batavia extends Comp_maskapai_base {
 			
 		}
 		
+		function lastname($array,$startIndex){
+			$name = '';
+			if (array_key_exists($startIndex)) {
+				for ($i=$startIndex; $i < count($array); $i++) { 
+					$name .= element($i,$array).' ';
+				}
+			}
+			return $name;
+		}
+		
 		function booking(){
 			$page = str_get_html($this->_booking());
-			//$page = file_get_html("./components/partner/third_party/comp_maskapai/ojankillbooking_data/HTML/batavia/Booking.html");
-			if (!$page) {return array();}
+			//$page = file_get_html("./mod_office/o_partner/third_party/comp_maskapai/ojankillbooking_data/HTML/batavia/Booking.html");
+			if (!$page) {return false;}
 			$table = $page->find('div[id=centerright] table tbody tr td table tbody');
 			$cntTable = count($table);
-			if ($cntTable == 0) {return array();}
+			if ($cntTable == 0) {return false;}
 			$bookingData = $table[0];
 			$passangerData = $table[1];
 			$flightData = $table[2];
@@ -503,7 +516,6 @@ class Batavia extends Comp_maskapai_base {
 				$ip++;
 			}
 			return $data;
-			
 		}
 				
 		//function preBooking(){
@@ -537,11 +549,13 @@ class Batavia extends Comp_maskapai_base {
 			);*/
 			
 			$forBooking = json_decode($fare_data['meta_data'],1);
-			$route = explode(',',$forBooking['route']);
-			$route_from = $route[0];
-			$route_to	= $route[count($route)-1];
-			$date_depart = $forBooking['time_depart'];
-			$passanger	 = $forBooking['passanger'];
+			//$route = explode(',',$forBooking['route']);
+			$log = element('log',$fare_data);
+			
+			$route_from = element('route_from',$log);
+			$route_to	= element('route_to',$log);
+			$date_depart = element('time_depart',$forBooking);
+			$passanger	 = element('passanger',$forBooking);
 						
 			$opt = array(
 				'route_from' 	=> $route_from,
@@ -549,7 +563,7 @@ class Batavia extends Comp_maskapai_base {
 				'date_depart' 	=> $date_depart,
 				'date_return' 	=> NULL,
 				'passengers' 	=> $passanger,
-				'id'			=> $forBooking['log_id'],
+				'id'			=> element('log_id',$forBooking),
 			);
 			$getMeta = $this->doSearch($opt);
 			
@@ -572,111 +586,112 @@ class Batavia extends Comp_maskapai_base {
 		}
 		
 		function doBooking($fare_data,$passangers_data,$customer_data){
-/*		function doBooking(){
-			$fare_data = array(
-				'id'		=>	7323,
-				'log_id'	=>	34,
-				'company'	=>	'BATAVIA',
-				't_depart'	=>	'2012-12-31 01:00:00',
-				't_arrive'	=>	'2012-12-31 03:40:00',
-				'type'		=>	'depart',
-				'class'		=>	'R',
-				'route'		=>	'CGK,DPS',
-				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2011-12-31 01:00","t_arrive":"2011-12-31 02:05","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":872400,"class":"X","route":"CGK,PLM","log_id":1,"arrayIndex":"1,9","passangers":2,"time_depart":"2011-12-31","radio_value":"13898970"}',
-				't_transit_arrive'	=>	'',
-				't_transit_depart'	=>	'',
-				'price'				=>	'615500',
-				'flight_no'			=>	'743',
-				'log'				=>	array(
-					'id'				=>	34,
-					'date_depart'		=>	'2012-01-28 00:00:00',
-					'date_return'		=>	'',
-					'route_from'		=>	'CGK',
-					'route_to'			=>	'DPS',
-					'passangers'		=>	1,
-					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-					'c_time'			=>	'2011-12-20 11:56:15',
-					'max_fare'			=>	5,
-					'actor'				=> 'CUS',
-				),
-			);
+			/*		function doBooking(){
+						$fare_data = array(
+							'id'		=>	7323,
+							'log_id'	=>	34,
+							'company'	=>	'BATAVIA',
+							't_depart'	=>	'2012-12-31 01:00:00',
+							't_arrive'	=>	'2012-12-31 03:40:00',
+							'type'		=>	'depart',
+							'class'		=>	'R',
+							'route'		=>	'CGK,DPS',
+							'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2011-12-31 01:00","t_arrive":"2011-12-31 02:05","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":872400,"class":"X","route":"CGK,PLM","log_id":1,"arrayIndex":"1,9","passangers":2,"time_depart":"2011-12-31","radio_value":"13898970"}',
+							't_transit_arrive'	=>	'',
+							't_transit_depart'	=>	'',
+							'price'				=>	'615500',
+							'flight_no'			=>	'743',
+							'log'				=>	array(
+								'id'				=>	34,
+								'date_depart'		=>	'2012-01-28 00:00:00',
+								'date_return'		=>	'',
+								'route_from'		=>	'CGK',
+								'route_to'			=>	'DPS',
+								'passangers'		=>	1,
+								'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
+								'c_time'			=>	'2011-12-20 11:56:15',
+								'max_fare'			=>	5,
+								'actor'				=> 'CUS',
+							),
+						);
 
-			$passangers_data = array(
-				array(
-						'title' 			=>	'Mr',
-						'name' 				=>	'Zidni Mubarock',
-						'no_id'				=>	'3671081902880001',
+						$passangers_data = array(
+							array(
+									'title' 			=>	'Mr',
+									'name' 				=>	'Zidni Mubarock',
+									'no_id'				=>	'3671081902880001',
 
-				),
-				array(
-						'title' 			=>	'Mr',
-						'name' 				=>	'Fauzan Qadri',
-						'no_id'				=>	'3671081902880001',
+							),
+							array(
+									'title' 			=>	'Mr',
+									'name' 				=>	'Fauzan Qadri',
+									'no_id'				=>	'3671081902880001',
 
-				),
-			);
-			
-			$customer_data = array(
-				'f_name'	=>	'Zidni',
-				'l_name'	=>	'Mubarok',
-				'email'		=>	'zidmubarock@gmail.com',
-				'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
-				'role_id'	=>	1,
-				'c_time'	=>	'2011-12-11 21:04:04',
-				'm_time'	=>	'',
-				'status'	=>	'active',
-				'actv_key'	=>	'',
+							),
+						);
 
-				'user_detail'	=> 	array(
-					'user_id'	=>	26,
-					//'no_id'		=>	'3671081902880001'
-					'phone'		=>	'0215579315134',
-					'mobile'	=>	'0215579315134',
-					'address'	=>	'jalan anggrek no',
-					'gender'	=>	'M',
-									
-				),
-				
-			);
-			*/
-				$this->login();
-				$forBooking = json_decode($fare_data['meta_data'],1);
-				$route = explode(',',$forBooking['route']);
-				$route_from = $route[0];
-				$route_to	= $route[count($route)-1];
-				$date_depart = $forBooking['time_depart'];
-				$passanger	 = $forBooking['passangers'];
-				$this->passangers = $passangers_data;
-				$this->user	= $customer_data;
-				$this->fare_id = $fare_data['id'];
-				$this->meta_data = $forBooking;
-				
-				$this->_opt->radio_value		= $forBooking['radio_value'];
-				$this->_opt->route_from 		= $route_from;
-				$this->_opt->route_to 			= $route_to;
-				$this->_opt->date_depart 		= $date_depart;
-				$this->_opt->class 				= $forBooking['class'];
-				$this->_opt->passangerscount	= count($this->passangers);
-				$flightDetail = $this->detail();
-				$this->_opt->no_penerbangan		= $flightDetail['noPenerbangan'];
-				$book = $this->booking();
-				$this->closing();
-				return $book;
+						$customer_data = array(
+							'f_name'	=>	'Zidni',
+							'l_name'	=>	'Mubarok',
+							'email'		=>	'zidmubarock@gmail.com',
+							'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
+							'role_id'	=>	1,
+							'c_time'	=>	'2011-12-11 21:04:04',
+							'm_time'	=>	'',
+							'status'	=>	'active',
+							'actv_key'	=>	'',
+
+							'user_detail'	=> 	array(
+								'user_id'	=>	26,
+								//'no_id'		=>	'3671081902880001'
+								'phone'		=>	'0215579315134',
+								'mobile'	=>	'0215579315134',
+								'address'	=>	'jalan anggrek no',
+								'gender'	=>	'M',
+
+							),
+
+						);
+						*/
+							$this->login();
+							$forBooking = json_decode($fare_data['meta_data'],1);
+							//$route = explode(',',$forBooking['route']);
+							$log = element('log',$fare_data);
+							$route_from = element('route_from',$log);
+							$route_to	= element('route_to',$log);
+							$date_depart = element('time_depart',$forBooking);
+							$passanger	 = element('passangers',$forBooking);
+							$this->passangers = $passangers_data;
+							$this->user	= $customer_data;
+							$this->fare_id = element('id',$fare_data);
+							$this->meta_data = $forBooking;
+
+							$this->_opt->radio_value		= element('radio_value',$forBooking);
+							$this->_opt->route_from 		= $route_from;
+							$this->_opt->route_to 			= $route_to;
+							$this->_opt->date_depart 		= $date_depart;
+							$this->_opt->class 				= element('class',$forBooking);
+							$this->_opt->passangerscount	= count($this->passangers);
+							$flightDetail = $this->detail();
+							$this->_opt->no_penerbangan		= element('noPenerbangan',$flightDetail);
+							$book = $this->booking();
+							$this->closing();
+							return $book;
 		}
 
 		function multidimensional_search($parents, $searched) { 
-		  if (empty($searched) || empty($parents)) { 
-		    return 'nothing'; 
-		  } 
+		 	  if (empty($searched) || empty($parents)) { 
+			    return 'nothing'; 
+			  } 
 
-		  foreach ($parents as $key => $value) { 
-		    $exists = true; 
-		    foreach ($searched as $skey => $svalue) { 
-		      $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue); 
-		    } 
-		    if($exists){ return $key+1; } 
-		  } 
+			  foreach ($parents as $key => $value) { 
+			    $exists = true; 
+			    foreach ($searched as $skey => $svalue) { 
+			      $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue); 
+			    } 
+			    if($exists){ return $key+1; } 
+			  } 
 
-		  return 'nothing'; 
-		}
+			  return 'nothing'; 
+			}
 	}
