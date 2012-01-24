@@ -229,6 +229,16 @@ class REST_Controller extends CI_Controller {
 		call_user_func_array(array($this, $controller_method), $arguments);
 	}
 
+	public function response_error($data)
+	{
+		$data = array('error' => $data);
+		$this->response($data, 500);
+	}
+	public function response_warning($warning, $data)
+	{
+		$response = array_merge(array('warning' => $warning), $data);
+		$this->response($response, 400);
+	}
 	/*
 	 * response
 	 *

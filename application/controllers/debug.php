@@ -9,6 +9,15 @@ class Debug extends MX_Controller
 	function __construct()
 	{
 		parent::__construct();
+			$this->load->library('rest', array(
+				'server' => 'http://app.dev-rumahtiket.com/', 
+				'http_user' => 'admin',
+				'http_pass' => '1234',
+				'http_auth' => 'basic',
+				
+				)
+			);
+		$this->rest->api_key('abc');
 	}
 	public function maskapai()
 	{
@@ -149,5 +158,53 @@ class Debug extends MX_Controller
 			);
 		
 		
+	}
+	public function testvalidatearray()
+	{
+		$should = array('id', 'name', 'address_details');
+		$check = array('id' => 56, 'name' => 'zidni');
+		$validate = validate_array($should, $check);
+		if($validate->is_valid) printDebug($validate->data) ;
+		else echo 'you got wrong, check this '.$validate->unvalid_text;
+	}
+	public function testcreatecart()
+	{
+			$this->load->library('rest', array(
+				'server' => 'http://app.dev-rumahtiket.com/', 
+				'http_user' => 'admin',
+				'http_pass' => '1234',
+				'http_auth' => 'basic',
+				
+				)
+			);
+		$this->rest->api_key('abc');
+		$this->rest->post('service/shoppingcart/create/json', array('user_id' => 26, 'currency'=> 'IDR'));
+		$this->rest->debug();
+	}
+	public function testretrivecart()
+	{
+	
+		$this->rest->get('service/shoppingcart/view/fdb6f2bcaf62f77dc76fe5c8c928740a/format/json');
+		$this->rest->debug();
+	}
+	public function testdeletecart()
+	{
+		$this->rest->delete('service/shoppingcart/delete/fdb6f2bcaf62f77dc76fe5c8c928740a/format/json');
+		$this->rest->debug();
+	}
+	public function testcartadditem()
+	{
+		$this->rest->post('service/shoppingcart/add_item/ba79988f0db02a15d4f00304fd7dcb4c/format/json');
+		$this->rest->debug();
+	}
+	public function testcartupdateitem()
+	{
+		$this->rest->post('service/shoppingcart/update_item/cd566e55898c40e970fb203c501fc40c/format/json', array('name' => 'product sample', 'qty' => 1));
+		$this->rest->debug();
+	}
+	public function testcartdeleteitem()
+	{
+		$this->rest->delete('service/shoppingcart/delete_item/cd566e55898c40e970fb203c501fc40c/format/json');
+		$this->rest->debug();
 	}
 }
