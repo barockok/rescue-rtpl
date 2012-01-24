@@ -131,4 +131,23 @@ class Debug extends MX_Controller
 	{	
 		hj;
 	}
+	public function testcart()
+	{
+		$new_cart = array(
+			'cart_id' => 'd07623166ff9454c5f0be22fd3b2722e', 
+			'name' => 'test 2',
+			'qty' => 1
+			
+		);
+		
+		$cart = new Cart_item($new_cart);
+		$cart->save();
+		printDebug(
+			$cart->cart->to_array(
+				array('include' => array('items') )
+				) 
+			);
+		
+		
+	}
 }
