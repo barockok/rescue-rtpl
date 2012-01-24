@@ -27,7 +27,47 @@ class Airlines extends REST_Controller
 		}else{
 			$log->save();
 		}
+		
 		$this->response($log->to_array());
+	}
+	// BACKGROUND PROCESS
+	public function _execute_search()
+	{
+		$logid = $this->uri->rsegment(3);
+		$log = Search_fare_log::find($logid);
+		foreach(element('comp_include', $log->to_array()) as $maskapi){
+			
+		}
+	}
+	public function _trigger_search_execute_get()
+	{
+		
+	}
+	private function _exec_search($logid, $maskapai)
+	{
+		
+		$log = Search_fare_log::find($logid);	
+		$param = $log->to_array();
+		// reformat the date
+		foreach($param as $key => $val){
+			if($key == 'date_return' || $key == 'date_depart'){
+				if($val != null){
+				$param[$key] = show_date($val, 'Y-m-d');
+				}
+			}
+		}
+	
+		$this->load->library('comp_maskapai');
+		$comp 	= $this->comp_maskapai->_load($maskapai);
+		$result =  $comp->doSearch($param);
+		$comp->closing();
+		
+		foreach($result as $candidate_item)
+		{
+			$new_item = new Search_fare_item($candidate_item);
+			$new_item->save();
+		}
+		
 		
 	}
 	public function search_get()
@@ -122,9 +162,6 @@ class Airlines extends REST_Controller
 				break;
 		}
 		
-		
-		
-		
 	}
 	
 	// PRIVATE FUNCTION //
@@ -201,7 +238,27 @@ class Airlines extends REST_Controller
 		}
 		return count($flight_coll);
 	}
-
+	
+	// Shopping cart Hook
+	
+	public function _sc_hook_add_item($param)
+	{
+	
+	}
+	public function _sc_hook_update_item()
+	{
+		# code...
+	}
+	public function _sc_hook_delete_item()
+	{
+		# code...
+	}
+	public function _sc_hook_test($param)
+	{
+		$param['data'] = strtoupper($param['data']);
+		return $param;
+	}
+	
 	
 	
 	
