@@ -19,3 +19,23 @@ function show_date($date, $format = 'l, F j,  Y'){
 
 	return (!is_string($format)) ? $date : $str_date;
 }
+function validate_array($should = array(), $check = array())
+{
+	$ci =& get_instance();
+	$ci->load->helper(array('array', 'inflector', 'string'));
+	$combine = elements($should, $check, NULL);
+	$continue = TRUE;
+	$errors = array();
+	foreach($combine as $key => $val) {
+		if($val == NULL) {
+			$continue = FALSE;
+			array_push($errors , humanize($key));
+		}
+	}
+	$return = new stdClass;
+	$return->is_valid = $continue;
+	$return->unvalid_indexs = $errors;
+	$return->unvalid_text = implode(',', $errors);
+	$return->data = $combine;
+	return $return;
+}
