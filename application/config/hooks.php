@@ -25,7 +25,7 @@ $hook['pre_controller'][] 			= array(
 										    'filename' => 'ActiveRecord.php',
 										    'filepath' => 'third_party/php-activerecord'                                
 										);
-				
+		
 $hook['pre_system'][]					= array(
                                 			'class'    => 'App_hook',
 			                                'function' => 'initial_overide_php_setting',

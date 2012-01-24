@@ -25,7 +25,13 @@ class search_fare_log extends ActiveRecord\Model
 		}else{
 			$this->type = 'roundtrip';
 		}
-		$this->comp_include = json_encode(explode(',', $this->comp_include));
+		$this->comp_include = json_encode(explode(',', str_replace(' ', '', strtolower($this->comp_include))));
+	}
+	public function _before_update()
+	{
+		if($this->comp_complete != null){
+			$this->comp_complete = json_encode(str_replace(' ', '', strtolower($this->comp_complete)));
+		}
 	}
 
 	

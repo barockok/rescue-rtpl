@@ -9,6 +9,14 @@ class Airlines extends REST_Controller
 	{
 		parent::__construct();
 	}
+	public function test_get()
+	{
+		$this->response(array('no error'));
+	}
+	public function test2_get()
+	{
+		$this->response(suicide('service/airlines/test', FALSE));
+	}
 	public function search_post()
 	{
 		$posted = array(
@@ -27,26 +35,23 @@ class Airlines extends REST_Controller
 		}else{
 			$log->save();
 		}
+		// execute all maskapai simultanous on the background
+		foreach(json_decode($log->comp_include) as $comp)
+			suicide('service/airlines/exec_search/'.$log->id.'/'.$comp);
 		
 		$this->response($log->to_array());
+		
 	}
-	// BACKGROUND PROCESS
-	public function _execute_search()
+	// only rest suicide will call this function
+	public function exec_search_get()
 	{
-		$logid = $this->uri->rsegment(3);
-		$log = Search_fare_log::find($logid);
-		foreach(element('comp_include', $log->to_array()) as $maskapi){
+		$id = $this->uri->rsegment(3);
+		$maskapai = $this->uri->rsegment(4);
+		try {
+			$log = Search_fare_log::find($id);
+		} catch (Exception $e) {
 			
 		}
-	}
-	public function _trigger_search_execute_get()
-	{
-		
-	}
-	private function _exec_search($logid, $maskapai)
-	{
-		
-		$log = Search_fare_log::find($logid);	
 		$param = $log->to_array();
 		// reformat the date
 		foreach($param as $key => $val){
@@ -56,49 +61,13 @@ class Airlines extends REST_Controller
 				}
 			}
 		}
-	
-		$this->load->library('comp_maskapai');
-		$comp 	= $this->comp_maskapai->_load($maskapai);
-		$result =  $comp->doSearch($param);
-		$comp->closing();
-		
-		foreach($result as $candidate_item)
-		{
-			$new_item = new Search_fare_item($candidate_item);
-			$new_item->save();
-		}
-		
-		
-	}
-	public function search_get()
-	{
-		// validate log id
-		if(!$id_log = $this->get('id')) $this->response(array('error' => 'please provide the id log search'), 500);
-		if(!$maskapai = $this->get('airlines')) $this->response(array('error' => 'please provide the airlines'), 500);
-		// check that log really exists
-		try {
-			$log = Search_fare_log::find($this->get('id'));
-		} catch (Exception $e) {
-			$this->response($e->getMessage(), 500);
-		}
-		
-		$param = $log->to_array();
-		
-		// reformat the date
-		foreach($param as $key => $val){
-			if($key == 'date_return' || $key == 'date_depart'){
-				if($val != null){
-				$param[$key] = show_date($val, 'Y-m-d');
-				}
-			}
-		}
-		// only FETCH when there is no redcord found in db
 		if(
 			Search_fare_item::count(
 				array(
-					'conditions' => 'log_id = '.$id_log.' && company = "'.strtoupper($maskapai).'"' 
+					'conditions' => 'log_id = '.$id.' && company = "'.strtoupper($maskapai).'"' 
 					)
-				) == 0
+				) == 0 &&
+			!$this->_flag_comp_is_done($id, $maskapai)
 			){
 				// START FETCHING
 				$this->load->library('comp_maskapai');
@@ -106,27 +75,94 @@ class Airlines extends REST_Controller
 				$result =  $comp->doSearch($param);
 				$comp->closing();
 				// END FETCHING
-				if(count($result) == 0 )$this->response('no fare found', 500);
+				// if result is count = 0 so flag as false and exit
+				if(count($result) == 0 ) {
+					$this->_flag_comp_to_done($id, $maskapai, false);
+					exit();
+				}
 				// PUSHING RESULT to DB
 				foreach($result as $candidate_item)
 				{
 					$new_item = new Search_fare_item($candidate_item);
 					$new_item->save();
 				}
+				// push to db and result fetch count != 0
+				$this->_flag_comp_to_done($id, $maskapai, true);
+				exit();
 			
+			}
+	}
+	private function _flag_comp_is_done($id, $maskapai)
+	{
+		try {
+			$log = Search_fare_log::find($id);		
+		} catch (Exception $e) {
+			return TRUE;
 		}
-	//	$this->response($result);
+		$complete = ($log->complete_comp == null) ? FALSE : json_decode($log->complete_comp, true);
 		
-		
-		// START RETRIVE RESULT FROM DB
-		
-		if(element('type', $param) == 'roundtrip'){
-			$res = $this->_retrive_roundtrip_result($param, $maskapai);
+		if($complete == FALSE) return FALSE;
+	
+		if(isset($complete[$maskapai]) && $complete[$makapai] == TRUE)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	private function _flag_comp_to_done($id, $maskapai, $value = true)
+	{
+		try {
+			$log = Search_fare_log::find($id);		
+		} catch (Exception $e) {
+			return ;
+		}
+		$complete = ($log->complete_comp == null) ? array() : json_decode($log->complete_comp, true) ;
+		if($value = TRUE ){
+			$complete[$maskapai] = TRUE;
 		}else{
-			$res = $this->_retrive_roundtrip_result($param, $maskapai);
+			$complete[$maskapai] = FALSE;
+		}
+		$log->complete_comp = json_encode($complete);
+		$log->save();
+	}
+	public function search_get()
+	{
+		// validate log id
+		$uri = $this->uri->ruri_to_assoc(3);
+		if(!$id_log = element('id', $uri)) $this->response(array('error' => 'please provide the id log search'), 500);
+		
+		try {
+			$log = Search_fare_log::find($id_log);
+			// check flage commplete
+			$should = json_decode($log->comp_include, true);
+			$complete = ($log->complete_comp != null) ? array_keys(json_decode($log->complete_comp, true)) : array();
+			asort($should); asort($complete);
+			$not_complete = array();
+			
+			foreach($should as  $val){
+				if(!in_array($val, $complete) ) array_push($not_complete , $val);
+			}
+			$status = array(
+				'not_complete' => $not_complete,
+				'should' => $should,
+				'complete' => $complete
+			);
+			if(count($not_complete) == 0 ) $this->response(array('status' => 'complete')); 	
+
+		} catch (Exception $e) {
+			$this->response($e->getMessage(), 500);
+		}
+		
+		$param = $log->to_array();
+		$limit_each_maskapai = (!$l = element('limit', $uri)) ? 5 : $l;
+
+		if(element('type', $param) == 'roundtrip'){
+			$res = $this->_retrive_roundtrip_result($param, $limit_each_maskapai);
+		}else{
+			$res = $this->_retrive_roundtrip_result($param, $limit_each_maskapai);
 		}
 		if($res == FALSE) $this->response('null', 500);
 		$res['log'] = $param;
+		$res['status'] = $status;
 		$this->response($res);
 		
 	}
@@ -162,6 +198,9 @@ class Airlines extends REST_Controller
 				break;
 		}
 		
+		
+		
+		
 	}
 	
 	// PRIVATE FUNCTION //
@@ -189,22 +228,28 @@ class Airlines extends REST_Controller
 			return false;
 		}
 	}
-	private function _retrive_roundtrip_result($log, $maskapai)
+	private function _retrive_roundtrip_result($log, $limit)
 	{
 		try {
+	
+			
 			$return_q = Search_fare_item::find(
 					'all',
 					array(
-						'conditions' => array(  'log_id = ? AND company = ? AND type = ?', $log['id'], $maskapai , 'return'),
+						'conditions' => array(  'log_id = ? AND type = ?', $log['id'], 'return'),
 						'order' => 'price asc',
 						'limit' => element('max_fare', $log)
 						)
 					);
-				
+			
+			
+			
+			
+			
 			$depart_q = Search_fare_item::find(
 					'all',
 					array(
-						'conditions' => array(  'log_id = ? AND company = ? AND type = ?', $log['id'], $maskapai , 'depart'),
+						'conditions' => array(  'log_id = ? AND type = ?', $log['id'], 'depart'),
 						'order' => 'price asc',
 						'limit' => element('max_fare', $log)
 						)
@@ -238,27 +283,7 @@ class Airlines extends REST_Controller
 		}
 		return count($flight_coll);
 	}
-	
-	// Shopping cart Hook
-	
-	public function _sc_hook_add_item($param)
-	{
-	
-	}
-	public function _sc_hook_update_item()
-	{
-		# code...
-	}
-	public function _sc_hook_delete_item()
-	{
-		# code...
-	}
-	public function _sc_hook_test($param)
-	{
-		$param['data'] = strtoupper($param['data']);
-		return $param;
-	}
-	
+
 	
 	
 	

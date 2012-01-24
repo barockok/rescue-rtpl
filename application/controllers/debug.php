@@ -194,17 +194,98 @@ class Debug extends MX_Controller
 	}
 	public function testcartadditem()
 	{
-		$this->rest->post('service/shoppingcart/add_item/ba79988f0db02a15d4f00304fd7dcb4c/format/json');
+		$this->rest->post('service/shoppingcart/add_item/ba79988f0db02a15d4f00304fd7dcb4c/format/json', array(
+			'qty' => 3,
+			'name' => 'wede',
+			'price' => 15000,
+			'subtotal' => 5000,
+			'type' => 'airlines	'
+			));
 		$this->rest->debug();
 	}
 	public function testcartupdateitem()
 	{
-		$this->rest->post('service/shoppingcart/update_item/cd566e55898c40e970fb203c501fc40c/format/json', array('name' => 'product sample', 'qty' => 1));
+		$this->rest->post('service/shoppingcart/update_item/092c30453bf313d6343034f86fac25a6/format/json', array('name' => 'product sample2', 'qty' => null));
 		$this->rest->debug();
 	}
 	public function testcartdeleteitem()
 	{
 		$this->rest->delete('service/shoppingcart/delete_item/cd566e55898c40e970fb203c501fc40c/format/json');
 		$this->rest->debug();
+	}
+	public function testcarthookcallpost()
+	{
+		$this->rest->post('service/shoppingcart/hook_call/format/json');
+		$this->rest->debug();
+	}
+	public function testdevnull()
+	{
+	
+		printDebug($this->rest->get('service/airlines/test2', FALSE));
+		echo 'test me';
+	}
+	public function testairlinessearchpost()
+	{
+		
+			$posted = array(
+				'depart' 	=> '2012-02-10',
+				'return' 	=> '2012-02-15',
+				'from' 	=> 'CGK',
+				'to'    	=> 'SUB',
+				'passengers'	=> 1,
+				'airlines'  => 'Sriwijaya,Batavia,Garuda,Merpati,Citilink ',
+				'max_fare'		=> 10,
+			);
+		$this->rest->post('service/airlines/search/format/json', $posted);
+		$this->rest->debug();
+	}
+	public function testairlinessearhexec()
+	{	$maskapai = $this->uri->rsegment(3);
+		$this->rest->get('service/airlines/exec_search/221/'.$maskapai);
+		$this->rest->debug();
+	}
+	public function testgetresquery()
+	{
+		$test = Search_fare_item::find('all' , array(
+			'limit' => 10,
+			'conditions' => array('log_id = ?', 190 ),
+			'order'		=> 'price desc',
+			
+			
+			));
+		$result = array();
+		foreach($test as $item) array_push($result , $item->to_array() );
+		printDebug($result);
+	}
+	public function testbestfare()
+	{
+		$test = Search_fare_item::find_by_sql("SELECT
+		    *
+		FROM (
+		    SELECT
+		        company,
+		        id,
+				price,
+				log_id ,
+				type,
+		        @rn := CASE WHEN @prev_company = company
+		                    THEN @rn + 1
+		                    ELSE 1
+		               END AS rn,
+		        @prev_company := company
+		    FROM (SELECT @prev_company := NULL) vars, search_fare_items T1
+			WHERE log_id = 190
+			AND type = 'depart'
+		    ORDER BY company, price DESC
+		) T2
+		WHERE rn <= 5
+		ORDER BY T2.price ASC");
+		$return = array();
+		$i = 0;
+		foreach($test as $item){
+			$return[$i] = $item->to_array();
+			$i++;
+		}
+		printDebug($return);
 	}
 }
