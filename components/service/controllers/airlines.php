@@ -9,6 +9,14 @@ class Airlines extends REST_Controller
 	{
 		parent::__construct();
 	}
+	public function test_get()
+	{
+		$this->response(array('no error'));
+	}
+	public function test2_get()
+	{
+		$this->response(suicide('service/airlines/test', FALSE));
+	}
 	public function search_post()
 	{
 		$posted = array(
@@ -27,26 +35,23 @@ class Airlines extends REST_Controller
 		}else{
 			$log->save();
 		}
+		// execute all maskapai simultanous on the background
+		foreach(json_decode($log->comp_include) as $comp)
+			suicide('service/airlines/exec_search/'.$log->id.'/'.$comp);
 		
 		$this->response($log->to_array());
+		
 	}
-	// BACKGROUND PROCESS
-	public function _execute_search()
+	// only rest suicide will call this function
+	public function exec_search_get()
 	{
-		$logid = $this->uri->rsegment(3);
-		$log = Search_fare_log::find($logid);
-		foreach(element('comp_include', $log->to_array()) as $maskapi){
+		$id = $this->uri->rsegment(3);
+		$maskapai = $this->uri->rsegment(4);
+		try {
+			$log = Search_fare_log::find($id);
+		} catch (Exception $e) {
 			
 		}
-	}
-	public function _trigger_search_execute_get()
-	{
-		
-	}
-	private function _exec_search($logid, $maskapai)
-	{
-		
-		$log = Search_fare_log::find($logid);	
 		$param = $log->to_array();
 		// reformat the date
 		foreach($param as $key => $val){
@@ -56,19 +61,68 @@ class Airlines extends REST_Controller
 				}
 			}
 		}
-	
-		$this->load->library('comp_maskapai');
-		$comp 	= $this->comp_maskapai->_load($maskapai);
-		$result =  $comp->doSearch($param);
-		$comp->closing();
-		
-		foreach($result as $candidate_item)
-		{
-			$new_item = new Search_fare_item($candidate_item);
-			$new_item->save();
+		if(
+			Search_fare_item::count(
+				array(
+					'conditions' => 'log_id = '.$id.' && company = "'.strtoupper($maskapai).'"' 
+					)
+				) == 0 &&
+			!$this->_flag_comp_is_done($id, $maskapai)
+			){
+				// START FETCHING
+				$this->load->library('comp_maskapai');
+				$comp 	= $this->comp_maskapai->_load($maskapai);
+				$result =  $comp->doSearch($param);
+				$comp->closing();
+				// END FETCHING
+				// if result is count = 0 so flag as false and exit
+				if(count($result) == 0 ) {
+					$this->_flag_comp_to_done($id, $maskapai, false);
+					exit();
+				}
+				// PUSHING RESULT to DB
+				foreach($result as $candidate_item)
+				{
+					$new_item = new Search_fare_item($candidate_item);
+					$new_item->save();
+				}
+				// push to db and result fetch count != 0
+				$this->_flag_comp_to_done($id, $maskapai, true);
+				exit();
+			
+			}
+	}
+	private function _flag_comp_is_done($id, $maskapai)
+	{
+		try {
+			$log = Search_fare_log::find($id);		
+		} catch (Exception $e) {
+			return TRUE;
 		}
+		$complete = ($log->complete_comp == null) ? FALSE : json_decode($log->complete_comp, true);
 		
-		
+		if($complete == FALSE) return FALSE;
+	
+		if(isset($complete[$maskapai]) && $complete[$makapai] == TRUE)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	private function _flag_comp_to_done($id, $maskapai, $value = true)
+	{
+		try {
+			$log = Search_fare_log::find($id);		
+		} catch (Exception $e) {
+			return ;
+		}
+		$complete = ($log->complete_comp == null) ? array() : json_decode($log->complete_comp, true) ;
+		if($value = TRUE ){
+			$complete[$maskapai] = TRUE;
+		}else{
+			$complete[$maskapai] = FALSE;
+		}
+		$log->complete_comp = json_encode($complete);
+		$log->save();
 	}
 	public function search_get()
 	{
@@ -92,6 +146,7 @@ class Airlines extends REST_Controller
 				}
 			}
 		}
+		
 		// only FETCH when there is no redcord found in db
 		if(
 			Search_fare_item::count(
@@ -161,6 +216,9 @@ class Airlines extends REST_Controller
 				// book failed
 				break;
 		}
+		
+		
+		
 		
 	}
 	
@@ -238,27 +296,7 @@ class Airlines extends REST_Controller
 		}
 		return count($flight_coll);
 	}
-	
-	// Shopping cart Hook
-	
-	public function _sc_hook_add_item($param)
-	{
-	
-	}
-	public function _sc_hook_update_item()
-	{
-		# code...
-	}
-	public function _sc_hook_delete_item()
-	{
-		# code...
-	}
-	public function _sc_hook_test($param)
-	{
-		$param['data'] = strtoupper($param['data']);
-		return $param;
-	}
-	
+
 	
 	
 	

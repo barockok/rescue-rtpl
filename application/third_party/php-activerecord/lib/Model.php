@@ -442,7 +442,7 @@ class Model
 				return $this->$item['to']->$delegated_name = $value;
 		}
 
-		throw new UndefinedPropertyException(get_called_class(),$name);
+		throw new \Exception('we dont understand what is this "'.$name.'"');
 	}
 
 	public function __wakeup()

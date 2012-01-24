@@ -58,19 +58,25 @@ class Shoppingcart extends REST_Controller
 	public function add_item_post()
 	{
 		$id = $this->uri->rsegment(3);
+	
 		try {
 			$cart = Cart::find($id);
 		} catch (Exception $e) {
 			$this->response(array('error' => $e->getMessage()));
 		}
-		$post = $this->post();
-		$post['cart_id'] = $cart->id;
+	
+	
 		try {
-			$new_item = new Cart_item($post);
+			$post = $this->post();
+			$post['cart_id'] = $cart->id;
+			$post = $this->_hook_caller($post['type'], 'add_item', $post);
+			
+			$new_item = Cart_item::create($post);
+			
 			if(!$new_item->is_valid())
-				$this->response(array('error' => $new_item->errors->full_messages()));
+				throw new Exception(implode(',', $new_item->errors->full_messages()));
 			$new_item->save();
-				$this->response_warning('not provide options',$new_item->to_array(array('include' => array('cart'))));
+			$this->response($new_item->to_array(array('include' => array('cart'))));
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
 		}
@@ -80,6 +86,7 @@ class Shoppingcart extends REST_Controller
 		$id = $this->uri->rsegment(3);
 		$post = $this->post();
 		try {
+			
 			$item = Cart_item::find($id);
 			// what ever check the cart first
 			try {
@@ -87,11 +94,12 @@ class Shoppingcart extends REST_Controller
 			} catch (Exception $e) {
 				throw $e;
 			}
+			
 			// everything good so update the cart
 			try {
 				$item->update_attributes($post);
 				if(!$item->is_valid())
-					throw new Exception($item->errors->full_messages());
+					throw new Exception(implode(',', $item->errors->full_messages()));
 				$item->save();
 				$this->response($item->to_array(array('include' => array('cart'))));
 			} catch (Exception $e) {
@@ -112,9 +120,25 @@ class Shoppingcart extends REST_Controller
 			$this->response_error($e->getMessage());
 		}
 	}
-	public function add_payment_post()
+	public function hook_call_post()
 	{
-		# code...
+		$this->response($this->_hook_caller('airlines', 'test', array('data' => 'name')));
+	}
+	
+	private function _hook_caller($sibling, $func, $param)
+	{
+		$file_name = strtolower($sibling).'.php';
+		$func = '_sc_hook_'.$func;
+		if(!is_file($inc = dirname(__FILE__).'/'.$file_name)) return $param;
+		
+		else{
+			include_once $inc;
+			if(!class_exists($class = ucfirst($sibling) ) ) return $param;
+			if(!is_callable( array($class, $func) ) ) return $param;
+			// TOTO : check first, to func called, if null or void, return to original $param
+			$return = call_user_func_array($class.'::'.$func, array($param));
+			return ($return != null) ? $return : $param;
+		}
 	}
 	
 }

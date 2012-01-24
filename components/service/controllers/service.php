@@ -22,6 +22,10 @@ class Service extends REST_Controller
 	{
 		# code...
 	}
+	public function test_get()
+	{
+		$this->response(array('suh', 'test'));
+	}
 	
 }
 
