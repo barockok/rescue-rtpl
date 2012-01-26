@@ -49,8 +49,9 @@ class Airlines extends REST_Controller
 		$maskapai = $this->uri->rsegment(4);
 		try {
 			$log = Search_fare_log::find($id);
+			$this->response($log);	
 		} catch (Exception $e) {
-			
+			$this->response($e->getMessage());	
 		}
 		$param = $log->to_array();
 		// reformat the date

@@ -240,8 +240,9 @@ class Debug extends MX_Controller
 		$this->rest->debug();
 	}
 	public function testairlinessearhexec()
-	{	$maskapai = $this->uri->rsegment(3);
-		$this->rest->get('service/airlines/exec_search/221/'.$maskapai);
+	{	$id = $this->uri->rsegment(3);
+		$maskapai = $this->uri->rsegment(4);
+		$this->rest->get('service/airlines/exec_search/'.$id.'/'.$maskapai);
 		$this->rest->debug();
 	}
 	public function testgetresquery()
