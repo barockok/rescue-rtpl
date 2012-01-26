@@ -99,7 +99,7 @@ class Citilink extends Comp_maskapai_base {
 		return $exc = str_get_html($this->_ci->my_curl->exc());
 	}
 	
-	public function doSearch($opt=null){		
+	public function doSearch($opt=array()){		
 		$this->_opt->date_depart =  '2012-03-16';
 		$this->_opt->date_return =  NULL;
 		$this->_opt->passengers = 2;
@@ -149,7 +149,7 @@ class Citilink extends Comp_maskapai_base {
 				
 		$vKey = $this->toSearchForm()->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');
 					
-		$post_data = array(		
+		/*$post_data = array(		
 			'__EVENTTARGET' => 'ctrPageHeader:lnkAgencySalesReport',
 			'__EVENTARGUMENT' => null,
 			'__VIEWSTATEKEY' => $vKey,
@@ -167,7 +167,7 @@ class Citilink extends Comp_maskapai_base {
 			'ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightSearchBase:CmbAvailabilityModes'=>'111',
 			'ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightSearchBase:btmSearchm.x' => '33',
 			'ctrAgentBase:ctrAgentHome:ctrAgentFlightAvailability:ctrFlightSearchBase:btmSearchm.y' => '5'
-				);
+				);*/
 
 		$post_fields = '__EVENTTARGET=&__EVENTARGUMENT=&__VIEWSTATEKEY='.$vKey.'&__VIEWSTATE=&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AFlightType=rdoOneway&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AcmbOrigin='.$this->_opt->route_from.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AcmbDestination='.$this->_opt->route_to.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlDepatureDate%3AcmbMonthYear='.$cmbMonthYear.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlDepatureDate%3AcmbDay='.$cmbDay.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlReturnDate%3AcmbMonthYear='.$cmbMonthYear.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlReturnDate%3AcmbDay'.$cmbDay.'=&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbAdult='.$this->_opt->passengers.'&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbChild=0&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ActlPassengerType%3AcmbInfant=0&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3ACmbAvailabilityModes=111&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AbtmSearchm.x=40&ctrAgentBase%3ActrAgentHome%3ActrAgentFlightAvailability%3ActrFlightSearchBase%3AbtmSearchm.y=12';
 					

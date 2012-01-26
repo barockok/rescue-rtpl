@@ -920,6 +920,29 @@ class Garuda extends Comp_maskapai_base {
 		$this->_ci->my_curl->setup($conf);
 		echo $exc = $this->_ci->my_curl->exc();
 		
+		//exception if prebook fail
+		$err_msg = json_encode(
+			array(
+			'Error' => array(
+				'Code' => '10',
+				'Message' => "Can't book flight "
+				)
+			));														
+		
+		$incorrect_res = "Incorrect response id (request id: jsonRPCClient Object<br />
+							(<br />
+							    [debug:private] => <br />
+							    [url:private] => http://192.168.16.228/ibookxmlet/rpc/servicerpc.php<br />
+							    [id:private] => 1<br />
+							    [notification:private] => <br />
+							    [proxy] => <br />
+							)<br />
+							1, response id: )<br />";
+			
+		if($exc == $err_msg || $exc == $incorrect_res){
+			return FALSE;
+		}
+		
 		//echo "Result prebook : ".$exc."<br/><br/>";
 		
 		$bookRes = json_decode($exc)->BookResult;
@@ -1030,10 +1053,12 @@ class Garuda extends Comp_maskapai_base {
 		
 		//do prebook, check for the price changes								
 		
-		$bfare = $this->prebook($flight_detail);
+		$bfare = $this->prebook($flight_detail);				
 		
 		if($bfare==1){		
 			$bfare = $meta_data->bfare;			
+		}else if($bfare == FALSE){
+			return FALSE;
 		}
 			
 		//echo "Bfare final : ".$bfare."<br/>";
@@ -1135,7 +1160,17 @@ class Garuda extends Comp_maskapai_base {
 				)
 			));														
 		
-		if($exc == $err_msg){
+		$incorrect_res = 'Incorrect response id (request id: jsonRPCClient Object<br />
+							(<br />
+							    [debug:private] => <br />
+							    [url:private] => http://192.168.16.228/ibookxmlet/rpc/servicerpc.php<br />
+							    [id:private] => 1<br />
+							    [notification:private] => <br />
+							    [proxy] => <br />
+							)<br />
+								1, response id: )<br />';
+			
+		if($exc == $err_msg || $exc == $incorrect_res){
 			return FALSE;
 		}
 		
