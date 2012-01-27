@@ -5,6 +5,7 @@ if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 class Lion extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();
+		ini_set('memory_limit', '120M');
 		$this->_cookies_file = dirname(__FILE__).'/cookies/lion_air.txt';
 		$this->login_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
@@ -95,7 +96,7 @@ class Lion extends Comp_maskapai_base {
 		$this->_opt->id = 1;
 		$this->_opt->max_fare = 5;		
 
-		foreach($opt as $key => $val) $this->_opt->$key = $val;
+		//foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	

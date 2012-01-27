@@ -49,11 +49,11 @@ class Airlines extends REST_Controller
 		$maskapai = $this->uri->rsegment(4);
 		try {
 			$log = Search_fare_log::find($id);
-			$this->response($log);	
 		} catch (Exception $e) {
-			$this->response($e->getMessage());	
+			$this->response(array('no log found'));
 		}
 		$param = $log->to_array();
+	
 		// reformat the date
 		foreach($param as $key => $val){
 			if($key == 'date_return' || $key == 'date_depart'){
@@ -70,6 +70,7 @@ class Airlines extends REST_Controller
 				) == 0 &&
 			!$this->_flag_comp_is_done($id, $maskapai)
 			){
+				
 				// START FETCHING
 				$this->load->library('comp_maskapai');
 				$comp 	= $this->comp_maskapai->_load($maskapai);
@@ -79,6 +80,7 @@ class Airlines extends REST_Controller
 				// if result is count = 0 so flag as false and exit
 				if(count($result) == 0 ) {
 					$this->_flag_comp_to_done($id, $maskapai, false);
+
 					exit();
 				}
 				// PUSHING RESULT to DB
@@ -89,8 +91,11 @@ class Airlines extends REST_Controller
 				}
 				// push to db and result fetch count != 0
 				$this->_flag_comp_to_done($id, $maskapai, true);
+				$this->response($result);
 				exit();
 			
+			}else{
+				$this->response($param);
 			}
 	}
 	private function _flag_comp_is_done($id, $maskapai)
@@ -104,7 +109,7 @@ class Airlines extends REST_Controller
 		
 		if($complete == FALSE) return FALSE;
 	
-		if(isset($complete[$maskapai]) && $complete[$makapai] == TRUE)
+		if(isset($complete[$maskapai]) && $complete[$maskapai] == TRUE)
 			return TRUE;
 		else
 			return FALSE;

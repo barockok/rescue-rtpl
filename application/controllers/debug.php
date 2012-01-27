@@ -289,4 +289,5 @@ class Debug extends MX_Controller
 		}
 		printDebug($return);
 	}
+	
 }
