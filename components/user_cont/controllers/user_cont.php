@@ -54,7 +54,7 @@ class User_cont extends REST_Controller
 					$this->response(array('error' => $user->errors->full_messages()), 500);
 				else
 					$user->save();
-				$this->response($user->to_array())
+				$this->response($user->to_array());
 			} catch (Exception $e) {
 				$this->response(array('error' => $e->getMessage()), 500);
 			}
