@@ -96,7 +96,7 @@ class Lion extends Comp_maskapai_base {
 		$this->_opt->id = 1;
 		$this->_opt->max_fare = 5;		
 
-		//foreach($opt as $key => $val) $this->_opt->$key = $val;
+		foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	

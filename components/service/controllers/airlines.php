@@ -138,6 +138,7 @@ class Airlines extends REST_Controller
 		
 		try {
 			$log = Search_fare_log::find($id_log);
+
 			// check flage commplete
 			$should = json_decode($log->comp_include, true);
 			$complete = ($log->complete_comp != null) ? array_keys(json_decode($log->complete_comp, true)) : array();
@@ -152,7 +153,7 @@ class Airlines extends REST_Controller
 				'should' => $should,
 				'complete' => $complete
 			);
-			if(count($not_complete) == 0 ) $this->response(array('status' => 'complete')); 	
+			if(count($not_complete) == 0 ) $status = 'complete'; 	
 
 		} catch (Exception $e) {
 			$this->response($e->getMessage(), 500);
@@ -171,6 +172,16 @@ class Airlines extends REST_Controller
 		$res['status'] = $status;
 		$this->response($res);
 		
+	}
+	public function log_get()
+	{
+		if(!$id = $this->uri->rsegment(3)) $this->response_error('please provide id');
+		try {
+			$log = Search_fare_log::find($id);
+			$this->response($log->to_array( array('include' => array('departure_airport', 'destination_airport')) ));
+		} catch (Exception $e) {
+			$this->response_error($e->getMessage());
+		}
 	}
 	public function book_post()
 	{
@@ -210,31 +221,87 @@ class Airlines extends REST_Controller
 	}
 	
 	// PRIVATE FUNCTION //
-	private function _retrive_oneway_result($log, $maskapai)
+	private function _retrive_oneway_result($log)
 	{
 		try {
-				$depart_q = Search_fare_item::find(
-						'all',
-						array(
-							'conditions' => array(  'log_id = ? AND company = ? AND type = ?', $log['id'], $maskapai , 'depart'),
-							'order' => 'price asc',
-							'limit' => element('max_fare', $log)
-							)
-						);
-
-				$final_data = array(
-					'depart' => array(
-						'fares' 		=> $this->db_util->multiple_to_array($depart_q),
-						'count_fares' 	=> count($depart_q),
-						'count_flight' 	=> $this->_count_flight($depart_q),
-					)
+			$log = Search_fare_log::find(element('id', $log));
+			$result = array();
+			foreach (json_decode($log->complete_comp) as $comp) {
+				$_item = Search_fare_item::find(
+					array(
+						'conditions' => array('log_id = ? AND company = ? AND type =?', $log->id, strtoupper($comp), 'oneway'),
+						'order' => 'price asc',
+						'limit' => $log->max_fare,
+						)
 					);
+				array_merge($result, $this->db_util->multiple_to_array($_item));
+			}
+			$depart_q = $result;
+			$final_data = array(
+				'depart' => array(
+					'fares' => $depart_q,
+					'count_fares' => count($depart_q),
+					'count_flight' => $this->_count_flight($depart_q, false)
+					)
+				);
 			return $final_data;
+
 		} catch (Exception $e) {
 			return false;
 		}
 	}
-	private function _retrive_roundtrip_result($log, $limit)
+	private function _retrive_roundtrip_result($log)
+	{
+		
+			$log = Search_fare_log::find(element('id', $log));
+			$depart_q = array();
+			foreach (json_decode($log->complete_comp) as $comp => $status) {
+				if($status == FALSE) continue;
+				$depart_q_item = Search_fare_item::find('all', array(
+							'conditions' => array(
+								'log_id = ? AND type = ? AND company = ?',
+								$log->id, 'depart', strtoupper($comp)
+								),
+							'limit' => $log->max_fare,
+							'order' => 'price asc',
+						)
+				);
+				if(count($depart_q_item) > 0 )
+					foreach ($this->db_util->multiple_to_array($depart_q_item) as $real_item) array_push($depart_q, $real_item);
+			}
+			
+			$return_q = array();
+			foreach (json_decode($log->complete_comp) as $comp => $status) {
+				if($status == FALSE) continue;
+				$return_q_item = Search_fare_item::find('all', array(
+							'conditions' => array(
+								'log_id = ? AND type = ? AND company = ?',
+								$log->id, 'return', strtoupper($comp)
+								),
+							'limit' => $log->max_fare,
+							'order' => 'price asc',
+						)
+				);
+				if(count($depart_q_item) > 0 )
+					foreach ($this->db_util->multiple_to_array($return_q_item) as $real_item) array_push($return_q, $real_item);
+			}
+			
+			$final_data = array(
+					'depart' => array(
+						'fares' => $depart_q,
+						'count_fares' => count($depart_q),
+						'count_flight' => $this->_count_flight($depart_q, false)
+					),
+					'return' => array(
+						'fares' => $return_q,
+						'count_fares' => count($return_q),
+						'count_flight' => $this->_count_flight($return_q, false)
+					)
+				);
+			return $final_data;
+		
+	}
+	private function bck_retrive_roundtrip_result($log, $limit)
 	{
 		try {
 	
@@ -280,14 +347,25 @@ class Airlines extends REST_Controller
 		}
 	}
 	
-	private function _count_flight($model)
+	private function _count_flight($model, $object=true)
 	{
-		$flight_coll = array();
-		foreach($model as $item){
-			if(in_array($item->flight_no, $flight_coll)) continue;
-			array_push($flight_coll, $item->flight_no);
-		}
+		if($object == true){
+			$flight_coll = array();
+			foreach($model as $item){
+				if(in_array($item->flight_no, $flight_coll)) continue;
+				array_push($flight_coll, $item->flight_no);
+			}
+		
 		return count($flight_coll);
+		}else{
+			$flight_coll = array();
+			foreach($model as $item){
+				if(in_array(element('flight_no', $item), $flight_coll)) continue;
+				array_push($flight_coll, element('flight_no', $item));
+			}
+		
+		return count($flight_coll);
+		}
 	}
 
 	

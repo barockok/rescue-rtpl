@@ -8,10 +8,14 @@ class search_fare_log extends ActiveRecord\Model
 		'foreign_key' => 'log_id'
 		)
 	);
+	static $belongs_to = array(
+		array('departure_airport' , 'class_name' => 'Ext_data_airport', 'foreign_key' => 'route_from' , 'primary_key' => 'code'),
+		array('destination_airport' , 'class_name' => 'Ext_data_airport', 'foreign_key' => 'route_to', 'primary_key' => 'code')
+		);
 	static $validates_presence_of = array(
-	     array('date_depart', 'message' => 'you must set the depart date'),
-	     array('passengers', 'message' => 'how many passengers will flight'),
-		 array('comp_include', 'message' => 'which airlines'),
+		array('date_depart', 'message' => 'you must set the depart date'),
+		array('passengers', 'message' => 'how many passengers will flight'),
+		array('comp_include', 'message' => 'which airlines'),
 		array('route_from', 'message' => 'where are you will flight from'),
 		array('route_to', 'message' => 'where is your destination ?'),
 	    );

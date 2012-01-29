@@ -260,7 +260,9 @@ class Debug extends MX_Controller
 	}
 	public function testbestfare()
 	{
-		$test = Search_fare_item::find_by_sql("SELECT
+		
+	
+		$sql = ("SELECT
 		    *
 		FROM (
 		    SELECT
@@ -275,19 +277,60 @@ class Debug extends MX_Controller
 		               END AS rn,
 		        @prev_company := company
 		    FROM (SELECT @prev_company := NULL) vars, search_fare_items T1
-			WHERE log_id = 190
+			WHERE log_id = 241
 			AND type = 'depart'
 		    ORDER BY company, price DESC
 		) T2
 		WHERE rn <= 5
 		ORDER BY T2.price ASC");
-		$return = array();
-		$i = 0;
-		foreach($test as $item){
-			$return[$i] = $item->to_array();
-			$i++;
-		}
-		printDebug($return);
+	
+		
+		$con = mysql_connect("localhost", "root", "root");
+		if (!$con)
+		  {
+		  die('Could not connect: ' . mysql_error());
+		  }
+
+		$db_selected = mysql_select_db("rt_pre_prod", $con);
+
+//		$sql = "SELECT
+//		    *
+//		FROM search_fare_items";
+		$result = mysql_query($sql, $con);
+
+		while($r[]=mysql_fetch_array($result));
+
+	echo "<pre>";
+//= Prints $r as array =================//
+print_r ($r);
+//=============================//
+echo "</pre>";
+		//printDebug(mysql_fetch_array($result));
+		mysql_close($con);
+}
+	public function testqueryroundtrip()
+	{
+		$log = Search_fare_log::find(241);
+		$depart_q = array();
+		foreach (json_decode($log->complete_comp) as $comp => $status) {
+				if($status == FALSE) continue;
+
+				$depart_q_item = Search_fare_item::find('all', array(
+							'conditions' => array(
+								'log_id = ? AND type = ? AND company = ?',
+								$log->id, 'depart', strtoupper($comp)
+								),
+							'limit' => $log->max_fare,
+							'order' => 'price asc',
+						)
+				);
+				if(count($depart_q_item) > 0)
+				foreach($this->db_util->multiple_to_array($depart_q_item) as $child_item ) array_push($depart_q, $child_item) ;
+				
+				
+				
+			}
+		printDebug($depart_q);
 	}
 	
 }
