@@ -53,9 +53,10 @@ class Kamar extends Comp_hotel_base {
 	function updateCity(){
 		$eventValidation = element('eventValidation',$this->firstPage());
 		$myViewState = element('myViewState',$this->firstPage());
-		$date = explode('-',$this->_opt->date);
+		$date = explode('-',$this->_opt->checkin);
 		$date_post =  element('2',$date).'-'.$this->monthConvert(element('1',$date)).'-'.element('0',$date);
-				
+		$nite = $this->dateInterval($this->_opt->checkin,$this->_opt->checkout);
+						
 		$post_data = array(
 			'ctl00$Scriptmanager1'	=>	'ctl00$updateCity|ctl00$City',
 			'__EVENTVALIDATION'		=>	$eventValidation,
@@ -69,7 +70,7 @@ class Kamar extends Comp_hotel_base {
 			'ctl00$Area'			=>	'-1',
 			'ctl00$PaxPassport'		=>	26,
 			'ctl00$CheckInDate'		=>	$date_post,//'31-Jan-2012',
-			'ctl00$Nite'			=>	$this->_opt->nite,
+			'ctl00$Nite'			=>	$nite,
 			'ctl00$HotelName'		=>	'',
 			'ctl00$HotelRating'		=>	'-1',
 			'ctl00$cpHtl$advHtlFav$ctl01$CollapsiblePanelExtender1_ClientState'	=>	'true',
@@ -143,8 +144,9 @@ class Kamar extends Comp_hotel_base {
 		$updateVal = $this->updateCity();
 		$eventValidation = element('eventValidation',$updateVal);
 		$myViewState = element('myViewState',$updateVal);
-		$date = explode('-',$this->_opt->date);
+		$date = explode('-',$this->_opt->checkin);
 		$date_post =  element('2',$date).'-'.$this->monthConvert(element('1',$date)).'-'.element('0',$date);
+		$nite = $this->dateInterval($this->_opt->checkin,$this->_opt->checkout);
 		
 		$post_data = array(
 			'ctl00$Scriptmanager1'	=>	'ctl00$updateBtnSearch|ctl00$Search',
@@ -154,7 +156,7 @@ class Kamar extends Comp_hotel_base {
 			'ctl00$Area'			=>	'-1',
 			'ctl00$PaxPassport'		=>	26,
 			'ctl00$CheckInDate'		=>	$date_post,
-			'ctl00$Nite'			=>	$this->_opt->nite,
+			'ctl00$Nite'			=>	$nite,
 			'ctl00$HotelName'		=>	'',
 			'ctl00$HotelRating'		=>	'-1',
 			'ctl00$cpHtl$advHtlFav$ctl01$CollapsiblePanelExtender1_ClientState'	=>	'true',
@@ -205,13 +207,19 @@ class Kamar extends Comp_hotel_base {
 		for ($i=0; $i < count($hotel); $i++) { 
 			$hotelName = $hotel[$i]->find('tr',1)->find('td a',0)->plaintext;
 			$address = $hotel[$i]->find('tr',2)->find('td p span',0)->plaintext;
- 			$dirtyPrice = $hotel[$i]->find('tr',2)->find('td',1)->find('div span',0);
+ 			$dirtyPrice = $hotel[$i]->find('tr',2)->find('td',1)->find('div p span',0);
 			$comaPrice = str_replace('IDR','',$dirtyPrice);
 			$explodePrice = explode(',',$comaPrice);
 			$cleanPrice = element('0',$explodePrice).element('1',$explodePrice).element('2',$explodePrice).element('3',$explodePrice);
-			$data[$i]['name'] 			=	$hotelName;
+			$y = strip_tags($cleanPrice);
+			$data[$i]['hotel_name']		=	$hotelName;
 			$data[$i]['address']		=	$address;
-			$data[$i]['price']			=	$cleanPrice;
+			$data[$i]['price']			=	$y;
+			$data[$i]['log_id']			=	$this->_opt->id;
+			$data[$i]['checkin']		=	$this->_opt->checkin;
+			$data[$i]['checkout']		=	$this->_opt->checkout;
+			$data[$i]['city']			=	$this->_opt->city
+			$data[$i]['meta_data']		=	'';
 		}
 		return $data;
 	}
@@ -232,20 +240,28 @@ class Kamar extends Comp_hotel_base {
 		  return 'nothing'; 
 	}
 	
-	public function doSearch(){
-	//public function doSearch($opt = array()){
-		$this->_opt->city = '104';
-		$this->_opt->date = '2012-01-31';
-		$this->_opt->passengers 	= 2;
-		$this->_opt->nite			= 3;
-		$this->_opt->id				= 1;
-		//foreach($opt as $key => $val ) $this->_opt->$key = $val;
+	//public function doSearch(){
+	public function doSearch($opt = array()){
+		/*$this->_opt->city 			= '104';
+		$this->_opt->checkin 		= '2012-01-31';
+		$this->_opt->passangers 	= 2;
+		$this->_opt->checkout		= '2012-02-03';
+		$this->_opt->id				= 1;*/
+		foreach($opt as $key => $val ) $this->_opt->$key = $val;
 		$result = $this->search();
+		//$res = $this->dateInterval($this->_opt->checkin,$this->_opt->checkout);
 		return $result;
 	}
 	
 	function monthConvert($month){
 		return date( 'M', mktime(0, 0, 0, $month, 1) );
+	}
+	
+	function dateInterval($datein,$dateout){
+		$date1 = new DateTime($datein);
+		$date2 = new DateTime($dateout);
+		$interval = $date2->diff($date1);
+		return $interval->days;
 	}
 	
 }
