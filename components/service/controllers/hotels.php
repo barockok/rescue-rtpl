@@ -61,6 +61,7 @@ class Hotels extends REST_Controller {
 			$new_item->save();
 		}
 		$this->response($result);
+		
 	}
 
 }

@@ -9,12 +9,13 @@ class search_hotel_log extends ActiveRecord\Model
 		array('city','class_name'	=>	'Ext_data_hotel','foreign_key'	=>	'city','primary_key'	=>	'code'),
 	);
 	
-	/*static $validates_presence_of = array(
+	static $validates_presence_of = array(
 		array('checkin', 'message' => 'you must set the checkin date'),
 		array('checkout', 'message' => 'you must set the checkout date'),
 		array('comp_search', 'message' => 'which hotels'),
 		array('city', 'message' => 'where are you will stay'),
-	);*/
+		array('passangers','message'	=>	'you must set the guest')
+	);
 	
 	static $before_create = array('_before_create');
 	

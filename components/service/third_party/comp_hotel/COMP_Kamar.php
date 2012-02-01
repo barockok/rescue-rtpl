@@ -133,11 +133,13 @@ class Kamar extends Comp_hotel_base {
 				'nobody'	=> false,
 				'returntransfer' => 1,
 				'referer'			=> $this->referer,
-				'timeout'			=> 30,
+				'timeout'			=> 120,
 				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
 			);
 		$this->_ci->my_curl->setup($conf);
-		return $this->_ci->my_curl->exc();
+		$exc = $this->_ci->my_curl->exc();
+		//echo str_get_html($exc);
+		return $exc;
 	}
 	
 	function asearch(){
@@ -195,30 +197,36 @@ class Kamar extends Comp_hotel_base {
 				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
 			);
 			$this->_ci->my_curl->setup($conf);
-			$this->_ci->my_curl->exc();
-			return $this->searchToPage();	
+			$exc = $this->_ci->my_curl->exc();
+			//echo str_get_html($exc);
+			//return $this->searchToPage();	
 	}
 		
 	function search(){
-		$page = str_get_html($this->asearch());
+		$this->asearch();
+		$html = $this->searchToPage();
+		$page = str_get_html($html);
+		//echo $page;
 		$hotel = $page->find('table[class=reser]',0)->find('tr[class=oth]');
+		//echo $hotel;
 		//$pageing = $page->find('table[class=reser]',0)->find('tr',0)->find('table tr td');
 		$data = array();
 		for ($i=0; $i < count($hotel); $i++) { 
 			$hotelName = $hotel[$i]->find('tr',1)->find('td a',0)->plaintext;
 			$address = $hotel[$i]->find('tr',2)->find('td p span',0)->plaintext;
- 			$dirtyPrice = $hotel[$i]->find('tr',2)->find('td',1)->find('div p span',0);
+ 			$dirtyPrice = $hotel[$i]->find('tr',2)->find('td',1)->find('div p span',0)->plaintext;
 			$comaPrice = str_replace('IDR','',$dirtyPrice);
 			$explodePrice = explode(',',$comaPrice);
 			$cleanPrice = element('0',$explodePrice).element('1',$explodePrice).element('2',$explodePrice).element('3',$explodePrice);
 			$y = strip_tags($cleanPrice);
+			if (is_numeric($y)==false) {continue;}
 			$data[$i]['hotel_name']		=	$hotelName;
 			$data[$i]['address']		=	$address;
 			$data[$i]['price']			=	$y;
 			$data[$i]['log_id']			=	$this->_opt->id;
 			$data[$i]['checkin']		=	$this->_opt->checkin;
 			$data[$i]['checkout']		=	$this->_opt->checkout;
-			$data[$i]['city']			=	$this->_opt->city
+			$data[$i]['city']			=	$this->_opt->city;
 			$data[$i]['meta_data']		=	'';
 		}
 		return $data;
@@ -242,15 +250,18 @@ class Kamar extends Comp_hotel_base {
 	
 	//public function doSearch(){
 	public function doSearch($opt = array()){
-		/*$this->_opt->city 			= '104';
-		$this->_opt->checkin 		= '2012-01-31';
+		
+		/*$this->_opt->city 			= '205';
+		$this->_opt->checkin 		= '2012-02-01';
 		$this->_opt->passangers 	= 2;
-		$this->_opt->checkout		= '2012-02-03';
+		$this->_opt->checkout		= '2012-02-04';
 		$this->_opt->id				= 1;*/
 		foreach($opt as $key => $val ) $this->_opt->$key = $val;
 		$result = $this->search();
-		//$res = $this->dateInterval($this->_opt->checkin,$this->_opt->checkout);
 		return $result;
+		//echo str_get_html($result);
+		//$res = $this->dateInterval($this->_opt->checkin,$this->_opt->checkout);
+		//return $result;
 	}
 	
 	function monthConvert($month){
