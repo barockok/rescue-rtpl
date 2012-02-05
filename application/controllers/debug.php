@@ -332,5 +332,9 @@ echo "</pre>";
 			}
 		printDebug($depart_q);
 	}
+	public function testattribute()
+	{
+		# code...
+	}
 	
 }
