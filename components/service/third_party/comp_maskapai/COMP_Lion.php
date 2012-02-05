@@ -96,7 +96,7 @@ class Lion extends Comp_maskapai_base {
 		$this->_opt->id = 1;
 		$this->_opt->max_fare = 5;		
 
-		foreach($opt as $key => $val) $this->_opt->$key = $val;
+	//	foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	
@@ -178,7 +178,6 @@ class Lion extends Comp_maskapai_base {
 		$this->login();
 		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=53298', false);
 		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);
-	
 		$vKey = str_get_html($start)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
 		
 		$this->format_date(); //adjust the date format
