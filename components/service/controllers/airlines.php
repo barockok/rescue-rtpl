@@ -255,7 +255,10 @@ class Airlines extends REST_Controller
 		
 			$log = Search_fare_log::find(element('id', $log));
 			$depart_q = array();
+<<<<<<< HEAD
 			return json_decode($log->complete_comp);
+=======
+>>>>>>> working
 			foreach (json_decode($log->complete_comp) as $comp => $status) {
 				if($status == FALSE) continue;
 				$depart_q_item = Search_fare_item::find('all', array(
