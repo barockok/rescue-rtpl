@@ -68,52 +68,59 @@ namespace :update do
   end
   
   # Server side execute ##
-  task :prepare_permission do
-    command = "
-    chown -R #{user}:#{user} #{applicationdir}
-    "
-    sudo command
-  end
+  
   task :to_server do
-      prepare_permission
+      deploy.prepare_permission
+      
       command = "
       cd #{applicationdir} && 
       git checkout #{branch} && 
       git git reset --hard HEAD~1 &&  
       git pull origin #{branch}"
       my_run(command)
-      repare_permission
+      
+      deploy.repare_permission
   end
   
-  task :repare_permission do
-    command = "
-    chown -R #{server_user}:#{server_group} #{applicationdir}
-    "
-    sudo command
-  end
+ 
   # end server side execution ##
 end
 
 namespace :deploy  do
   desc "Search Remote Application Server Libraries"
   task :default do
+    prepare_permission
     sudo "rm -rf #{applicationdir}"
-    command = " 
-            rm -rf #{applicationdir} &&
+    command = "
             mkdir #{applicationdir} &&
             cd #{applicationdir} &&
             git clone #{repository} #{applicationdir} &&
             git pull --all &&
-            git checkout #{branch}
+            git checkout #{branch} &&
+            chmod  0777 #{applicationdir}components/service/third_party/comp_maskapai/cookies/
           "
     my_run(command)
+    repare_permission
   end
+  task :prepare_permission do
+    command = "
+    chown -R #{user}:#{user} #{applicationdir}
+    "
+    sudo command
+  end
+  task :repare_permission do
+     command = "
+     chown -R #{server_user}:#{server_group} #{applicationdir}
+     "
+     sudo command
+   end
 end
 
 
 
 
 def my_run ( command ) 
+ 
   out = ''
   run command  do |channel, stream, data|
      out << data
