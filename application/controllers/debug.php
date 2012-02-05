@@ -337,14 +337,16 @@ echo "</pre>";
 		$ch = curl_init();
 
 		// set URL and other appropriate options
-		curl_setopt($ch, CURLOPT_URL, "http://222.124.141.100/MyPage/index.php");
+		curl_setopt($ch, CURLOPT_URL, "http://google.com");
 		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
 		// grab URL and pass it to the browser
 		echo curl_exec($ch);
 
 		// close cURL resource, and free up system resources
 		curl_close($ch);
+		echo phpinfo();
 	}
 	
 }
