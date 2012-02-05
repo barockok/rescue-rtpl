@@ -350,7 +350,7 @@ class Batavia extends Comp_maskapai_base {
 		{
 			$this->_opt->route_from 	= 'CGK';
 			$this->_opt->route_to 		= 'BPN';
-			$this->_opt->date_depart 	= '2012-01-31';
+			$this->_opt->date_depart 	= '2012-02-17';
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id				= 1;
