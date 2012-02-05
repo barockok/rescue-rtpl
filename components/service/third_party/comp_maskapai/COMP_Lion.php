@@ -178,7 +178,7 @@ class Lion extends Comp_maskapai_base {
 		$this->login();
 		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=53298', false);
 		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);
-	
+		echo $start;
 		$vKey = str_get_html($start)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
 		
 		$this->format_date(); //adjust the date format
