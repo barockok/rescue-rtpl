@@ -77,7 +77,7 @@ namespace :update do
       git checkout #{branch} && 
       git reset --hard HEAD~1 &&  
       git pull origin #{branch}"
-      run command
+      my_run(command)
       
       deploy.repare_permission
   end
