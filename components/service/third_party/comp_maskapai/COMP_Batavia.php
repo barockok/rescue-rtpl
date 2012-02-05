@@ -82,7 +82,7 @@ class Batavia extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$this->_ci->my_curl->exc();
 			$res_info = $this->_ci->my_curl->res_info();
-			echo $this->topage($res_info->url, true);
+			printDebug($this->topage($res_info->url, true));
 		}
 
 		function logout(){
