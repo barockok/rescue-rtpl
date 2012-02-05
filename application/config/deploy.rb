@@ -1,7 +1,5 @@
 set :user, 'deployer'
-set(:password) do
-   Capistrano::CLI.ui.ask "Give me a ssh password: "
-end
+set :password, 'alzid4ever'
 
 
 
@@ -15,8 +13,9 @@ def current_git_branch
   puts "On branch #{red branch}"
   branch
 end
-current_git_branch
+
 # Set the deploy branch to the current branch
+set :current_branch , current_git_branch
 set :branch, "production"
 set :domain, 'rumahtiket.com'
 set :applicationdir, "/var/www/rumahtiket.com/public/platform/"
@@ -29,8 +28,32 @@ role :db,  "#{domain}", :primary => true
 default_run_options[:pty] = true
 namespace :update do
   task :default do
-    command = "cd #{applicationdir} && git checkout #{branch} && git pull origin #{branch}"
-    my_run(command)
+    working
+    production
+    pushing
+    to_server
+    back_to_work
+  
+  end
+  
+  task :working do
+  if :curent_branch != 'working' then system('git checkout working') end
+    system('git add .')
+    msg  = Capistrano::CLI.ui.ask "commit message for working branch : "
+    system('git commit -am '+msg);
+  end
+  task :production do
+    system('git checkout production && git merge working')
+  end
+  task :back_to_work do
+    system('git checkout working')
+  end
+  task :pushing do
+    system('git push origin')
+  end
+  task :to_server do
+      command = "cd #{applicationdir} && git checkout #{branch} && git pull origin #{branch}"
+      my_run(command)
   end
 end
 
