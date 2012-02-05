@@ -70,7 +70,7 @@ namespace :update do
   # Server side execute ##
   task :prepare_permission do
     command = "
-    chwon -R #{user}:#{user} #{applicationdir}
+    chown -R #{user}:#{user} #{applicationdir}
     "
     sudo command
   end
@@ -87,7 +87,7 @@ namespace :update do
   
   task :repare_permission do
     command = "
-    chwon -R #{server_user}:#{server_group} #{applicationdir}
+    chown -R #{server_user}:#{server_group} #{applicationdir}
     "
     sudo command
   end
