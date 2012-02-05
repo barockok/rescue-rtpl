@@ -47,7 +47,9 @@ define('DB_API_USER', 'root');
 define('DB_API_PASS', 'alzid4ever');
 define('DB_API_NAME', 'RT_PRODUCTION_API');
 
-
+define('SELF_API_KEY', 'abc');
+define('CURL_BIN_LOC', '/usr/bin/curl');
+define('DEV_NULL', '> /dev/null &');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
