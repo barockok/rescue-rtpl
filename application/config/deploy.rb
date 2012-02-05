@@ -26,35 +26,72 @@ role :app, "#{domain}"
 role :web, "#{domain}"
 role :db,  "#{domain}", :primary => true
 default_run_options[:pty] = true
+
+# OBJECT OWN SERVER
+set :server_group, 'www-data'
+set :server_user , 'nginxer'
+
 namespace :update do
+  
+ 
+  
   task :default do
     working
     production
     pushing
     to_server
     back_to_work
-  
   end
   
-  task :working do
-  if :curent_branch != 'working' then system('git checkout working') end
-    system('git add .')
-    msg  = Capistrano::CLI.ui.ask "commit message for working branch : "
-    system('git commit -am '+msg);
+  task :set_commit_msg do
+    set(:commit_msg)  do
+       Capistrano::CLI.ui.ask "commit message for working branch : "
+     end
   end
+  
+  task :working do  
+    set_commit_msg
+    system('git checkout working && git add .')
+    system("git commit -am '#{commit_msg}' ");
+  end
+  
   task :production do
     system('git checkout production && git merge working')
   end
+  
   task :back_to_work do
     system('git checkout working')
   end
+  
   task :pushing do
     system('git push origin')
   end
-  task :to_server do
-      command = "cd #{applicationdir} && git checkout #{branch} && git pull origin #{branch}"
-      my_run(command)
+  
+  # Server side execute ##
+  task :prepare_permission do
+    command = "
+    chwon -R #{user}:#{user} #{applicationdir}
+    "
+    sudo command
   end
+  task :to_server do
+      prepare_permission
+      command = "
+      cd #{applicationdir} && 
+      git checkout #{branch} && 
+      git git reset --hard HEAD~1 &&  
+      git pull origin #{branch}"
+      my_run(command)
+      repare_permission
+  end
+  
+  task :repare_permission do
+    command = "
+    chwon -R #{server_user}:#{server_group} #{applicationdir}
+    "
+    sudo command
+  end
+  # end server side execution ##
 end
 
 namespace :deploy  do
@@ -72,6 +109,9 @@ namespace :deploy  do
     my_run(command)
   end
 end
+
+
+
 
 def my_run ( command ) 
   out = ''
