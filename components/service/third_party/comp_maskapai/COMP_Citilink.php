@@ -35,6 +35,7 @@ class Citilink extends Comp_maskapai_base {
 	
 	function login(){
 		$start = str_get_html($this->topage($this->_url,false));
+		echo $start;
 		$vKey = $start->find('input[name=__VIEWSTATEKEY]', 0)->getAttribute('value');
 				
 		$post_data = array(		
@@ -100,7 +101,7 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	public function doSearch($opt=array()){		
-		$this->_opt->date_depart =  '2012-03-16';
+		$this->_opt->date_depart =  '2012-02-10';
 		$this->_opt->date_return =  NULL;
 		$this->_opt->passengers = 2;
 		$this->_opt->route_from = 'BDJ';

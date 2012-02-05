@@ -47,7 +47,12 @@ define('DB_API_USER', 'root');
 define('DB_API_PASS', 'root');
 define('DB_API_NAME', 'rt_api');
 
+define('SELF_API_KEY', 'abc');
+define('CURL_BIN_LOC', '/usr/bin/curl');
+define('DEV_NULL', '> /dev/null &');
 
+define('DOMAIN_BASE', 'dev-rumahtiket.com');
+define('DOMAIN_PLATFORM', 'platform');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
