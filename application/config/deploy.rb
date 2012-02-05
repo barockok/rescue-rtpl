@@ -75,7 +75,7 @@ namespace :update do
       command = "
       cd #{applicationdir} && 
       git checkout #{branch} && 
-      git git reset --hard HEAD~1 &&  
+      git reset --hard HEAD~1 &&  
       git pull origin #{branch}"
       run command
       
