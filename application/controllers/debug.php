@@ -332,9 +332,9 @@ echo "</pre>";
 			}
 		printDebug($depart_q);
 	}
-	public function testattribute()
+	public function testing()
 	{
-		# code...
+		echo 'TESTING';
 	}
 	
 }
