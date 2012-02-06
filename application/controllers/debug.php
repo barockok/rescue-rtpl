@@ -19,6 +19,7 @@ class Debug extends MX_Controller
 			);
 		$this->rest->api_key('abc');
 	}
+	
 	public function maskapai()
 	{
 		$maskapai 	= $this->uri->rsegment(3);
@@ -38,6 +39,22 @@ class Debug extends MX_Controller
 		$fac->closing();
 		
 		
+	}
+	
+	public function hotel(){
+		$hotel 	= $this->uri->rsegment(3);
+		$func 	 	= $this->uri->rsegment(4);
+		if(!$hotel){
+			echo ('no hotel specify');
+			exit;
+		}
+		$this->load->library('service/comp_hotel');
+		$fac = $this->comp_hotel->load($hotel);
+		if(!$func){
+			 echo ('not function specify');
+		}else{
+			printDebug($fac->$func());
+		}
 	}
 	
 	public function test1()
