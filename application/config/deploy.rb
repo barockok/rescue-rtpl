@@ -1,5 +1,7 @@
 set :user, 'deployer'
-set :password, 'alzid4ever'
+set (:password) do 
+  Capistrano::CLI.ui.ask "password nya doong .. : "
+end
 
 
 
