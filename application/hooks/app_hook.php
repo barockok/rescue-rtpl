@@ -8,11 +8,11 @@ class App_hook
 	}
 	public function initial_overide_php_setting()
 	{
-/*
+
 		ini_set('display_errors','Off'); 
 		set_error_handler('_error_handler', E_ALL);
 		register_shutdown_function('_shutdown_handler');
-	*/
+	
 	}
 
 }
