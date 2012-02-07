@@ -351,11 +351,12 @@ echo "</pre>";
 	}
 	public function test_exec()
 	{
-		suicide('debug/test_exec_target');
+	echo	suicide('debug/airlines/test', FALSE);
 	}
 	public function test_exec_target()
 	{
 		$new = new Ext_data_airport(array('name' => 'Wdew' , 'code' =>'ZID'));
 		$new->save();
 	}
+	
 }
