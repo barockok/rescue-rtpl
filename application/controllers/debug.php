@@ -10,7 +10,7 @@ class Debug extends MX_Controller
 	{
 		parent::__construct();
 			$this->load->library('rest', array(
-				'server' => 'http://platform.dev-rumahtiket.com/', 
+				'server' => 'http://platform.'.DOMAIN_BASE.'/', 
 				'http_user' => 'admin',
 				'http_pass' => '1234',
 				'http_auth' => 'basic',
