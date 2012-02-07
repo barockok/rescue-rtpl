@@ -10,8 +10,8 @@ class App_hook
 	{
 	
 		ini_set('display_errors','On'); 
-	//	set_error_handler('_error_handler', E_ALL);
-	//	register_shutdown_function('_shutdown_handler');
+		set_error_handler('_error_handler', E_ALL);
+		register_shutdown_function('_shutdown_handler');
 	
 	}
 

@@ -10,7 +10,7 @@ class Debug extends MX_Controller
 	{
 		parent::__construct();
 			$this->load->library('rest', array(
-				'server' => 'http://app.dev-rumahtiket.com/', 
+				'server' => 'http://platform.dev-rumahtiket.com/', 
 				'http_user' => 'admin',
 				'http_pass' => '1234',
 				'http_auth' => 'basic',
@@ -253,7 +253,7 @@ class Debug extends MX_Controller
 				'airlines'  => 'Sriwijaya,Batavia,Garuda,Merpati,Citilink ',
 				'max_fare'		=> 10,
 			);
-		$this->rest->post('service/airlines/search/format/json', $posted);
+		$this->rest->post('service/airlines/search', $posted);
 		$this->rest->debug();
 	}
 	public function testairlinessearhexec()
