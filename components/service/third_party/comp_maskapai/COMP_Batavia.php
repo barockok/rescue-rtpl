@@ -82,7 +82,7 @@ class Batavia extends Comp_maskapai_base {
 			$this->_ci->my_curl->setup($conf);
 			$this->_ci->my_curl->exc();
 			$res_info = $this->_ci->my_curl->res_info();
-			printDebug($this->topage($res_info->url, true));
+			$this->topage($res_info->url, false);
 		}
 
 		function logout(){
@@ -350,7 +350,7 @@ class Batavia extends Comp_maskapai_base {
 		{
 			$this->_opt->route_from 	= 'CGK';
 			$this->_opt->route_to 		= 'BPN';
-			$this->_opt->date_depart 	= '2012-02-17';
+			$this->_opt->date_depart 	= '2012-02-21';
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id				= 1;
