@@ -10,7 +10,7 @@ class Debug extends MX_Controller
 	{
 		parent::__construct();
 			$this->load->library('rest', array(
-				'server' => 'http://'.DOMAIN_PLATFORM.'.'.DOMAIN_BASE.'/', 
+				'server' => 'http://platform.dev-rumahtiket.com/', 
 				'http_user' => 'admin',
 				'http_pass' => '1234',
 				'http_auth' => 'basic',
@@ -253,7 +253,7 @@ class Debug extends MX_Controller
 				'airlines'  => 'Sriwijaya,Batavia,Garuda,Merpati,Citilink ',
 				'max_fare'		=> 10,
 			);
-		$this->rest->post('service/airlines/search/format/json', $posted);
+		$this->rest->post('service/airlines/search', $posted);
 		$this->rest->debug();
 	}
 	public function testairlinessearhexec()
@@ -348,22 +348,6 @@ echo "</pre>";
 				
 			}
 		printDebug($depart_q);
-	}
-	public function testing()
-	{
-		$ch = curl_init();
-
-		// set URL and other appropriate options
-		curl_setopt($ch, CURLOPT_URL, "http://google.com");
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		// grab URL and pass it to the browser
-		echo curl_exec($ch);
-
-		// close cURL resource, and free up system resources
-		curl_close($ch);
-		echo phpinfo();
 	}
 	
 }
