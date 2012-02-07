@@ -63,11 +63,11 @@ class Garuda extends Comp_maskapai_base {
 		
 		//foreach($opt as $key => $val) $this->_opt->$key = $val;
 		
-		$this->_opt->date_depart =  '2012-04-20';
-		$this->_opt->date_return =  null;
+		$this->_opt->date_depart =  '2012-03-20';
+		$this->_opt->date_return =  '2012-03-27';
 		$this->_opt->passengers = 2;
-		$this->_opt->route_from = 'DJB';
-		$this->_opt->route_to = 'DJJ';
+		$this->_opt->route_from = 'SUB';
+		$this->_opt->route_to = 'CGK';
 		$this->_opt->id = null;
 		$this->_opt->max_fare = 5;
 				

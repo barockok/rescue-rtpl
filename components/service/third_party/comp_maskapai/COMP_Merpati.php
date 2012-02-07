@@ -380,8 +380,8 @@ class Merpati extends Comp_maskapai_base {
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
-			$this->_opt->route_to 		= 'DPS';
-			$this->_opt->date_depart 	= '2011-12-31';
+			$this->_opt->route_to 		= 'SUB';
+			$this->_opt->date_depart 	= '2012-03-21';
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id			= 1;
