@@ -25,7 +25,7 @@ class Airlines extends REST_Controller
 			'route_from' 	=> $this->post('from'),
 			'route_to'    	=> $this->post('to'),
 			'passengers'	=> $this->post('passengers'),
-			'comp_include'  => ($airl = $this->post('airlines')) ? $this->post('airlines') : null ,
+			'comp_include'  => 'garuda,batavia,lion,merpati,sriwijaya',
 			'max_fare'		=> ($max_fare = $this->post('max_fare')) ? $max_fare : 10,
 			'actor'			=> ($actor = $this->post('actor')) ? $actor : 'CUS',
 		);
@@ -152,7 +152,7 @@ class Airlines extends REST_Controller
 			$status = array(
 				'not_complete' => $not_complete,
 				'should' => $should,
-				'complete' => $complete
+				'complete' => json_decode($log->complete_comp, true),
 			);
 			if(count($not_complete) == 0 ) $status = 'complete'; 	
 
@@ -169,9 +169,10 @@ class Airlines extends REST_Controller
 			$res = $this->_retrive_roundtrip_result($param, $limit_each_maskapai);
 		}
 		if($res == FALSE) $this->response('null', 500);
-		$res['log'] = $param;
-		$res['status'] = $status;
-		$this->response($res);
+		$final_res['log'] = $param;
+		$final_res['status'] = $status;
+		$final_res['results'] = $res;
+		$this->response($final_res);
 		
 	}
 	public function log_get()
@@ -228,7 +229,8 @@ class Airlines extends REST_Controller
 			$log = Search_fare_log::find(element('id', $log));
 			$result = array();
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, true) : false ;
-			if(!$comps) return false;
+			
+			if(!$comps) return array();
 			
 			foreach ($comps as $comp) {
 				$_item = Search_fare_item::find(
@@ -260,7 +262,7 @@ class Airlines extends REST_Controller
 			$log = Search_fare_log::find(element('id', $log));
 			$depart_q = array();
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, true) : false ;
-			if(!$comps) return false;
+			if(!$comps) return array();
 			
 			foreach ($comps as $comp => $status) {
 				if($status == FALSE) continue;
