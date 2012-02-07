@@ -141,6 +141,7 @@ class Airlines extends REST_Controller
 
 			// check flage commplete
 			$should = json_decode($log->comp_include, true);
+			
 			$complete = ($log->complete_comp != null) ? array_keys(json_decode($log->complete_comp, true)) : array();
 			asort($should); asort($complete);
 			$not_complete = array();
@@ -226,7 +227,10 @@ class Airlines extends REST_Controller
 		try {
 			$log = Search_fare_log::find(element('id', $log));
 			$result = array();
-			foreach (json_decode($log->complete_comp) as $comp) {
+			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, true) : false ;
+			if(!$comps) return false;
+			
+			foreach ($comps as $comp) {
 				$_item = Search_fare_item::find(
 					array(
 						'conditions' => array('log_id = ? AND company = ? AND type =?', $log->id, strtoupper($comp), 'oneway'),
@@ -255,9 +259,12 @@ class Airlines extends REST_Controller
 		
 			$log = Search_fare_log::find(element('id', $log));
 			$depart_q = array();
-			foreach (json_decode($log->complete_comp) as $comp => $status) {
+			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, true) : false ;
+			if(!$comps) return false;
+			
+			foreach ($comps as $comp => $status) {
 				if($status == FALSE) continue;
-				$depart_q_item = Search_fare_item::find('all', array(
+					$depart_q_item = Search_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -266,12 +273,13 @@ class Airlines extends REST_Controller
 							'order' => 'price asc',
 						)
 				);
+			
 				if(count($depart_q_item) > 0 )
 					foreach ($this->db_util->multiple_to_array($depart_q_item) as $real_item) array_push($depart_q, $real_item);
 			}
 			
 			$return_q = array();
-			foreach (json_decode($log->complete_comp) as $comp => $status) {
+			foreach ($comps as $comp => $status) {
 				if($status == FALSE) continue;
 				$return_q_item = Search_fare_item::find('all', array(
 							'conditions' => array(
@@ -300,7 +308,13 @@ class Airlines extends REST_Controller
 				);
 			return $final_data;
 		
+	
+	
+	
 	}
+	
+	
+	
 	private function bck_retrive_roundtrip_result($log, $limit)
 	{
 		try {
