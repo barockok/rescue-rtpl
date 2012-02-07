@@ -51,7 +51,7 @@ define('SELF_API_KEY', 'abc');
 define('CURL_BIN_LOC', '/usr/bin/curl');
 define('DEV_NULL', '> /dev/null &');
 
-define('DOMAIN_BASE', 'dev.rumahtiket.com');
+define('DOMAIN_BASE', 'dev-rumahtiket.com');
 define('DOMAIN_PLATFORM', 'platform');
 
 /* End of file constants.php */
