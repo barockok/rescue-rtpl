@@ -358,5 +358,20 @@ echo "</pre>";
 		$new = new Ext_data_airport(array('name' => 'Wdew' , 'code' =>'ZID'));
 		$new->save();
 	}
-	
+	public function logic()
+	{
+			$depart_q_item = Search_fare_item::find('all', array(
+				
+						'conditions' => array(
+							'log_id = ? AND type = ?',
+							322, 'depart'
+							),
+						'limit'  => 10,
+						'order' => 'price desc',
+					)
+				);
+			printDebug($depart_q_item);
+		
+		
+	}
 }
