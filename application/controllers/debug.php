@@ -360,18 +360,71 @@ echo "</pre>";
 	}
 	public function logic()
 	{
-			$depart_q_item = Search_fare_item::find('all', array(
+		
+			printDebug($this->fetch_formula(333));
+			
+	}
+	public function fetch_formula($id, $limit = 1)
+	{
+		//try {
+			$log = Search_fare_log::find($id);
+			$comps = json_decode($log->comp_include);
+			$limit = (is_numeric($limit)) ? $limit : $log->max_fare;
+			$depart_ids = array(); $return_ids = array();
+				$d_q = '';
+				for($i = 0 ; $i < count($comps) ; $i++){
+						$comp = $comps[$i] ;
+						$d_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
+						$d_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
+				}
+				$d_q .= ' order by price ASC';
+
+				$d_q = Search_fare_log::find_by_sql($d_q);
+				if(count($d_q) > 0 ) foreach($d_q as $item) array_push($depart_ids, $item->to_array());
+			
+			if($log->type == 'roundtrip'){
 				
-						'conditions' => array(
-							'log_id = ? AND type = ?',
-							322, 'depart'
-							),
-						'limit'  => 10,
-						'order' => 'price desc',
-					)
+				$r_q = '';
+				for($i = 0 ; $i < count($comps) ; $i++){
+						$comp = $comps[$i] ;
+						$r_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
+						$r_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
+				}
+				$r_q .= ' order by price ASC';
+
+				$r_q = Search_fare_log::find_by_sql($r_q);
+				if(count($r_q) > 0 ) foreach($r_q as $item) array_push($return_ids, $item->to_array());
+				
+				return array(
+					'depart' => $depart_ids,
+					'return' => $return_ids
 				);
-			printDebug($depart_q_item);
+			
+			}
+			return array(
+				'log' => $log->to_array(),
+				'depart' => $depart_ids,
+			);
+			
+			
 		
+			
+			
+		/*	
+		} catch (Exception $e) {
+			return false;
+		}
+		*/
 		
+	}
+	public function logic2()
+	{
+		$array = array(
+		array('price' => 10),
+		array('price' => 4),
+		array('price' => 7),
+		array('price' => 2),	
+		);
+		printDebug(array_sort($array, 'price', SORT_DESC));
 	}
 }
