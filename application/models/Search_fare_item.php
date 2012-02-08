@@ -3,6 +3,9 @@ class search_fare_item extends	ActiveRecord\Model
 {
 	
 	static $before_create = array('_before_create');
+	static $validates_presence_of = array(
+     	array('class'),
+    );
 	static $belongs_to = array(
 		array(
 		'log', 
