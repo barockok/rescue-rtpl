@@ -416,12 +416,15 @@ class Airlines extends REST_Controller
 		return count($flight_coll);
 		}
 	}
-	private function _get_best_combine_fares($departs, $returns, $limit = 5)
+	private function _get_best_combine_fares($departs, $returns, $limit = FALSE)
 	{
+		$dep_limit = (is_numeric($limit)) ? $limit : count($departs);
+		$ret_limit = (is_numeric($limit)) ? $limit : count($returns);
+	
 		$best_candidate = array();
-		for($i = 0 ; $i < $limit ; $i ++){
+		for($i = 0 ; $i < $dep_limit ; $i ++){
 			$depart = $departs[$i];
-			for($j = 0 ; $j < $limit ; $j++){
+			for($j = 0 ; $j < $ret_limit ; $j++){
 				
 				$return = $returns[$j];
 				$new_data = array(
@@ -436,8 +439,9 @@ class Airlines extends REST_Controller
 		}
 		$best_sort = array_values(array_sort($best_candidate, 'combine_price'));
 		// limit the result
+		$res_limit = (is_numeric($limit)) ? $limit : 5;
 		$best_limit = array();
-		for ($i=0; $i < 5; $i++) { 
+		for ($i=0; $i < $res_limit; $i++) { 
 			array_push($best_limit, $best_sort[$i]);
 		}
 		return $best_limit;
