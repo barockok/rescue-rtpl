@@ -8,7 +8,7 @@ class Airlines extends REST_Controller
 	function __construct()
 	{
 		parent::__construct();
-		$this->fetch_time_limit = 1;
+		$this->fetch_time_limit = 3;
 	}
 	public function test_get()
 	{
