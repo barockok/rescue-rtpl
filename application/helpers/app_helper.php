@@ -43,9 +43,9 @@ function suicide($endpoint='', $bgvoid = TRUE , $pre = '', $post = "")
 {
 	$bgflag = ($bgvoid == TRUE) ? DEV_NULL : '';
 	if($bgvoid == TRUE)
-			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY : '.SELF_API_KEY.' " '.site_url().$endpoint.' '.$post.' '.$bgflag);
+			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.site_url().$endpoint.' '.$post.' '.$bgflag);
 	else{
-			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY : '.SELF_API_KEY.'" '.site_url().$endpoint.' '.$post.' '.$bgflag, $return);
+			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.site_url().$endpoint.' '.$post.' '.$bgflag, $return);
 			return $return;
 		}
 
