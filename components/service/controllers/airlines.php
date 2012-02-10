@@ -153,21 +153,21 @@ class Airlines extends REST_Controller
 				$comp->closing();
 				// END FETCHING
 				// if result is count = 0 so flag as false and exit
-				if(count($result) == 0 ) {
+				if(is_array($result) && count($result) > 0 ) {
+						// PUSHING RESULT to DB
+						foreach($result as $candidate_item)
+						{
+							$new_item = new Search_fare_item($candidate_item);
+							$new_item->save();
+						}
+						// push to db and result fetch count != 0
+						$this->_flag_comp_to_done($id, $maskapai, true);
+						$this->response($result);
+						exit();
+				}else{
 					$this->_flag_comp_to_done($id, $maskapai, false);
 					exit();
 				}
-				// PUSHING RESULT to DB
-				foreach($result as $candidate_item)
-				{
-					$new_item = new Search_fare_item($candidate_item);
-					$new_item->save();
-				}
-				// push to db and result fetch count != 0
-				$this->_flag_comp_to_done($id, $maskapai, true);
-				$this->response($result);
-				exit();
-			
 			}else{
 				$this->response($param);
 			}
