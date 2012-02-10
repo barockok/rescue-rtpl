@@ -42,10 +42,20 @@ function validate_array($should = array(), $check = array())
 function suicide($endpoint='', $bgvoid = TRUE , $pre = '', $post = "")
 {
 	$bgflag = ($bgvoid == TRUE) ? DEV_NULL : '';
+	$url = null;
+	if(is_array($endpoint))
+		foreach($endpoint as $ae)
+			$url .= site_url($ae).' ';
+	elseif(is_string($endpoint))
+			$url = site_url($endpoint);
+		
+	
+	
+	
 	if($bgvoid == TRUE)
-			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.site_url().$endpoint.' '.$post.' '.$bgflag);
+			system(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.$url.' '.$post.' '.$bgflag);
 	else{
-			exec(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.site_url().$endpoint.' '.$post.' '.$bgflag, $return);
+			system(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.$url.' '.$post.' '.$bgflag, $return);
 			return $return;
 		}
 
