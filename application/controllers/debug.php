@@ -448,4 +448,26 @@ echo "</pre>";
 			$new->save();
 			printDebug($new->errors->full_messages());
 	}
+	public function presystem()
+	{
+		suicide('suicide/system');
+		echo 'Complite ..';
+	}
+	public function api()
+	{
+		$endpoint = implode('/',array_slice(explode('/',substr($this->uri->ruri_string(), 1)), 2));
+		$res = $this->rest->get($endpoint);
+		$this->rest->debug();
+		echo $res;
+		
+	}
+	public function varplay()
+	{
+		$i = 1;
+		$subprocess_1 = 'asuh';
+		echo ${'subprocess_'.$i};
+	}
+
+	
+
 }

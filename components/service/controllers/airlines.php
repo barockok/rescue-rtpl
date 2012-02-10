@@ -37,12 +37,84 @@ class Airlines extends REST_Controller
 			$log->save();
 		}
 		// execute all maskapai simultanous on the background
-		foreach(json_decode($log->comp_include) as $comp)
-			suicide('service/airlines/exec_search/'.$log->id.'/'.$comp);
+		suicide('service/airlines/process_search/'.$log->id);
 		
 		$this->response($log->to_array());
 		
 	}
+	
+	public function process_search_get()
+	{
+			$id = $this->uri->rsegment(3);
+			try {
+				$log = Search_fare_log::find($id);
+			} catch (Exception $e) {
+				// CRETA LOG;
+				
+				exit();
+			}
+			
+			//log find, get what to execute
+			$should = json_decode($log->comp_include);
+			$complete_source = ($complete = $log->complete_comp != null) ? json_decode($complete) : FALSE;
+			$will_process = array();
+			
+			if(is_array($complete_source)){
+				foreach($should as $comp){
+					if(in_array($comp, array_keys($complete_source)) AND $complete_source[$comp] == TRUE) continue;
+					array_push($will_process, $comp);
+				}
+			}else{
+				$will_process = $should;	
+			}
+			$limit = count($will_process);
+			
+			//$this->response($will_process);
+			
+			for ($i=0; $i < $limit ; $i++) { 
+				${'subprocess_'.$will_process[$i]} = curl_init();
+				$sub = 	${'subprocess_'.$will_process[$i]};
+				curl_setopt($sub, CURLOPT_URL, 			 site_url().'service/airlines/exec_search/'.$id.'/'.$will_process[$i] );
+				curl_setopt($sub, CURLOPT_HTTPHEADER, 	array('X-API-KEY:'.SELF_API_KEY) );
+			}
+			// Declare master process
+			$master_process = curl_multi_init();
+			
+			// add sub process (each maskapai opt) to master
+			for ($i=0; $i < $limit ; $i++) { 
+				$sub = 	${'subprocess_'.$will_process[$i]};
+				curl_multi_add_handle($master_process,$sub);
+			}
+			
+			######### execute the all pros with master parallely ###############
+			$active = null;
+		
+			do {
+			    $mrc = curl_multi_exec($master_process, $active);
+			} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+			while ($active && $mrc == CURLM_OK) {
+			    if (curl_multi_select($master_process) != -1) {
+			        do {
+			            $mrc = curl_multi_exec($master_process, $active);
+			        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+			    }
+			}
+			
+			// remove all sub processs
+			for ($i=0; $i < $limit ; $i++) { 
+				$sub =	${'subprocess_'.$will_process[$i]};
+				curl_multi_remove_handle($master_process, $sub);
+			}
+			// close master process
+			curl_multi_close($master_process);
+			echo $mrc;
+			
+			//TODO : Grap all result to a log ..
+			
+			
+	}
+	
 	// only rest suicide will call this function
 	public function exec_search_get()
 	{
