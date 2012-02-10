@@ -436,7 +436,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		foreach($opt as $key => $val ){$this->_opt->$key = $val;}
 			
 		if ($this->_opt->date_return) {
-			$result1 = $this->search();
+			$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();
 			
 			$temp = '';
 			$temp = $this->_opt->route_from;
@@ -445,7 +445,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->_opt->date_depart = $this->_opt->date_return;
 			$this->roundTrip = true;
 			
-			$result2 = $this->search();
+			$result2 = (is_array($rs2 = $this->search())) ? $rs2 : array();
 			$this->logOut();
 			//print_r(array_merge($result1,$result2));
 			$final = array_merge($result1,$result2);
