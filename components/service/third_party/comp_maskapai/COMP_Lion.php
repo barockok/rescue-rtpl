@@ -6,7 +6,7 @@ class Lion extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();
 		ini_set('memory_limit', '120M');
-		$this->_cookies_file = dirname(__FILE__).'/cookies/lion_air.txt';
+		$this->_cookies_file = './components/service/third_party/comp_maskapai/cookies/lion_air.txt';
 		$this->login_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->src_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step1.aspx';

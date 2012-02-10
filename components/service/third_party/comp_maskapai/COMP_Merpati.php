@@ -24,7 +24,7 @@ class Merpati extends Comp_maskapai_base {
 		$this->_ci->load->library('my_curl');
 		$this->_ci->load->helper('array');
 		*/
-		$this->_cookies_file = dirname(__FILE__)."/cookies/merpati_airline.txt";		
+		$this->_cookies_file = "./components/service/third_party/comp_maskapai/cookies/merpati_airline.txt";		
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
 		);

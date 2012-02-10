@@ -26,7 +26,7 @@ class Batavia extends Comp_maskapai_base {
 		$this->_ci->load->helper('array');
 		$this->_ci->load->library('my_curl');
 		*/
-		$this->_cookies_file 	= dirname(__FILE__)."/cookies/batavia_airline.txt";
+		$this->_cookies_file 	= "./components/service/third_party/comp_maskapai/cookies/batavia_airline.txt";
 		$this->login();
 	}
 		
