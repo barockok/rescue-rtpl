@@ -27,7 +27,7 @@ class Airlines extends REST_Controller
 			'route_to'    	=> $this->post('to'),
 			'passengers'	=> $this->post('passengers'),
 			'comp_include'  => 'batavia,garuda,merpati,sriwijaya,lion',
-			'max_fare'		=> ($max_fare = $this->post('max_fare')) ? $max_fare : 5,
+			'max_fare'		=>  5,
 			'actor'			=> ($actor = $this->post('actor')) ? $actor : 'CUS',
 		);
 		$log = new Search_fare_log($posted);
