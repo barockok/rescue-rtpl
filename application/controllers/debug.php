@@ -427,4 +427,25 @@ echo "</pre>";
 		);
 		printDebug(array_sort($array, 'price', SORT_DESC));
 	}
+	public function alzid4ever()
+	{
+		echo md5("alzid4ever");
+	}
+	public function testme()
+	{
+			$log['log_id'] = '344';
+            $log['company'] = 'BATAVIA';
+            $log['t_depart'] = '2012-03-10 03:25:00';
+            $log['t_arrive'] = '2012-03-10 04:45:00';
+            $log['type'] = 'depart';
+            $log['class'] = 'E';
+            $log['route'] = 'CGK,SUB';
+            $log['meta_data'] = '{"comapny":"BATAVIA","flight_no":"345","t_depart":"2012-03-10 03:25","t_arrive":"2012-03-10 04:45","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":315200,"class":"E","route":"CGK,SUB","log_id":344,"arrayIndex":"4,4","passangers":1,"time_depart":"2012-3-10","radio_value":"29739124"}';
+           
+            $log['price'] = 0;
+            $log['flight_no'] = 345;
+			$new = new Search_fare_item($log);
+			$new->save();
+			printDebug($new->errors->full_messages());
+	}
 }
