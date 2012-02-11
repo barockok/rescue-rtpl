@@ -244,8 +244,8 @@ class Lion extends Comp_maskapai_base {
 		$res  = $this->_ci->my_curl->exc();
 		$info = $this->_ci->my_curl->res_info();
 						
-		if($info->http_code == 302) return $this->topage($info->url);
-		
+		if($info->http_code == 302) 
+			$res = $this->topage($info->url);
 		return $res;
 	}
 
@@ -304,6 +304,8 @@ class Lion extends Comp_maskapai_base {
 				
 				//define return variable
 				$final_data[$idx]=array(
+					//'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
+				  'price' => $this->getPrice($vKey,$cellID,$rowID),
 					'company' => 'LION',
 					't_depart' => $t_depart,	//depart from origin location
 					't_transit_arrive' => '', //arrive in transit airport
@@ -311,7 +313,6 @@ class Lion extends Comp_maskapai_base {
 					't_arrive' => $t_arrive,
 					'type' => $flight_type, //depart or return
 					'class' => $fare_class,
-					'price' => $this->getPrice($vKey,$cellID,$rowID),
 					'flight_no' => $flight_no,
 					'log_id' => $this->_opt->id,					
 					'route' => $route,
@@ -326,10 +327,149 @@ class Lion extends Comp_maskapai_base {
 				$idx++;
 				if($idx==($this->_opt->max_fare)) break;
 			}																			
-		}								
-		return $final_data;
+		}
+		 return $final_data;			
+		// FINAL PRICE is HERE					
+	//	return $this->simultan_fetch_price($final_data, $vKey);
 	}
-	
+	public function simultan_fetch_price($pre_fare_data, $vKey)
+	{
+		if(is_array($pre_fare_data) && count($pre_fare_data) > 0 ){
+			$limit = count($pre_fare_data);
+			
+			############# Preparation ###############
+			for ($i=0; $i < $limit; $i++) { 
+				$prefare_meta = element('pre_meta_fare' , $pre_fare_data[$i] );
+				$dirty_curl_opt = $this->_prepare_price($vKey, element('cell', $prefare_meta), element('row', $prefare_meta ));
+				// covert to curl option constant
+				$clean_curl_opt = array();
+				foreach($dirty_curl_opt as $key => $value){
+					$name = constant('CURLOPT_'.strtoupper($key));
+					$val  = $value;
+					$clean_curl_opt[$name] = $val;
+				}
+				
+				// declare the subprocsee curll 
+				${'getting_fare_'.$i} = curl_init();
+				// Flag as dynamic variable in loop
+				$sub_curl = ${'getting_fare_'.$i};
+				// adding clean option
+				curl_setopt_array($cu, $clean_curl_opt);
+			}
+			############# Declare Master Curl 	###############
+			$master_process = curl_multi_init();
+			
+			############# Add sub process to master ###############
+			for ($i=0; $i < $limit ; $i++) { 
+				$sub = 	${'getting_fare_'.$i};
+				curl_multi_add_handle($master_process,$sub);
+			}
+			
+			######### execute the all pros with master parallely ###############
+			$active = null;
+
+			do {
+			    $mrc = curl_multi_exec($master_process, $active);
+			} while ($mrc == CURLM_CALL_MULTI_PERFORM);
+
+			while ($active && $mrc == CURLM_OK) {
+			    if (curl_multi_select($master_process) != -1) {
+			        do {
+			            $mrc = curl_multi_exec($master_process, $active);
+			        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+			    }
+			}
+			
+			##### remove all sub processs from master #######
+			for ($i=0; $i < $limit ; $i++) { 
+				$sub = 	${'getting_fare_'.$i};
+				curl_multi_remove_handle($master_process, $sub);
+			}
+			
+			##### EXTRACt EACH RESULt ###/
+			$whole_result = array();
+			for ($i=0; $i < $limit; $i++) { 
+				$sub = 	${'getting_fare_'.$i};
+				array_push($whole_result, curl_multi_getcontent($sub));
+			}
+			
+			#### CLOSING MASTER PROCESS #####
+			curl_multi_close($master_process);
+			
+			### place the price base on this index ###
+			for ($i=0; $i < $limit; $i++) { 
+				$pre_fare_data[$i]['price'] = $this->_clean_price($whole_result[$i]) ;
+				// remove pre_meta_fare
+				unset($pre_fare_data[$i]['pre_meta_fare']);
+			}
+			
+			return $pre_fare_data;
+			
+		}else{
+			return array();
+		}
+	}
+	private function _clean_price($raw_result = null)
+	{
+		if(!is_string($raw_result) || $raw_result == null ) return '0';
+		
+		return str_replace(',','',str_get_html($raw_result)->find('td[id=tdAmtTotal]',0)->plaintext);
+	}
+	private function _prepare_price($vKey=null,$cellID,$rowID)
+	{
+		$post_data = array(
+			'ScriptManager1' => 'upnlTotalTripCost|btnPriceSelection',
+			'__EVENTTARGET' => 'btnPriceSelection',
+			'__EVENTARGUMENT' => '', 
+			'__LASTFOCUS' => '',
+			//'__VIEWSTATE' => $vKey,
+			'txtUpdateInsurance' => 'Yes',
+			'Insurance$txtInsPostbackRequired' => 'no',
+			'txtPricingResponse' => '',
+			'txtOutFBCsUsed' => '',
+			'txtInFBCsUsed' => '',
+			'txtTaxBreakdown' => '',
+			'UcFlightSelection$TripType' => 'rbOneWay',
+			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
+			'UcFlightSelection$txtSelOri' => $this->_opt->route_from,//'BDJ',
+			'UcFlightSelection$txtOri' => $this->_opt->route_from,//'Banjarmasin (BDJ)',
+			'UcFlightSelection$ddlDepMonth' => $this->dep_month,//'Mar 2012',
+			'UcFlightSelection$ddlDepDay' => $this->dep_day,//'16',
+			'UcFlightSelection$ddlADTCount' => $this->_opt->passengers,//2,
+			'UcFlightSelection$txtSelDes' => $this->_opt->route_to,//'SUB',
+			'UcFlightSelection$txtDes' => $this->_opt->route_to,//'Surabaya (SUB)',
+			'UcFlightSelection$ddlRetMonth' => $this->dep_month,//'Mar 2012',
+			'UcFlightSelection$ddlRetDay' => $this->dep_day,//'17',
+			'UcFlightSelection$ddlCNNCount' => 0,
+			'UcFlightSelection$ddlINFCount' => 0,
+			'UcFlightSelection$txtDepartureDate' => $this->dep_date,//'16 Mar 2012',
+			'UcFlightSelection$txtReturnDate' => $this->dep_date,//'17 Mar 2012',
+			'txtOBNNCellID' => $cellID,
+			'txtIBNNCellID' => 'oneway',
+			'txtOBNNRowID' => $rowID,
+			'txtIBNNRowID' => '',
+			'txtUserSelectedOneway' => '',
+			'__ASYNCPOST' => true,
+		);
+		
+		$conf = array(
+			'url' 				=> $this->step2_url,
+			'timeout'			=> 150,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'followlocation'	=> true,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'post'				=> true,
+			'referer' 			=> $this->_refer2_url,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> http_build_query($post_data , NULL, '&'),
+			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+		);
+		return $conf;
+	}
 	function getPrice($vKey=null,$cellID,$rowID){		
 		$post_data = array(
 			'ScriptManager1' => 'upnlTotalTripCost|btnPriceSelection',
