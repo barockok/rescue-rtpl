@@ -19,7 +19,10 @@ class Debug extends MX_Controller
 			);
 		$this->rest->api_key('abc');
 	}
-	
+	public function phpinfo()
+	{
+		echo phpinfo();
+	}
 	public function maskapai()
 	{
 		$maskapai 	= $this->uri->rsegment(3);
