@@ -39,8 +39,16 @@ class Debug extends MX_Controller
 				echo $logid;
 				try {
 					$log = Search_fare_log::find($logid);
-					printDebug($log);
-					printDebug($fac->$func($log->to_array()));
+					$param = $log->to_array();
+					// reformat the date
+					foreach($param as $key => $val){
+						if($key == 'date_return' || $key == 'date_depart'){
+							if($val != null){
+							$param[$key] = show_date($val, 'Y-m-d');
+							}
+						}
+					}
+					printDebug($fac->$func($param, true));
 				} catch (Exception $e) {
 					$log = false;
 				}
@@ -481,7 +489,45 @@ echo "</pre>";
 		$subprocess_1 = 'asuh';
 		echo ${'subprocess_'.$i};
 	}
-
+	public function testTiketcom()
+	{
+		$debug = array(
+			'name' => '(string)',
+			'address' => '(string)',
+			'map_coordinate' => '(string)',
+			'description' => '(string) clean plain text',
+			'policies' => '(array)',
+			'start_price' => '(int)',
+			'number_of_rooms' => '(int)',
+			'pictures' => '(array) url',
+			'facilites' => array(
+					'hotel' => '(array)',
+					'room' => '(array)',
+					'sport' => '(array)',
+			),
+			'class' => array(
+				'deluxe' => array(
+					'price' => '(int)',
+					'facility' => '(array)',
+					'discount' => '(int) default 0',
+					'picture' => '(string) url',
+					'avaibility' => '(int)',
+					'includes' => '(array)',
+					'room_id' => '(int)',
+				),
+				'family' => array(
+					'price' => '(int)',
+					'facility' => '(array)',
+					'discount' => '(int) default 0',
+					'picture' => '(string) url',
+					'avaibility' => '(int)',
+					'includes' => '(array)',
+					'room_id' => '(int)',
+				)
+			)
+		);
+		printDebug($debug);
+	}
 	
 
 }
