@@ -273,6 +273,16 @@ class Airlines extends REST_Controller
 			$this->response_error($e->getMessage());
 		}
 	}
+	public function fare_get()
+	{
+		if (!$id = $this->uri->rsegment(3)) $this->response_error('Please provide error');
+		try {
+			$fare = Search_fare_item::find($id);
+			$this->response($fare->to_array(array('include' => array('log'))));
+		} catch (Exception $e) {
+			$this->response_error($e->getMessage());
+		}
+	}
 	public function book_post()
 	{
 	
