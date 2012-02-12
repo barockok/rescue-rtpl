@@ -376,7 +376,7 @@ class Merpati extends Comp_maskapai_base {
 			$this->logout();
 		}
 		
-		public function doSearch($opt = array())
+		public function doSearch($opt = array(), $debug = false)
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
@@ -405,10 +405,17 @@ class Merpati extends Comp_maskapai_base {
 				$final = $this->search();
 				$this->closing();
 			}
+		
 			if (!is_array($final)) {
 				return array();
 			}
+			
+			if($debug == TRUE) return array('opt' => $this->_opt, 'res' => array_values($final) );
 			return array_values($final);
+			
+			
+			
+		
 		}
 		
 		function array2xml($array,&$xml){
@@ -1012,4 +1019,5 @@ class Merpati extends Comp_maskapai_base {
 			}
 			return array_values($final);
 		}
+	
 	}
