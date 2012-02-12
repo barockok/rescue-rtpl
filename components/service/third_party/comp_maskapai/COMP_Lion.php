@@ -96,7 +96,7 @@ class Lion extends Comp_maskapai_base {
 		$this->_opt->id = 1;
 		$this->_opt->max_fare = 5;		
 
-	//	foreach($opt as $key => $val) $this->_opt->$key = $val;
+		foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	
@@ -303,8 +303,8 @@ class Lion extends Comp_maskapai_base {
 				
 				//define return variable
 				$final_data[$idx]=array(
-					//'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
-				  'price' => $this->getPrice($vKey,$cellID,$rowID),
+					'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
+				 // 'price' => $this->getPrice($vKey,$cellID,$rowID),
 					'company' => 'LION',
 					't_depart' => $t_depart,	//depart from origin location
 					't_transit_arrive' => '', //arrive in transit airport
@@ -327,9 +327,9 @@ class Lion extends Comp_maskapai_base {
 				if($idx==($this->_opt->max_fare)) break;
 			}																			
 		}
-		 return $final_data;			
+		// return $final_data;			
 		// FINAL PRICE is HERE					
-	//	return $this->simultan_fetch_price($final_data, $vKey);
+		return $this->simultan_fetch_price($final_data, $vKey);
 	}
 	public function simultan_fetch_price($pre_fare_data, $vKey)
 	{
@@ -353,7 +353,7 @@ class Lion extends Comp_maskapai_base {
 				// Flag as dynamic variable in loop
 				$sub_curl = ${'getting_fare_'.$i};
 				// adding clean option
-				curl_setopt_array($cu, $clean_curl_opt);
+				curl_setopt_array($sub_curl, $clean_curl_opt);
 			}
 			############# Declare Master Curl 	###############
 			$master_process = curl_multi_init();
