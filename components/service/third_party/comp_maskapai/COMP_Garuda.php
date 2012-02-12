@@ -14,8 +14,8 @@ class Garuda extends Comp_maskapai_base {
 		$this->book_url = 'http://gos.garuda-indonesia.com/saci/clientbook.php';						  
 			
 		$this->idd = '170111A';
-		$this->username = 'sa3maci';
-		$this->password = 'mandiri01';
+		$this->username = 'sa3jado';
+		$this->password = 'sa3jado';
 		
 		/*$this->_opt->date_depart =  '2012-02-13';
 		$this->_opt->date_return =  null;
