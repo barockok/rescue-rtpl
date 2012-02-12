@@ -24,6 +24,7 @@ class Debug extends MX_Controller
 	{
 		$maskapai 	= $this->uri->rsegment(3);
 		$func 	 	= $this->uri->rsegment(4);
+		
 		if(!$maskapai){
 			echo ('no maskapai specify');
 			exit;
@@ -34,7 +35,20 @@ class Debug extends MX_Controller
 		if(!$func){
 			 echo ('not function specify');
 		}else{
-			printDebug($fac->$func());
+			if($logid = $this->uri->rsegment(5) AND $func == "doSearch"){
+				echo $logid;
+				try {
+					$log = Search_fare_log::find($logid);
+					printDebug($log);
+					printDebug($fac->$func($log->to_array()));
+				} catch (Exception $e) {
+					$log = false;
+				}
+			}elseif(!$this->uri->rsegment(5) AND $func == "doSearch"){
+				printDebug($fac->$func());
+			}else{
+				printDebug($fac->$func());
+			}
 		}
 		$fac->closing();
 		
@@ -105,7 +119,7 @@ class Debug extends MX_Controller
 	}
 	public function test3()
 	{
-		http://app.dev-rumahtiket.com/
+	//	http://app.dev-rumahtiket.com/
 		$this->load->library('rest', array(
 			'server' => 'http://api.rumahtiket.com/', 
 			'http_user' => 'admin',
