@@ -329,9 +329,42 @@ class Lion extends Comp_maskapai_base {
 		}
 		// return $final_data;			
 		// FINAL PRICE is HERE					
-		return $this->simultan_fetch_price($final_data, $vKey);
+		return $this->simultant_fetch_price($final_data, $vKey);
 	}
-	public function simultan_fetch_price($pre_fare_data, $vKey)
+	public function continously_fetch_price($pre_fare_data, $key)
+	{
+		if(is_array($pre_fare_data) && count($pre_fare_data) > 0 ){
+			$limit = count($pre_fare_data);
+			for ($i=0; $i < $limit; $i++) { 
+					$prefare_meta = element('pre_meta_fare' , $pre_fare_data[$i] );
+					$dirty_curl_opt = $this->_prepare_price($vKey, element('cell', $prefare_meta), element('row', $prefare_meta ));
+					// covert to curl option constant
+					$clean_curl_opt = array();
+					foreach($dirty_curl_opt as $key => $value){
+						$name = constant('CURLOPT_'.strtoupper($key));
+						$val  = $value;
+						$clean_curl_opt[$name] = $val;
+					}
+
+					// declare the subprocsee curll 
+					${'getting_fare_'.$i} = curl_init();
+					// Flag as dynamic variable in loop
+					$sub_curl = ${'getting_fare_'.$i};
+					// adding clean option
+					curl_setopt_array($sub_curl, $clean_curl_opt);
+					$res = curl_exec($sub_curl);
+					curl_close($sub_curl);
+					$pre_fare_data[$i]['price'] = $this->_clean_price($res) ;
+					// remove pre_meta_fare
+					unset($pre_fare_data[$i]['pre_meta_fare']);
+					$this->insert_fare($pre_fare_data[$i]);
+					
+			}
+			return array('0');
+		}
+		return array();
+	}
+	public function simultant_fetch_price($pre_fare_data, $vKey)
 	{
 		if(is_array($pre_fare_data) && count($pre_fare_data) > 0 ){
 			$limit = count($pre_fare_data);
