@@ -40,12 +40,12 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',                'x+b');
 define('DB_DEF_HOST', 'localhost');
 define('DB_DEF_USER', 'root');
 define('DB_DEF_PASS', 'root');
-define('DB_DEF_NAME', 'rt_pre_prod');
+define('DB_DEF_NAME', 'RT_PRODUCTION');
 
 define('DB_API_HOST', 'localhost');
 define('DB_API_USER', 'root');
 define('DB_API_PASS', 'root');
-define('DB_API_NAME', 'rt_api');
+define('DB_API_NAME', 'RT_PRODUCTION_API');
 
 define('SELF_API_KEY', 'abc');
 define('CURL_BIN_LOC', '/usr/bin/curl');
