@@ -24,7 +24,7 @@ class Merpati extends Comp_maskapai_base {
 		$this->_ci->load->library('my_curl');
 		$this->_ci->load->helper('array');
 		*/
-		$this->_cookies_file = dirname(__FILE__)."/cookies/merpati_airline.txt";		
+		$this->_cookies_file = "./components/service/third_party/comp_maskapai/cookies/merpati_airline.txt";		
 		$this->_headerData = array(
 			'Content-Type: application/json; charset=UTF-8',
 		);
@@ -376,12 +376,12 @@ class Merpati extends Comp_maskapai_base {
 			$this->logout();
 		}
 		
-		public function doSearch($opt = array())
+		public function doSearch($opt = array(), $debug = false)
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
-			$this->_opt->route_to 		= 'DPS';
-			$this->_opt->date_depart 	= '2012-02-19';
+			$this->_opt->route_to 		= 'SUB';
+			$this->_opt->date_depart 	= '2012-03-21';
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= 2;
 			$this->_opt->id			= 1;
@@ -389,7 +389,7 @@ class Merpati extends Comp_maskapai_base {
 			foreach($opt as $key => $val ){$this->_opt->$key = $val;}
 			
 			if ($this->_opt->date_return) {
-				$result1 = $this->search();
+				$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();
 				
 				$temp = '';
 				$temp = $this->_opt->route_from;
@@ -398,17 +398,24 @@ class Merpati extends Comp_maskapai_base {
 				$this->_opt->date_depart = $this->_opt->date_return;
 				$this->roundTrip = true;
 				
-				$result2 = $this->search();
+				$result2 = (is_array($rs2 = $this->search())) ? $rs2 : array();
 				$this->closing();
 				$final = array_merge($result1,$result2);
 			}else{
 				$final = $this->search();
 				$this->closing();
 			}
+		
 			if (!is_array($final)) {
 				return array();
 			}
+			
+			if($debug == TRUE) return array('opt' => $this->_opt, 'res' => array_values($final) );
 			return array_values($final);
+			
+			
+			
+		
 		}
 		
 		function array2xml($array,&$xml){
@@ -1012,4 +1019,5 @@ class Merpati extends Comp_maskapai_base {
 			}
 			return array_values($final);
 		}
+	
 	}

@@ -10,7 +10,7 @@ class Debug extends MX_Controller
 	{
 		parent::__construct();
 			$this->load->library('rest', array(
-				'server' => 'http://'.DOMAIN_PLATFORM.'.'.DOMAIN_BASE.'/', 
+				'server' => 'http://platform.'.DOMAIN_BASE.'/', 
 				'http_user' => 'admin',
 				'http_pass' => '1234',
 				'http_auth' => 'basic',
@@ -19,11 +19,15 @@ class Debug extends MX_Controller
 			);
 		$this->rest->api_key('abc');
 	}
-	
+	public function phpinfo()
+	{
+		echo phpinfo();
+	}
 	public function maskapai()
 	{
 		$maskapai 	= $this->uri->rsegment(3);
 		$func 	 	= $this->uri->rsegment(4);
+		
 		if(!$maskapai){
 			echo ('no maskapai specify');
 			exit;
@@ -34,10 +38,32 @@ class Debug extends MX_Controller
 		if(!$func){
 			 echo ('not function specify');
 		}else{
-			printDebug($fac->$func());
+			if($logid = $this->uri->rsegment(5) AND $func == "doSearch"){
+				echo $logid;
+				try {
+					$log = Search_fare_log::find($logid);
+					$param = $log->to_array();
+					// reformat the date
+					foreach($param as $key => $val){
+						if($key == 'date_return' || $key == 'date_depart'){
+							if($val != null){
+							$param[$key] = show_date($val, 'Y-m-d');
+							}
+						}
+					}
+					printDebug($fac->$func($param, true));
+				} catch (Exception $e) {
+					$log = false;
+				}
+			}elseif(!$this->uri->rsegment(5) AND $func == "doSearch"){
+				printDebug($fac->$func());
+			}else{
+				printDebug($fac->$func());
+			}
 		}
 		$fac->closing();
 		
+
 		
 	}
 	
@@ -105,7 +131,7 @@ class Debug extends MX_Controller
 	}
 	public function test3()
 	{
-		http://app.dev-rumahtiket.com/
+	//	http://app.dev-rumahtiket.com/
 		$this->load->library('rest', array(
 			'server' => 'http://api.rumahtiket.com/', 
 			'http_user' => 'admin',
@@ -253,7 +279,7 @@ class Debug extends MX_Controller
 				'airlines'  => 'Sriwijaya,Batavia,Garuda,Merpati,Citilink ',
 				'max_fare'		=> 10,
 			);
-		$this->rest->post('service/airlines/search/format/json', $posted);
+		$this->rest->post('service/airlines/search', $posted);
 		$this->rest->debug();
 	}
 	public function testairlinessearhexec()
@@ -349,21 +375,166 @@ echo "</pre>";
 			}
 		printDebug($depart_q);
 	}
-	public function testing()
+	public function test_exec()
 	{
-		$ch = curl_init();
-
-		// set URL and other appropriate options
-		curl_setopt($ch, CURLOPT_URL, "http://google.com");
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		// grab URL and pass it to the browser
-		echo curl_exec($ch);
-
-		// close cURL resource, and free up system resources
-		curl_close($ch);
-		echo phpinfo();
+	echo	suicide('debug/airlines/test', FALSE);
 	}
-	
+	public function test_exec_target()
+	{
+		$new = new Ext_data_airport(array('name' => 'Wdew' , 'code' =>'ZID'));
+		$new->save();
+	}
+	public function logic()
+	{
+		
+			printDebug($this->fetch_formula(333));
+			
+	}
+	public function fetch_formula($id, $limit = 1)
+	{
+		//try {
+			$log = Search_fare_log::find($id);
+			$comps = json_decode($log->comp_include);
+			$limit = (is_numeric($limit)) ? $limit : $log->max_fare;
+			$depart_ids = array(); $return_ids = array();
+				$d_q = '';
+				for($i = 0 ; $i < count($comps) ; $i++){
+						$comp = $comps[$i] ;
+						$d_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
+						$d_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
+				}
+				$d_q .= ' order by price ASC';
+
+				$d_q = Search_fare_log::find_by_sql($d_q);
+				if(count($d_q) > 0 ) foreach($d_q as $item) array_push($depart_ids, $item->to_array());
+			
+			if($log->type == 'roundtrip'){
+				
+				$r_q = '';
+				for($i = 0 ; $i < count($comps) ; $i++){
+						$comp = $comps[$i] ;
+						$r_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
+						$r_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
+				}
+				$r_q .= ' order by price ASC';
+
+				$r_q = Search_fare_log::find_by_sql($r_q);
+				if(count($r_q) > 0 ) foreach($r_q as $item) array_push($return_ids, $item->to_array());
+				
+				return array(
+					'depart' => $depart_ids,
+					'return' => $return_ids
+				);
+			
+			}
+			return array(
+				'log' => $log->to_array(),
+				'depart' => $depart_ids,
+			);
+			
+			
+		
+			
+			
+		/*	
+		} catch (Exception $e) {
+			return false;
+		}
+		*/
+		
+	}
+	public function logic2()
+	{
+		$array = array(
+		array('price' => 10),
+		array('price' => 4),
+		array('price' => 7),
+		array('price' => 2),	
+		);
+		printDebug(array_sort($array, 'price', SORT_DESC));
+	}
+	public function alzid4ever()
+	{
+		echo md5("alzid4ever");
+	}
+	public function testme()
+	{
+			$log['log_id'] = '344';
+            $log['company'] = 'BATAVIA';
+            $log['t_depart'] = '2012-03-10 03:25:00';
+            $log['t_arrive'] = '2012-03-10 04:45:00';
+            $log['type'] = 'depart';
+            $log['class'] = 'E';
+            $log['route'] = 'CGK,SUB';
+            $log['meta_data'] = '{"comapny":"BATAVIA","flight_no":"345","t_depart":"2012-03-10 03:25","t_arrive":"2012-03-10 04:45","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":315200,"class":"E","route":"CGK,SUB","log_id":344,"arrayIndex":"4,4","passangers":1,"time_depart":"2012-3-10","radio_value":"29739124"}';
+           
+            $log['price'] = 0;
+            $log['flight_no'] = 345;
+			$new = new Search_fare_item($log);
+			$new->save();
+			printDebug($new->errors->full_messages());
+	}
+	public function presystem()
+	{
+		suicide('suicide/system');
+		echo 'Complite ..';
+	}
+	public function api()
+	{
+		$endpoint = implode('/',array_slice(explode('/',substr($this->uri->ruri_string(), 1)), 2));
+		$res = $this->rest->get($endpoint);
+		$this->rest->debug();
+		echo $res;
+		
+	}
+	public function varplay()
+	{
+		$i = 1;
+		$subprocess_1 = 'asuh';
+		echo ${'subprocess_'.$i};
+	}
+	public function testTiketcom()
+	{
+		$debug = array(
+			'name' => '(string)',
+			'address' => '(string)',
+			'map_coordinate' => '(string)',
+			'description' => '(string) clean plain text',
+			'policies' => '(array)',
+			'start_price' => '(int)',
+			'number_of_rooms' => '(int)',
+			'pictures' => '(array) url',
+			'facilites' => array(
+					'hotel' => '(array)',
+					'room' => '(array)',
+					'sport' => '(array)',
+			),
+			'class' => array(
+				'deluxe' => array(
+					'price' => '(int)',
+					'facility' => '(array)',
+					'discount' => '(int) default 0',
+					'picture' => '(string) url',
+					'avaibility' => '(int)',
+					'includes' => '(array)',
+					'room_id' => '(int)',
+				),
+				'family' => array(
+					'price' => '(int)',
+					'facility' => '(array)',
+					'discount' => '(int) default 0',
+					'picture' => '(string) url',
+					'avaibility' => '(int)',
+					'includes' => '(array)',
+					'room_id' => '(int)',
+				)
+			)
+		);
+		printDebug($debug);
+	}
+	public function testencrypt()
+	{
+		echo decrypt(encrypt('img/business/1/2/business-12-12-2011-13-07-55.l.jpg', 'asas'), 'asas');
+	}
+
 }

@@ -49,6 +49,19 @@ class Comp_maskapai_base {
 	{
 		# please override me
 	}
+	public function insert_fare($data)
+	{
+		if(!is_array($data)) return;
+		try {
+			$fare =  new Search_fare_item($data);
+			if($fare->is_valid()) 
+				$fare->save();
+		} catch (Exception $e) {
+			return;
+		}
+	
+		
+	}
 	
 	
 	

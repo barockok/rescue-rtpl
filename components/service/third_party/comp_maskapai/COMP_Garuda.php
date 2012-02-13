@@ -7,15 +7,15 @@ class Garuda extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();		
 		//define variable
-		$this->_cookies_file = './components/service/third_party/comp_maskapai/cookies/garuda.txt';
+		$this->_cookies_file ='./components/service/third_party/comp_maskapai/cookies/garuda.txt';
 		$this->login_url = 'http://gos.garuda-indonesia.com/saci/client.php';
 		$this->_refer_url = 'http://gos.garuda-indonesia.com/sac/';
 		$this->src_url = 'http://gos.garuda-indonesia.com/saci/clientavail.php';
 		$this->book_url = 'http://gos.garuda-indonesia.com/saci/clientbook.php';						  
 			
 		$this->idd = '170111A';
-		$this->username = 'sa3maci';
-		$this->password = 'mandiri01';
+		$this->username = 'sa3jado';
+		$this->password = 'sa3jado';
 		
 		/*$this->_opt->date_depart =  '2012-02-13';
 		$this->_opt->date_return =  null;
@@ -55,7 +55,7 @@ class Garuda extends Comp_maskapai_base {
 		
 		$data = $this->_ci->my_curl->setup($conf);
 		$res = $this->_ci->my_curl->exc($data);
-			
+				
 		return json_decode($res)->Session->SessionId;							
 	}
 	
@@ -63,16 +63,16 @@ class Garuda extends Comp_maskapai_base {
 		
 		//foreach($opt as $key => $val) $this->_opt->$key = $val;
 		
-		$this->_opt->date_depart =  '2012-02-20';
-		$this->_opt->date_return =  null;
+		$this->_opt->date_depart =  '2012-03-20';
+		$this->_opt->date_return =  '2012-03-27';
 		$this->_opt->passengers = 2;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'SUB';
+		$this->_opt->route_from = 'SUB';
+		$this->_opt->route_to = 'CGK';
 		$this->_opt->id = null;
 		$this->_opt->max_fare = 5;
 				
 		//print_r($this->src_flight());
-	//	foreach($opt as $key => $val) $this->_opt->$key = $val;
+		foreach($opt as $key => $val) $this->_opt->$key = $val;
 		return $this->src_flight();
 	}
 	
@@ -181,7 +181,7 @@ class Garuda extends Comp_maskapai_base {
 		$res_eco = $res_all[0];
 		$res_exe = $res_all[1];									
 		
-		echo $res_eco;
+		
 		
 		
 		
