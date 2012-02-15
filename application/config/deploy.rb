@@ -1,6 +1,6 @@
-set :user, 'deployer'
+set :user, 'nginxer'
 set (:password) do 
-  Capistrano::CLI.ui.ask "password nya doong .. : "
+  Capistrano::CLI.password_prompt("passwordnya donggg ..?")
 end
 
 
@@ -20,9 +20,9 @@ end
 set :current_branch , current_git_branch
 set :branch, "production"
 set :domain, 'rumahtiket.com'
-set :applicationdir, "/var/www/rumahtiket.com/public/platform/"
+set :applicationdir, "/var/www/rumahtiket.com/public/rt-platform/"
 set :deploy_path , "#{applicationdir}#{branch}"
-set :repository,  "git@gitlab.barockprojects.com:rt-platform"
+set :repository,  "git@bitbucket.org:barock19/rt-platform.git"
 set :use_sudo, false
 role :app, "#{domain}"
 role :web, "#{domain}"
