@@ -16,7 +16,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	function __construct() {
 		parent::__construct();
 		$this->roundTrip = false;
-		$this->_cookies_file = dirname(__FILE__)."/cookies/sriwijaya_airline.txt";
+		$this->_cookies_file = "./components/service/third_party/comp_maskapai/cookies/sriwijaya_airline.txt";
 		/*
 		$this->_ci->load->library('my_curl');
 		$this->_ci->load->helper('array');
@@ -429,14 +429,14 @@ class Sriwijaya extends Comp_maskapai_base{
 	{
 		$this->_opt->route_from 	= 'CGK';
 		$this->_opt->route_to 		= 'BPN';
-		$this->_opt->date_depart 	= '2012-02-20';
+		$this->_opt->date_depart 	= '2012-02-25';
 		$this->_opt->date_return 	= NULL;
 		$this->_opt->passengers 	= 1;
 		$this->_opt->id				= 1;		
 		foreach($opt as $key => $val ){$this->_opt->$key = $val;}
 			
 		if ($this->_opt->date_return) {
-			$result1 = $this->search();
+			$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();
 			
 			$temp = '';
 			$temp = $this->_opt->route_from;
@@ -445,7 +445,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->_opt->date_depart = $this->_opt->date_return;
 			$this->roundTrip = true;
 			
-			$result2 = $this->search();
+			$result2 = (is_array($rs2 = $this->search())) ? $rs2 : array();
 			$this->logOut();
 			//print_r(array_merge($result1,$result2));
 			$final = array_merge($result1,$result2);
