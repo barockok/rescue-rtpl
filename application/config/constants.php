@@ -39,12 +39,12 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',                'x+b');
 // DATABASE CONSTANT //
 define('DB_DEF_HOST', 'localhost');
 define('DB_DEF_USER', 'root');
-define('DB_DEF_PASS', 'root');
+define('DB_DEF_PASS', 'alzid4ever');
 define('DB_DEF_NAME', 'RT_PRODUCTION');
 
 define('DB_API_HOST', 'localhost');
 define('DB_API_USER', 'root');
-define('DB_API_PASS', 'root');
+define('DB_API_PASS', 'alzid4ever');
 define('DB_API_NAME', 'RT_PRODUCTION_API');
 
 define('SELF_API_KEY', 'abc');
