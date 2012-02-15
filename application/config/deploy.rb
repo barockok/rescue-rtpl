@@ -66,7 +66,7 @@ namespace :update do
   end
   
   task :pushing do
-    system('git push origin')
+    system('git push bb')
   end
   
   # Server side execute ##
