@@ -63,6 +63,7 @@ class Debug extends MX_Controller
 		}
 		$fac->closing();
 		
+
 		
 	}
 	
@@ -531,6 +532,9 @@ echo "</pre>";
 		);
 		printDebug($debug);
 	}
-	
+	public function testencrypt()
+	{
+		echo decrypt(encrypt('img/business/1/2/business-12-12-2011-13-07-55.l.jpg', 'asas'), 'asas');
+	}
 
 }

@@ -529,6 +529,10 @@ class Airlines extends REST_Controller
 		return $best_limit;
 	
 	}
+	public function testa_get()
+	{
+		echo 'loaded';
+	}
 
 	
 	
