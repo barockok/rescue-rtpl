@@ -51,7 +51,7 @@ class Debug extends MX_Controller
 							}
 						}
 					}
-					printDebug($fac->$func($param, true));
+					printDebug($fac->$func($param));
 				} catch (Exception $e) {
 					$log = false;
 				}

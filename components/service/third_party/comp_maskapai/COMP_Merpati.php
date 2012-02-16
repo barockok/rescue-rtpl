@@ -415,7 +415,7 @@ class Merpati extends Comp_maskapai_base {
 				return array();
 			}
 			
-			if($debug == TRUE) return array('opt' => $this->_opt, 'res' => array_values($final) );
+			//return array('opt' => $this->_opt, 'res' => array_values($final) );
 			return array_values($final);
 			
 			

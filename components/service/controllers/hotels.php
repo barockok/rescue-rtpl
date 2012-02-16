@@ -12,13 +12,14 @@ class Hotels extends REST_Controller {
 	//php 4 constructor
 	public function search_post(){
 		$posted = array(
-			'checkin'	=>	$this->post('checkin'),
-			'checkout'	=>	$this->post('checkout'),
+			'checkin'		=>	$this->post('checkin'),
+			'checkout'		=>	$this->post('checkout'),
 			'passangers'	=>	$this->post('passangers'),
 			'comp_search'	=>	($hotl = $this->post('comp_search')) ? $this->post('comp_search') : null ,
-			'actor'			=> ($actor = $this->post('actor')) ? $actor : 'CUS',
+			'actor'			=>  ($actor = $this->post('actor')) ? $actor : 'CUS',
 			'city'			=>	$this->post('city'),
 		);
+		
 		$log = new Search_hotel_log($posted);
 		if(!$log->is_valid()){
 			$this->response($log->errors->full_messages(), 500);
