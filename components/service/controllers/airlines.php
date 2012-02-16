@@ -502,7 +502,7 @@ class Airlines extends REST_Controller
 	{
 		$dep_limit = (is_numeric($limit)) ? $limit : count($departs);
 		$ret_limit = (is_numeric($limit)) ? $limit : count($returns);
-		if(count($depart) < 1 || count($return) < 1) return array();
+		if((count($departs) < 1) || (count($returns) < 1 )) return array();
 	
 		$best_candidate = array();
 		for($i = 0 ; $i < $dep_limit ; $i ++){
