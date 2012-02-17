@@ -483,8 +483,9 @@ echo "</pre>";
 	{
 		$endpoint = implode('/',array_slice(explode('/',substr($this->uri->ruri_string(), 1)), 2));
 		$res = $this->rest->get($endpoint);
+		printDebug($res);
 		$this->rest->debug();
-		echo $res;
+	
 		
 	}
 	public function varplay()
@@ -535,6 +536,15 @@ echo "</pre>";
 	public function testencrypt()
 	{
 		echo decrypt(encrypt('img/business/1/2/business-12-12-2011-13-07-55.l.jpg', 'asas'), 'asas');
+	}
+	public function testos()
+	{
+		parse_str('q=band&uid=&startdate=2012-02-18&enddate=2012-02-19&night=1&room=1&adult=2&child=0&minstar=0&maxstar=5&minprice=0&maxprice=1000000000&hotelname=0&page=2', $var);
+		printDebug($var);
+	}
+	public function testos1()
+	{
+		echo substr('3-Stars Hotel', 0,1);
 	}
 
 }

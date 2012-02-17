@@ -124,5 +124,13 @@ function decode_base64($sData){
 	$sBase64 = strtr($sData, '-_', '+/');
 	return base64_decode($sBase64.'==');
 }
+function cleanup_string($string)
+{
+	return filter_var(
+				$string,
+				FILTER_SANITIZE_STRING,
+				FILTER_FLAG_STRIP_LOW
+			);
+}
 
 
