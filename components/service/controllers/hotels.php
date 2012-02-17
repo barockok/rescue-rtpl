@@ -7,6 +7,7 @@ class Hotels extends REST_Controller {
 	//php 5 constructor
 	function __construct() {
 		parent::__construct();
+		
 	}
 	
 	//php 4 constructor
@@ -62,6 +63,11 @@ class Hotels extends REST_Controller {
 			$new_item->save();
 		}
 		$this->response($result);
+		
+	}
+	public function location_get()
+	{
+		$query = $this->uri->rsegment(3);
 		
 	}
 

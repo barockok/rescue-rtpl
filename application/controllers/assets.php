@@ -70,5 +70,14 @@ class Assets extends Base_Controller
 
 
 	}
+	public function hotel()
+	{	$thumb = $this->load->library('PhpThumbFactory');
+		$this->load->library('service/comp_tiketcom');
+		$path =  $this->comp_tiketcom->_decrypt_img_path($this->uri->rsegment(3));
+		$thumb->create($path)
+		->adaptiveResize('120', '120')
+		->show();
+		
+	}
 	
 }

@@ -11,9 +11,15 @@ class App_hook
 	
 		ini_set('display_errors','On'); 
 		//error_reporting(E_ALL);
-		set_error_handler('_error_handler', E_ALL);
-		register_shutdown_function('_shutdown_handler');
+	//	set_error_handler('_error_handler', E_ALL);
+	//	register_shutdown_function('_shutdown_handler');
 	
+	}
+	public function post_controller_constructor()
+	{
+		$ci =& get_instance();
+		$ci->output->set_header('X-Powered-By:Phusion Passenger (mod_rails/mod_rack) 2.2.15');
+		$ci->output->set_header('X-RTPlatform-V:0.1');
 	}
 
 

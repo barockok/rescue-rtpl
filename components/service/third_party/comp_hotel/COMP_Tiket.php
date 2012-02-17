@@ -10,6 +10,8 @@ class Tiket extends Comp_hotel_base {
 		ini_set('memory_limit','128M');
 		ini_set('max_execution_time',18000);
 		$this->_cookies_file = dirname(__FILE__)."/cookies/tiket.txt";
+		
+		$this->get_location_url = 'http://www.tiket.com/search/autocomplete/hotel?q=';
 	}
 	
 	//php 4 constructor

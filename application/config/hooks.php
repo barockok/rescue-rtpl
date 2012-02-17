@@ -25,6 +25,12 @@ $hook['pre_controller'][] 			= array(
 										    'filename' => 'ActiveRecord.php',
 										    'filepath' => 'third_party/php-activerecord'                                
 										);
+$hook['post_controller_constructor'] = array(
+												'class'    => 'App_hook',
+				                                'function' => 'post_controller_constructor',
+				                                'filename' => 'app_hook.php',
+				                                'filepath' => 'hooks/'
+										);
 		
 $hook['pre_system'][]					= array(
                                 			'class'    => 'App_hook',
