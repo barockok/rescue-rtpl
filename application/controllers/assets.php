@@ -97,7 +97,12 @@ class Assets extends Base_Controller
 		$cache_name = $w.'_'.$h.'_'.$path;
 		$path =  $this->comp_tiketcom->_decrypt_img_path($path);
 		
+		
 		if(strpos($path ,'default-default') !== FALSE ){
+			if($w == null) {
+				$w = 200;
+				$h = $w;
+			}
 			$cache_name = $w.'_'.$h.'_default-img.png';
 			$path = './assets/img_base/default-img.png';	
 		}
@@ -110,6 +115,8 @@ class Assets extends Base_Controller
 			$img  = $thumb->create($root_cache_path.$cache_name);
 			$img->show();
 		}	
+		
+	
 	}
 	
 }
