@@ -96,6 +96,11 @@ class Assets extends Base_Controller
 		}
 		$cache_name = $w.'_'.$h.'_'.$path;
 		$path =  $this->comp_tiketcom->_decrypt_img_path($path);
+		
+		if(strpos($path ,'default-default') !== FALSE ){
+			$cache_name = $w.'_'.$h.'_default-img.png';
+			$path = './assets/img_base/default-img.png';	
+		}
 		if(!is_file($root_cache_path.$cache_name)){
 			$img = $thumb->create($path);
 			if($w != null && $h != null) $img->adaptiveResize($w, $h);
