@@ -121,6 +121,8 @@ class Comp_tiketcom
 			$page = str_get_html($this->ci->acurl->simple_get($url, $opt));
 		
 			$data = array();
+			$data['id'] = $id_encrypt;
+			$data['path_identifier'] = $path_identifier;
 		
 			$theme = (count($page->find('div[class=mainimage]')) > 0 ) ? 'mainimage' : 'no_mainimage' ;
 		
@@ -178,7 +180,7 @@ class Comp_tiketcom
 				}
 
 				for ($i=0; $i < count($picture); $i++) { 
-					$pic = str_replace('_L.l.jpg','.jpg',$picture[$i]->getAttribute('href'));
+					$pic = $picture[$i]->getAttribute('href');
 					$data['pictures'][$i] = $this->_encrypt_img_path($pic);
 				}
 
@@ -208,13 +210,11 @@ class Comp_tiketcom
 				
 				for ($i=0; $i < count($class); $i++) { 
 
-					$className = str_replace('_room','',str_replace(' ','_',strtolower(str_replace(' Room ','',
-					preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',
-					$class[$i]->find('div[class=roomWrapper] div[class=roomlist] div[class=roomDesc] h4 a',0)->plaintext)))));
-
+					$className = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] div[class=roomDesc] h4 a',0)->plaintext;
+					
 					$picvar = $i."_L.s.jpg";
 					$classPic = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] a img[class=thumb]',0)->getAttribute('src');
-
+					$classPic = str_replace('.s.jpg', '.jpg', $classPic);
 					if ($class[$i]->find('div[class=roomWrapper] div[class=rateroom] div[itemprop=availability]',0)) {
 							$availability = element('1',explode(' ',
 							$class[$i]->find('div[class=roomWrapper] div[class=rateroom] div[itemprop=availability]',0)->plaintext));
@@ -226,9 +226,9 @@ class Comp_tiketcom
 					$price = str_replace('.00','',
 					$class[$i]->find('div[class=roomWrapper] div[class=rateroom] h3 span[class=currency]',0)->getAttribute('rel')); 
 					$roomid = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] a.show_room', 0)->getAttribute('room_id');
-					$data['class'][$className] = array(
-						'price'	=>	$price,
-						'facility'	=>	element('room',element('facilities',$data)),
+					$data['class'][$i] = array(
+						'name'		=>  trim($className),
+						'price'		=>	$price,
 						'discount'	=>	0,
 						'picture'	=>	$this->_encrypt_img_path($classPic),
 						'availability'	=>	$availability,
