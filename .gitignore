@@ -1,3 +1,4 @@
 components/service/third_party/comp_maskapai/cookies/*
+assets/hotel_cache/*
 !.gitkeep
 .DS_Store
