@@ -73,10 +73,31 @@ class Assets extends Base_Controller
 	public function hotel()
 	{	$thumb = $this->load->library('PhpThumbFactory');
 		$this->load->library('service/comp_tiketcom');
-		$path =  $this->comp_tiketcom->_decrypt_img_path($this->uri->rsegment(3));
-		$thumb->create($path)
-		->adaptiveResize('120', '120')
-		->show();
+		$w = null;
+		$h = null;
+		if( is_numeric($this->uri->rsegment(3)) && is_numeric($this->uri->rsegment(4)) && $this->uri->total_rsegments() >= 3){
+			$path = $this->uri->rsegment(5);
+			$w = $this->uri->rsegment(3);
+			$h = $this->uri->rsegment(4);
+		}elseif(is_numeric($this->uri->rsegment(3)) && !is_numeric($this->uri->rsegment(4)) && $this->uri->total_rsegments() >= 3){
+			$path = $this->uri->rsegment(5);
+			$w = $this->uri->rsegment(3);
+			$h = $w;
+		}elseif($this->uri->total_rsegments() >= 2 && is_numeric($this->uri->rsegment(3))){
+			$path = $this->uri->rsegment(4);
+			$w = $this->uri->rsegment(3);
+			$h = $w;
+		}else{
+			$path = $this->uri->rsegment(3);
+		}
+		
+		
+
+		$path =  $this->comp_tiketcom->_decrypt_img_path($path);
+//		$path = './assets/media/mine.jpg';
+		$img = $thumb->create($path);
+		if($w != null && $h != null) $img->adaptiveResize($w, $h);
+		$img->show();
 		
 	}
 	
