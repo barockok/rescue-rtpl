@@ -71,7 +71,11 @@ class Assets extends Base_Controller
 
 	}
 	public function hotel()
-	{	$thumb = $this->load->library('PhpThumbFactory');
+	{
+		// key ecnryption
+		$enkey = 'laaillahaillallah';
+		$root_cache_path = './assets/hotel_cache/';
+		$thumb = $this->load->library('PhpThumbFactory');
 		$this->load->library('service/comp_tiketcom');
 		$w = null;
 		$h = null;
@@ -90,15 +94,17 @@ class Assets extends Base_Controller
 		}else{
 			$path = $this->uri->rsegment(3);
 		}
-		
-		
-
+		$cache_name = $w.'_'.$h.'_'.$path;
 		$path =  $this->comp_tiketcom->_decrypt_img_path($path);
-//		$path = './assets/media/mine.jpg';
-		$img = $thumb->create($path);
-		if($w != null && $h != null) $img->adaptiveResize($w, $h);
-		$img->show();
-		
+		if(!is_file($root_cache_path.$cache_name)){
+			$img = $thumb->create($path);
+			if($w != null && $h != null) $img->adaptiveResize($w, $h);
+			$img->save($root_cache_path.$cache_name);
+			$img->show();
+		}else{
+			$img  = $thumb->create($root_cache_path.$cache_name);
+			$img->show();
+		}	
 	}
 	
 }
