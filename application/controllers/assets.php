@@ -70,5 +70,41 @@ class Assets extends Base_Controller
 
 
 	}
+	public function hotel()
+	{
+		// key ecnryption
+		$enkey = 'laaillahaillallah';
+		$root_cache_path = './assets/hotel_cache/';
+		$thumb = $this->load->library('PhpThumbFactory');
+		$this->load->library('service/comp_tiketcom');
+		$w = null;
+		$h = null;
+		if( is_numeric($this->uri->rsegment(3)) && is_numeric($this->uri->rsegment(4)) && $this->uri->total_rsegments() >= 3){
+			$path = $this->uri->rsegment(5);
+			$w = $this->uri->rsegment(3);
+			$h = $this->uri->rsegment(4);
+		}elseif(is_numeric($this->uri->rsegment(3)) && !is_numeric($this->uri->rsegment(4)) && $this->uri->total_rsegments() >= 3){
+			$path = $this->uri->rsegment(5);
+			$w = $this->uri->rsegment(3);
+			$h = $w;
+		}elseif($this->uri->total_rsegments() >= 2 && is_numeric($this->uri->rsegment(3))){
+			$path = $this->uri->rsegment(4);
+			$w = $this->uri->rsegment(3);
+			$h = $w;
+		}else{
+			$path = $this->uri->rsegment(3);
+		}
+		$cache_name = $w.'_'.$h.'_'.$path;
+		$path =  $this->comp_tiketcom->_decrypt_img_path($path);
+		if(!is_file($root_cache_path.$cache_name)){
+			$img = $thumb->create($path);
+			if($w != null && $h != null) $img->adaptiveResize($w, $h);
+			$img->save($root_cache_path.$cache_name);
+			$img->show();
+		}else{
+			$img  = $thumb->create($root_cache_path.$cache_name);
+			$img->show();
+		}	
+	}
 	
 }

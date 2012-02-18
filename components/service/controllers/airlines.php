@@ -502,6 +502,7 @@ class Airlines extends REST_Controller
 	{
 		$dep_limit = (is_numeric($limit)) ? $limit : count($departs);
 		$ret_limit = (is_numeric($limit)) ? $limit : count($returns);
+		if((count($departs) < 1) || (count($returns) < 1 )) return array();
 	
 		$best_candidate = array();
 		for($i = 0 ; $i < $dep_limit ; $i ++){
@@ -523,6 +524,7 @@ class Airlines extends REST_Controller
 		// limit the result
 		$res_limit = (is_numeric($limit)) ? $limit : 5;
 		$best_limit = array();
+		
 		for ($i=0; $i < $res_limit; $i++) { 
 			array_push($best_limit, $best_sort[$i]);
 		}
