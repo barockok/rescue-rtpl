@@ -25,6 +25,7 @@ class Comp_tiketcom
 			$build_item = array(
 				'id' => $this->encrypt(element('id', $ori)),
 				'name' => element('value', $ori),
+				'type' => element('category', $ori),
 			);
 			array_push($s_final, $build_item);
 		}

@@ -43,7 +43,7 @@ class Tiketcom extends REST_Controller
 	}
 	public function location_get()
 	{
-		$q = $this->uri->rsegment(3);
+		$q = $this->get('q');
 		try {
 			$res = $this->comp_tiketcom->get_Location($q);
 		} catch (Exception $e) {
@@ -78,7 +78,7 @@ class Tiketcom extends REST_Controller
 			try {
 				$res = $this->comp_tiketcom->do_search($param, $option);
 			} catch (Exception $e) {
-				throw new Exception($e->getMesage());
+				throw new Exception($e->getMessage());
 			}
 		
 			$return = array(
