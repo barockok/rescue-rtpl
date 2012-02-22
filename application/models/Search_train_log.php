@@ -4,11 +4,12 @@ class Search_train_log extends ActiveRecord\Model
 	static $has_many = array(
 		array('items' , 'class_name' => 'Search_train_item', 'foreing_key' => 'log_id')
 	);
-	static $before_create = array('_before_create');
+	static $validates_presence_of = array(
+		array('route_from'),
+		array('route_to'),
+		array('passengers'),
+		array('date_depart'),
+	);
 
-	public function _before_create()
-	{
-		$this->c_time = date('Y-m-d H:i:s');
-	}
-
+	
 }

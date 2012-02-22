@@ -1,0 +1,49 @@
+body {
+   margin: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  color: #333333;
+}
+#initTable {
+	margin: 0px auto ;
+	.padderTop {
+		height: 50px;
+	}
+	.padderleft , .padderRight {
+		width: 30px;
+	}
+	.innerPadderLeft , .innerPadderRight , .btmPaddInerLeft , .btmPaddInerRight {
+		width: 25px;
+	}
+	.innerLayer {
+		background: white;
+	}
+	.heading{
+		width:624px;
+		.inner {
+			padding: 10px 0px 5px;
+			border-bottom: 1px solid #ccc;
+				.mailSubject {
+					font-size: 20px;		
+					margin-bottom: 0px;
+				}
+		}
+	
+	}
+
+	.contentFooter {
+		position: relative;
+		background: url('images/bottom_left_footer.gif') no-repeat center center;
+		width: 270px;
+		height: 131px;
+		overflow: hidden;
+ 		.inner {
+			position: absolute;
+			bottom: 10px;
+			left: 0px;
+			font-size: 80%;
+		}
+	}
+}
+

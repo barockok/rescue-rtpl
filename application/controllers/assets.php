@@ -118,5 +118,9 @@ class Assets extends Base_Controller
 		
 	
 	}
+	public function test()
+	{
+		
+	}
 	
 }
