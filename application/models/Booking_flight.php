@@ -1,9 +1,10 @@
 <?
-class Flight_booking extends ActiveRecord\Model
+class Booking_flight extends ActiveRecord\Model
 {
+	static $table_name = 'booking_flight';
 	static $has_many = array(
 		array(
-			'booking_data' , 'class_name' => 'Flight_booking_data' , 'foreign_key' => 'flight_booking_id' 
+			'booking_data' , 'class_name' => 'Booking_flight_data' , 'foreign_key' => 'flight_booking_id' 
 		),
 	);
 	static $validates_presence_of = array(
