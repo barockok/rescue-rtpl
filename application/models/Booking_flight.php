@@ -20,10 +20,10 @@ class Booking_flight extends ActiveRecord\Model
 			'order_item' , 'class_name' => 'Order_item', 'foreign_key' => 'order_item_id'
 		),
 		array(
-			'depart_fare', 'class_name' => 'Search_fare_item' , 'foreign_key' => 'depart_fare_id'
+			'depart_fare', 'class_name' => 'Service_fare_item' , 'foreign_key' => 'depart_fare_id'
 		),
 		array(
-			'return_fare', 'class_name' => 'Search_fare_item', 'foreign_key' => 'return_fare_id', 'conditions' => array('return_fare_id <> ?', null)
+			'return_fare', 'class_name' => 'Service_fare_item', 'foreign_key' => 'return_fare_id', 'conditions' => array('return_fare_id <> ?', null)
 		),
 		array(
 			'customer', 'class_name' => 'User', 'foreign_key' => 'user_id'
@@ -43,7 +43,7 @@ class Booking_flight extends ActiveRecord\Model
 			return;
 		}
 		try {
-			$depart = Search_fare_item::find($this->depart_fare_id);
+			$depart = Service_fare_item::find($this->depart_fare_id);
 			if($depart->type != 'depart') $this->errors->add('depart_fare_id', "is not valid");
 		} catch (Exception $e) {
 			$this->errors->add('depart_fare_id', "is not valid");
@@ -56,7 +56,7 @@ class Booking_flight extends ActiveRecord\Model
 		}
 		
 		try {
-			$return = Search_fare_item::find($this->return_fare_id);
+			$return = Service_fare_item::find($this->return_fare_id);
 			if($return->type != 'return') $this->errors->add('return_fare_id', 'is not valid');
 		} catch (Exception $e) {
 			$this->errors->add('return_fare_id', 'is not valid');

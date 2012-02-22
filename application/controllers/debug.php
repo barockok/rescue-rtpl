@@ -41,7 +41,7 @@ class Debug extends MX_Controller
 			if($logid = $this->uri->rsegment(5) AND $func == "doSearch"){
 				echo $logid;
 				try {
-					$log = Search_fare_log::find($logid);
+					$log = Service_fare_log::find($logid);
 					$param = $log->to_array();
 					// reformat the date
 					foreach($param as $key => $val){
@@ -120,7 +120,7 @@ class Debug extends MX_Controller
 	}
 	public function test4()
 	{
-		$tes = Search_fare_item::all(array('include' => array('log')));
+		$tes = Service_fare_item::all(array('include' => array('log')));
 		$res = array();
 		/*
 		foreach($tes as $item){
@@ -290,7 +290,7 @@ class Debug extends MX_Controller
 	}
 	public function testgetresquery()
 	{
-		$test = Search_fare_item::find('all' , array(
+		$test = Service_fare_item::find('all' , array(
 			'limit' => 10,
 			'conditions' => array('log_id = ?', 190 ),
 			'order'		=> 'price desc',
@@ -353,12 +353,12 @@ echo "</pre>";
 }
 	public function testqueryroundtrip()
 	{
-		$log = Search_fare_log::find(241);
+		$log = Service_fare_log::find(241);
 		$depart_q = array();
 		foreach (json_decode($log->complete_comp) as $comp => $status) {
 				if($status == FALSE) continue;
 
-				$depart_q_item = Search_fare_item::find('all', array(
+				$depart_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -393,7 +393,7 @@ echo "</pre>";
 	public function fetch_formula($id, $limit = 1)
 	{
 		//try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 			$comps = json_decode($log->comp_include);
 			$limit = (is_numeric($limit)) ? $limit : $log->max_fare;
 			$depart_ids = array(); $return_ids = array();
@@ -405,7 +405,7 @@ echo "</pre>";
 				}
 				$d_q .= ' order by price ASC';
 
-				$d_q = Search_fare_log::find_by_sql($d_q);
+				$d_q = Service_fare_log::find_by_sql($d_q);
 				if(count($d_q) > 0 ) foreach($d_q as $item) array_push($depart_ids, $item->to_array());
 			
 			if($log->type == 'roundtrip'){
@@ -418,7 +418,7 @@ echo "</pre>";
 				}
 				$r_q .= ' order by price ASC';
 
-				$r_q = Search_fare_log::find_by_sql($r_q);
+				$r_q = Service_fare_log::find_by_sql($r_q);
 				if(count($r_q) > 0 ) foreach($r_q as $item) array_push($return_ids, $item->to_array());
 				
 				return array(
@@ -470,7 +470,7 @@ echo "</pre>";
            
             $log['price'] = 0;
             $log['flight_no'] = 345;
-			$new = new Search_fare_item($log);
+			$new = new Service_fare_item($log);
 			$new->save();
 			printDebug($new->errors->full_messages());
 	}
@@ -545,6 +545,10 @@ echo "</pre>";
 	public function testos1()
 	{
 		echo substr('3-Stars Hotel', 0,1);
+	}
+	public function testos2()
+	{
+		printDebug(Service_fare_log::last(array('include' => array('items'))));
 	}
 
 }

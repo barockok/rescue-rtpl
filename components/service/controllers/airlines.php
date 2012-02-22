@@ -30,7 +30,7 @@ class Airlines extends REST_Controller
 			'max_fare'		=>  5,
 			'actor'			=> ($actor = $this->post('actor')) ? $actor : 'CUS',
 		);
-		$log = new Search_fare_log($posted);
+		$log = new Service_fare_log($posted);
 		if(!$log->is_valid()){
 			$this->response($log->errors->full_messages(), 500);
 		}else{
@@ -47,7 +47,7 @@ class Airlines extends REST_Controller
 	{
 			$id = $this->uri->rsegment(3);
 			try {
-				$log = Search_fare_log::find($id);
+				$log = Service_fare_log::find($id);
 			} catch (Exception $e) {
 				// CRETA LOG;
 				
@@ -121,7 +121,7 @@ class Airlines extends REST_Controller
 		$id = $this->uri->rsegment(3);
 		$maskapai = $this->uri->rsegment(4);
 		try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 		} catch (Exception $e) {
 			$this->response_error(array('no log found'));
 		}
@@ -138,7 +138,7 @@ class Airlines extends REST_Controller
 		
 		
 		if(
-			Search_fare_item::count(
+			Service_fare_item::count(
 				array(
 					'conditions' => 'log_id = '.$id.' && company = "'.strtoupper($maskapai).'"' 
 					)
@@ -157,7 +157,7 @@ class Airlines extends REST_Controller
 						// PUSHING RESULT to DB
 						foreach($result as $candidate_item)
 						{
-							$new_item = new Search_fare_item($candidate_item);
+							$new_item = new Service_fare_item($candidate_item);
 							$new_item->save();
 						}
 						// push to db and result fetch count != 0
@@ -175,7 +175,7 @@ class Airlines extends REST_Controller
 	private function _flag_comp_is_done($id, $maskapai)
 	{
 		try {
-			$log = Search_fare_log::find($id);		
+			$log = Service_fare_log::find($id);		
 		} catch (Exception $e) {
 			return TRUE;
 		}
@@ -191,7 +191,7 @@ class Airlines extends REST_Controller
 	private function _flag_comp_to_done($id, $maskapai, $value = true)
 	{
 		try {
-			$log = Search_fare_log::find($id);		
+			$log = Service_fare_log::find($id);		
 		} catch (Exception $e) {
 			return ;
 		}
@@ -211,7 +211,7 @@ class Airlines extends REST_Controller
 		if(!$id_log = element('id', $uri)) $this->response(array('error' => 'please provide the id log search'), 500);
 		
 		try {
-			$log = Search_fare_log::find($id_log);
+			$log = Service_fare_log::find($id_log);
 		
 			$_s_current_time = date('Y-m-d H:i:s');
 			$current_time 	= new DateTime($_s_current_time);
@@ -229,7 +229,7 @@ class Airlines extends REST_Controller
 			}
 		
 			// re-retrive log
-			$log = Search_fare_log::find($id_log);
+			$log = Service_fare_log::find($id_log);
 
 
 			// check flage commplete
@@ -267,7 +267,7 @@ class Airlines extends REST_Controller
 	{
 		if(!$id = $this->uri->rsegment(3)) $this->response_error('please provide id');
 		try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 			$this->response($log->to_array( array('include' => array('departure_airport', 'destination_airport')) ));
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
@@ -277,7 +277,7 @@ class Airlines extends REST_Controller
 	{
 		if (!$id = $this->uri->rsegment(3)) $this->response_error('Please provide error');
 		try {
-			$fare = Search_fare_item::find($id);
+			$fare = Service_fare_item::find($id);
 			$this->response($fare->to_array(array('include' => array('log'))));
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
@@ -287,7 +287,7 @@ class Airlines extends REST_Controller
 	{
 	
 		try {
-			$fare = Search_fare_item::find($this->input('fare_id'));
+			$fare = Service_fare_item::find($this->input('fare_id'));
 			$fare_data = $fare->to_array(array('include' => array('log')));
 		} catch (Exception $e) {
 			$this->response('there is no valid fare with id posted' ,500);
@@ -325,14 +325,14 @@ class Airlines extends REST_Controller
 	private function _retrive_oneway_result($log)
 	{
 		
-			$log = Search_fare_log::find(element('id', $log));
+			$log = Service_fare_log::find(element('id', $log));
 			$depart_q = array();
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, FALSE) : FALSE ;
 			
 			if($comps == FALSE) return array();
 			foreach ($comps as $comp => $status) {
 				if($status == FALSE) continue;
-					$depart_q_item = Search_fare_item::find('all', array(
+					$depart_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -366,7 +366,7 @@ class Airlines extends REST_Controller
 	private function _retrive_roundtrip_result($log)
 	{
 		
-			$log = Search_fare_log::find(element('id', $log));		
+			$log = Service_fare_log::find(element('id', $log));		
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, FALSE) : FALSE ;
 			if($comps == FALSE) return array();
 			$depart_q = array(); $return_q = array();
@@ -374,7 +374,7 @@ class Airlines extends REST_Controller
 				if(!$status) continue;
 				
 				// Retrive Depart
-				$depart_q_item = Search_fare_item::find('all', array(
+				$depart_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -388,7 +388,7 @@ class Airlines extends REST_Controller
 					foreach ($this->db_util->multiple_to_array($depart_q_item, array('except'=> array('meta_data'))) as $real_item) array_push($depart_q, $real_item);
 				
 				// Retrive return	
-				$return_q_item = Search_fare_item::find('all', array(
+				$return_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'return', strtoupper($comp)
@@ -426,7 +426,7 @@ class Airlines extends REST_Controller
 	public function _fetch_formula($id, $limit = FALSE)
 	{
 		//try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 			$comps = json_decode($log->comp_include);
 			$limit = (is_numeric($limit)) ? $limit : $log->max_fare;
 			$depart_ids = array(); $return_ids = array();
@@ -438,7 +438,7 @@ class Airlines extends REST_Controller
 				}
 				$d_q .= ' order by price ASC';
 
-				$d_q = Search_fare_log::find_by_sql($d_q);
+				$d_q = Service_fare_log::find_by_sql($d_q);
 				if(count($d_q) > 0 ) foreach($d_q as $item) array_push($depart_ids, $item->to_array());
 			
 			if($log->type == 'roundtrip'){
@@ -451,7 +451,7 @@ class Airlines extends REST_Controller
 				}
 				$r_q .= ' order by price ASC';
 
-				$r_q = Search_fare_log::find_by_sql($r_q);
+				$r_q = Service_fare_log::find_by_sql($r_q);
 				if(count($r_q) > 0 ) foreach($r_q as $item) array_push($return_ids, $item->to_array());
 				
 				return array(

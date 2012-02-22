@@ -14,7 +14,7 @@ class Db extends REST_Controller
 		$option = $this->get('options');
 		$serialize = $this->get('serialize');	
 		$class_name = ucfirst($table);
-		try {
+	//	try {
 			
 			$q = $class_name::find($id);		
 			
@@ -37,11 +37,11 @@ class Db extends REST_Controller
 		
 		
 		
-			
+	/*		
 		} catch (Exception $e) {
 			$this->response(array($e->getMessage()), 500);
 		}
-		
+		*/
 	}
 	public function find_post()
 	{

@@ -1,10 +1,11 @@
 <?
-class search_fare_log extends ActiveRecord\Model
+class Service_fare_log extends ActiveRecord\Model
 {
+	static $table_name = 'service_fare_log';
 	static $has_many = array(
 		array(
 		'items', 
-		'class_name' => 'Search_fare_item', 
+		'class_name' => 'Service_fare_item', 
 		'foreign_key' => 'log_id'
 		)
 	);
