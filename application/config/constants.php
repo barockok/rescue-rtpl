@@ -40,7 +40,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',                'x+b');
 define('DB_DEF_HOST', 'localhost');
 define('DB_DEF_USER', 'root');
 define('DB_DEF_PASS', 'root');
-define('DB_DEF_NAME', 'RT_PRODUCTION');
+define('DB_DEF_NAME', 'RT_PRODUCTION_NEW');
 
 define('DB_API_HOST', 'localhost');
 define('DB_API_USER', 'root');

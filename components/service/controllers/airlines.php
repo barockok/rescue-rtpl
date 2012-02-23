@@ -433,7 +433,7 @@ class Airlines extends REST_Controller
 				$d_q = '';
 				for($i = 0 ; $i < count($comps) ; $i++){
 						$comp = $comps[$i] ;
-						$d_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
+						$d_q .= "(select * from service_fare_item where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
 						$d_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
 				}
 				$d_q .= ' order by price ASC';
@@ -446,7 +446,7 @@ class Airlines extends REST_Controller
 				$r_q = '';
 				for($i = 0 ; $i < count($comps) ; $i++){
 						$comp = $comps[$i] ;
-						$r_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
+						$r_q .= "(select * from service_fare_item where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
 						$r_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
 				}
 				$r_q .= ' order by price ASC';
