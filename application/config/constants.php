@@ -48,7 +48,7 @@ define('DB_API_PASS', 'alzid4ever');
 define('DB_API_NAME', 'RT_PRODUCTION_API');
 
 define('SELF_API_KEY', 'abc');
-define('CURL_BIN_LOC', '/usr/bin/curl');
+define('CURL_BIN_LOC', '/usr/local/bin/curl');
 define('DEV_NULL', '> /dev/null &');
 
 define('DOMAIN_BASE', 'rumahtiket.com');
