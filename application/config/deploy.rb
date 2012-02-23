@@ -22,7 +22,7 @@ set :branch, "production"
 set :domain, 'rumahtiket.com'
 set :applicationdir, "/var/www/rumahtiket.com/public/rt-platform/"
 set :deploy_path , "#{applicationdir}#{branch}"
-set :repository,  "git@bitbucket.org:barock19/rt-platform.git"
+set :repository,  "git@gitlab.barockprojects.com:rt-platform.git"
 set :use_sudo, false
 role :app, "#{domain}"
 role :web, "#{domain}"
@@ -66,7 +66,7 @@ namespace :update do
   end
   
   task :pushing do
-    system('git push bb')
+    system('git push origin')
   end
   
   # Server side execute ##
