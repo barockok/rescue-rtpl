@@ -8,7 +8,7 @@ class Train extends REST_Controller
 	function __construct()
 	{
 		parent::__construct();
-	
+		$this->load->library('comp_krl');
 	}
 	public function search_post()
 	{
@@ -26,14 +26,7 @@ class Train extends REST_Controller
 	}
 	public function search_get()
 	{
-		if(!$id_log = $this->uri->rsegment(3)) $this->response_error('No Log Id Provide');
-		try {
-			$log = Search_train_log::find($id_log);
-			$log = $log->to_array();
-		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
-		}
-		
+	
 		
 	}
 	public function book_post()

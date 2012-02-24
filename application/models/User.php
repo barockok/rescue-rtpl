@@ -9,7 +9,7 @@ class User extends ActiveRecord\Model
 	static $before_create = array('_before_create');
 	static $before_update = array('_before_update');
 	static $after_create = array('_after_create');
-	static $validates_presence_of  array(array('first_name', 'last_name', 'password', 'email'));
+	static $validates_presence_of  = array(array('first_name', 'last_name', 'password', 'email') );
 	static $validates_format_of = array(
 	     array('email', 'with' =>
 	        '/^[^0-9][A-z0-9_]+([.][A-z0-9_]+)*[@][A-z0-9_]+([.][A-z0-9_]+)*[.][A-z]{2,4}$/', 'message' => 'not Valid email')

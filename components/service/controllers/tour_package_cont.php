@@ -119,5 +119,20 @@ class Tour_package_cont extends REST_Controller
 		}
 		
 	}
+	public function browse_get()
+	{
+		$option = elements_select(array('limit', 'order', 'offset'), $this->get('option'));
+		$q  	= ($q = $this->get('query')) ? $q : FALSE;
+		$operation = array();
+		if($q != FALSE)
+			$operation['conditions'] = array('title = ?', $q);
+		if($option != FALSE)
+			$operation = array_merge($operation, $option);
+			
+		$tp = (count($operation) > 0) ? Service_tp::find('all', $operation) : Service_tp::find('all'); 
+		unset($operation['limit']); unset($operation['offset']);
+		$tp_count = (count($operation) > 0) ? Service_tp::count('all', $operation) : Service_tp::count('all');
+		$this->response($this->db_util->multiple_to_array($tp, array('include' => array('medias'))));
+	}
 
 }

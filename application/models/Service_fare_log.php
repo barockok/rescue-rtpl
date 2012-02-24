@@ -24,7 +24,6 @@ class Service_fare_log extends ActiveRecord\Model
 	
 	public function _before_create()
 	{
-		$this->c_time = date('Y-m-d H:i:s');
 		$this->last_try = date('Y-m-d H:i:s');
 		if($this->date_return == null){
 			$this->type = 'oneway';

@@ -9,10 +9,11 @@ class App_hook
 	public function initial_overide_php_setting()
 	{
 	
-		ini_set('display_errors','On'); 
-		//error_reporting(E_ALL);
-	//	set_error_handler('_error_handler', E_ALL);
-	//	register_shutdown_function('_shutdown_handler');
+		ini_set('display_errors','Off'); 
+		error_reporting(E_ERROR | E_PARSE);
+		set_error_handler('_error_handler');
+		register_shutdown_function('_shutdown_handler');
+		
 	
 	}
 	public function post_controller_constructor()
@@ -29,7 +30,7 @@ class App_hook
 
 function _error_handler($errno, $errstr, $errfile, $errline)
 {
-	error_reporting(E_ALL);
+//	error_reporting(E_ALL);
 	
 	if (!(error_reporting() & $errno)) {
 	        // This error code is not included in error_reporting

@@ -550,5 +550,57 @@ echo "</pre>";
 	{
 		printDebug(Service_fare_log::last(array('include' => array('items'))));
 	}
+	public function promo()
+	{
+		$data = array('start_date' => '2012-04-16', 'end_date' => '2012-04-20');
+		$log = new Service_fare_promo_log($data);
+		$log->save();
+		printDebug($log->errors->full_messages());
+	}
+	public function functionName()
+	{
+		$promo = Service_fare_promo_log::last();
+		printDebug($promo->to_array(array('include' => array('search'))));
+		
+		
+	}
+	public function test_train()
+	{
+		$source = array(
+			'./train.dump.1.html',
+			'./train.dump.2.html',
+			'./train.dump.3.html'
+		);
+		shuffle($source);
+		$html = file_get_html(element(0, $source));
+		
+		$table = $html->find('#middle-column .inside table', 1);
+		$companies = $table->find('tr.itRowTable0');
+		$details =  $table->find('tr.itRowTable1');
+		$result = array();
+		for ($i=0; $i < count($companies); $i++) { 
+			$company = $companies[$i];
+			$detail = $details[$i];
+			$a_train = array();
+			$a_train['company'] = ucwords(strtolower($company->plaintext));
+			$a_train['number'] = $detail->find('td', 0)->plaintext;
+			$a_train['depart'] = $detail->find('td', 1)->plaintext;
+			$a_train['arrive'] = $detail->find('td', 2)->plaintext;
+			$classes = array();
+			$class_blocks = $detail->find('td', 3)->find('table tr.itRowTableBlank');
+			for ($j=0; $j < count($class_blocks); $j++) { 
+				$class_block = $class_blocks[$j];
+				$a_class = array(
+					'type' => $class_block->find('td', 0)->plaintext,
+					'prince' => filter_var($class_block->find('td',2)->plaintext, FILTER_SANITIZE_NUMBER_INT),
+				);
+				array_push($classes, $a_class);
+			}
+			$a_train['class'] = $classes;
+			array_push($result, $a_train);
+		}
+		printDebug($result);
+		
+	}
 
 }
