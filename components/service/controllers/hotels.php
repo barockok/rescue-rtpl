@@ -21,7 +21,7 @@ class Hotels extends REST_Controller {
 			'city'			=>	$this->post('city'),
 		);
 		
-		$log = new Search_hotel_log($posted);
+		$log = new Service_hotel_log($posted);
 		if(!$log->is_valid()){
 			$this->response($log->errors->full_messages(), 500);
 		}else{
@@ -42,7 +42,7 @@ class Hotels extends REST_Controller {
 		$id = $this->uri->rsegment(3);
 		//$hotel = $this->uri->rsegment(3);
 		try {
-			$log = Search_hotel_log::find($id);
+			$log = Service_hotel_log::find($id);
 		} catch (Exception $e) {
 			$this->response(array('no log found'));
 		}

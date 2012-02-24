@@ -13,7 +13,7 @@ class Airasia extends Comp_maskapai_base {
 	}
 	public function test()
 	{
-		$afare = Search_fare_item::last();
+		$afare = Service_fare_item::last();
 		$afare = $afare->to_array();
 		unset($afare['id']);
 		$this->insert_fare($afare);

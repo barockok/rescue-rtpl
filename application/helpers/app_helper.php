@@ -133,4 +133,24 @@ function cleanup_string($string)
 			);
 }
 
+	function elements_select($items, $array)
+	{
+		$return = array();
+		
+		if ( ! is_array($items))
+		{
+			$items = array($items);
+		}
+		
+		foreach ($items as $item)
+		{
+			if (isset($array[$item]))
+			{
+				$return[$item] = $array[$item];
+			}
+		
+		}
+
+		return (count($return) == 0) ? FALSE : $return;
+	}
 

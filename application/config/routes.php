@@ -40,8 +40,8 @@
 
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
-$route['tour_package/(:any)'] = 'tour_package_cont/$1';
-
+$route['service/tourpackage/(:any)'] = 'service/tour_package_cont/$1';
+$route['user/(:any)'] = 'user_cont/$1';
 
 /* End of file routes.php */
 /* Location: ./application/config/routes.php */
