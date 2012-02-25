@@ -8,13 +8,13 @@ class App_hook
 	}
 	public function initial_overide_php_setting()
 	{
-	
-		ini_set('display_errors','Off'); 
-		error_reporting(E_ERROR | E_PARSE);
-		set_error_handler('_error_handler');
+		ini_set('display_errors','On'); 
+		/*
+		error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
 		register_shutdown_function('_shutdown_handler');
-		
-	
+		set_error_handler('_error_handler');
+		set_exception_handler('exception_handler');
+		*/
 	}
 	public function post_controller_constructor()
 	{
@@ -25,7 +25,9 @@ class App_hook
 
 
 }
-
+function exception_handler($exception) {
+  echo "Uncaught exception: " , $exception->getMessage(), "\n";
+}
 
 
 function _error_handler($errno, $errstr, $errfile, $errline)
@@ -93,9 +95,10 @@ function _output_error($data = array(), $http_code = 500, $error_data = FALSE, $
 
 function _shutdown_handler()
 {
+	
 	$error = error_get_last();
 	if($error['type'] == E_ERROR){
-		call_user_func_array('_output_error', array(array('error' => 'unknow'),  500, $return , TRUE, TRUE, TRUE));
+		trigger_error($error['message'], E_USER_ERROR);
 	}
 
 	

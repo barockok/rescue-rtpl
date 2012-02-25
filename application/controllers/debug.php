@@ -567,13 +567,13 @@ echo "</pre>";
 	public function test_train()
 	{
 		$source = array(
-			'./train.dump.1.html',
-			'./train.dump.2.html',
+		//	'./train.dump.1.html',
+		//	'./train.dump.2.html',
 			'./train.dump.3.html'
 		);
 		shuffle($source);
 		$html = file_get_html(element(0, $source));
-		
+	
 		$table = $html->find('#middle-column .inside table', 1);
 		$companies = $table->find('tr.itRowTable0');
 		$details =  $table->find('tr.itRowTable1');
@@ -600,6 +600,16 @@ echo "</pre>";
 			array_push($result, $a_train);
 		}
 		printDebug($result);
+		
+	}
+	public function testdom()
+	{
+	
+		$str = file_get_contents('./train.dump.3.html');
+	 	$dom = $this->load->library('domize', $str);
+	//	$dom->find('body', 0)->plaintext = 'asuh';
+		$body = $dom->find('body', 0);
+		echo $body->find('div', 1)->find('div',20000);
 		
 	}
 

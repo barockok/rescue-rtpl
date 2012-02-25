@@ -163,9 +163,6 @@ class simple_html_dom_node {
     function __construct($dom) {
         $this->dom = $dom;
         $dom->nodes[] = $this;
-		set_error_handler('DomizeErrorHandler::_error_handler');
-		register_shutdown_function('DomizeErrorHandler::_shutdown_handler');
-		
 		   
     }
 	
@@ -492,6 +489,7 @@ class simple_html_dom_node {
         return $selectors;
     }
 
+
     function __get($name) {
         if (isset($this->attr[$name])) return $this->attr[$name];
         switch($name) {
@@ -649,7 +647,6 @@ class simple_html_dom {
 
     function __destruct() {
         $this->clear();
-		restore_error_handler();
     }
 
     // load html from string
@@ -1083,7 +1080,7 @@ class simple_html_dom {
     function __toString() {
         return $this->root->innertext();
     }
-
+	
     function __get($name) {
         switch($name) {
             case 'outertext': return $this->root->innertext();

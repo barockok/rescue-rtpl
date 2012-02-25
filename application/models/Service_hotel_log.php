@@ -12,6 +12,7 @@ class Service_hotel_log extends ActiveRecord\Model
 		array('adult', 'message' => 'how many guees (adult) will stay'),
 		array('query', 'message' => 'what term you will search')
 	);
+	
 
 }
 
