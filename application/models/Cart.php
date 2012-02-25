@@ -6,7 +6,7 @@
 require_once BASEPATH.'helpers/string_helper.php';
 class Cart extends ActiveRecord\Model
 {
-	static $table_name = 'carts';
+	static $table_name = 'cart';
 	static $has_many   = array(
 		array('items', 'class_name' => 'Cart_item', 'foreign_key' => 'cart_id'),
 	);

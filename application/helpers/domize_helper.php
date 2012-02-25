@@ -163,8 +163,9 @@ class simple_html_dom_node {
     function __construct($dom) {
         $this->dom = $dom;
         $dom->nodes[] = $this;
+		   
     }
-
+	
     function __destruct() {
         $this->clear();
     }
@@ -488,6 +489,7 @@ class simple_html_dom_node {
         return $selectors;
     }
 
+
     function __get($name) {
         if (isset($this->attr[$name])) return $this->attr[$name];
         switch($name) {
@@ -544,6 +546,61 @@ class simple_html_dom_node {
     function lastChild() {return $this->last_child();}
     function nextSibling() {return $this->next_sibling();}
     function previousSibling() {return $this->prev_sibling();}
+	
+
+}
+/**
+* 
+*/
+class DomizeErrorHandler
+{
+	static function _error_handler($number, $errstr, $errfile, $errline)
+	{
+		// Determine if this error is one of the enabled ones in php config (php.ini, .htaccess, etc)
+	    $error_is_enabled = (bool)($number & ini_get('error_reporting') );
+
+	    // -- FATAL ERROR
+	    // throw an Error Exception, to be handled by whatever Exception handling logic is available in this context
+	    if( in_array($number, array(E_USER_ERROR, E_RECOVERABLE_ERROR)) && $error_is_enabled ) {
+	        throw new DomizeException($errstr , 
+						array(
+							'message' => $errstr,
+							'type'	  => $numer,
+							'file'		=> $errfile,
+							'line'		=> $errline,
+						)
+						);
+	    }
+
+	    // -- NON-FATAL ERROR/WARNING/NOTICE
+	    // Log the error if it's enabled, otherwise just ignore it
+	    else if( $error_is_enabled ) {
+	        error_log( $string, 0 );
+	        return false; // Make sure this ends up in $php_errormsg, if appropriate
+	    }
+	}
+	static function _shutdown_handler()
+	{
+		$a = error_get_last(); 
+	//	printDebug($a);
+	    if($a != null) 
+		//	self::_error_handler($a['type'], $a['message'], $a['file'], $a['line']);
+		throw new DomizeException($a['message'] , $a);
+		exit();
+		
+	}
+}
+
+/**
+* simple-dom error handle exception
+*/
+class DomizeException extends Exception
+{
+	
+	function __construct($message, $error_detail = array())
+	{
+		$this->message = $message;
+	}
 }
 
 // simple html dom parser
@@ -1023,7 +1080,7 @@ class simple_html_dom {
     function __toString() {
         return $this->root->innertext();
     }
-
+	
     function __get($name) {
         switch($name) {
             case 'outertext': return $this->root->innertext();

@@ -1,23 +1,17 @@
 <?
 class Order extends ActiveRecord\Model
 {
+	static $table_name ='order';
 	static $belongs_to = array(
 		array('customer', 'class_name' => 'User', 'foreign_key' => 'user_id'),
 	);
-
 	static $has_many = array(
-		array('order_item', 'class_name' => 'Order_item', 'foreign_key' => 'order_id'),
+		array('items', 'class_name' => 'Order_item', 'foreign_key' => 'order_id'),
+		array('payment', 'class_name' => 'Order_payment', 'foreign_key' => 'order_id'),
+		array('confirmation', 'class_name' => 'Order_confirmation', 'foreign_key' => 'order_id')
+		
 	);
-	static $before_create = array('_before_create');
-	
-	public function _before_create()
-	{
-		$this->c_time = date('Y-m-d H:i:s');
-	}
-	public function _before_update()
-	{
-		$this->m_time = date('Y-m-d H:i:s');
-	}
 
+	
 }
 ?>

@@ -14,7 +14,7 @@ class Db extends REST_Controller
 		$option = $this->get('options');
 		$serialize = $this->get('serialize');	
 		$class_name = ucfirst($table);
-		try {
+	//	try {
 			
 			$q = $class_name::find($id);		
 			
@@ -37,11 +37,11 @@ class Db extends REST_Controller
 		
 		
 		
-			
+	/*		
 		} catch (Exception $e) {
 			$this->response(array($e->getMessage()), 500);
 		}
-		
+		*/
 	}
 	public function find_post()
 	{
@@ -83,13 +83,7 @@ class Db extends REST_Controller
 			}
 			if($method == 'all'){
 			
-				foreach($q as $item){
-					if($serialize != false){
-						array_push($res, $item->to_array($serialize));
-					}else{
-						array_push($res, $item->to_array());
-					}	
-				}
+				$res = ($serialize != false ) ? $this->db_util->multiple_to_array($q,$serialize ) : $this->db_util->multiple_to_array($q);
 				if(count($res) < 1) $this->response(array('error' => 'no records found'), 500);
 				
 				$res = array(
@@ -121,7 +115,7 @@ class Db extends REST_Controller
 				$q->save();
 			$this->response($q->to_array(),200);
 		} catch (Exception $e) {
-			$this->response('something not good, sorry : ( )', 500);
+			$this->response('something not good, sorry : '.$e->getMessage(), 500);
 		}
 	}
 	public function update_post()

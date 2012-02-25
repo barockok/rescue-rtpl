@@ -19,7 +19,7 @@ class Tour_package_cont extends REST_Controller
 			if(strpos($key, 'media_file_') !== FALSE ) array_push($list_file, $key);
 		}
 		try {
-			$new_tp = new Tour_package($main);
+			$new_tp = new Service_tp($main);
 			if(!$new_tp->is_valid())
 				$this->response(array('error' => $new_tp->errors->full_messages()), 500);
 			$new_tp->save();
@@ -60,7 +60,7 @@ class Tour_package_cont extends REST_Controller
 					'desc' => 'caption',
 					'type' => 'pic',
 				);
-				$new_media = new Tour_package_media($mediadb);
+				$new_media = new Service_tp_media($mediadb);
 				if(!$new_media->is_valid())
 					array_push($error_db_files, $mediadb);
 				else
@@ -93,12 +93,12 @@ class Tour_package_cont extends REST_Controller
 		
 		try {
 			if($id == 'all'){
-				$q = ($options == FALSE ) ? Tour_package::all() : Tour_package::all($options) ;
+				$q = ($options == FALSE ) ? Service_tp::all() : Service_tp::all($options) ;
 
 				$count_opt = $options;
 				if(isset($count_opt['limit'])) unset($count_opt['limit']);
 				if(isset($count_opt['offset'])) unset($count_opy['offset']);
-				$count = Tour_package::count($count_opt);
+				$count = Service_tp::count($count_opt);
 				
 				$all = array();
 				foreach($q as $item){
@@ -107,7 +107,7 @@ class Tour_package_cont extends REST_Controller
 				$final_res = array('results' => $all , 'founds' => $count);
 				$this->response($final_res, 200);
 			}elseif(is_numeric($id)){
-				$q = Tour_package::find($id);
+				$q = Service_tp::find($id);
 				$final_res = $q->to_array($conf);
 				$this->response($final_res, 200);
 			}else{
@@ -119,4 +119,20 @@ class Tour_package_cont extends REST_Controller
 		}
 		
 	}
+	public function browse_get()
+	{
+		$option = elements_select(array('limit', 'order', 'offset'), $this->get('option'));
+		$q  	= ($q = $this->get('query')) ? $q : FALSE;
+		$operation = array();
+		if($q != FALSE)
+			$operation['conditions'] = array('title = ?', $q);
+		if($option != FALSE)
+			$operation = array_merge($operation, $option);
+			
+		$tp = (count($operation) > 0) ? Service_tp::find('all', $operation) : Service_tp::find('all'); 
+		unset($operation['limit']); unset($operation['offset']);
+		$tp_count = (count($operation) > 0) ? Service_tp::count('all', $operation) : Service_tp::count('all');
+		$this->response($this->db_util->multiple_to_array($tp, array('include' => array('medias'))));
+	}
+
 }

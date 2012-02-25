@@ -73,7 +73,7 @@ class Comp_train {
 		
 		foreach($raw->find('tr[class=itRowTable0]') as $comp){
 		
-			$compName = $comp->plaintext;
+			$compName = ucwords(strtolower($comp->plaintext));
 			$compCont = $raw->find('tr[class=itRowTable1]', $i);
 			$no_ka 	  = $compCont->find('td', 0)->plaintext;
 			$t_depart = $compCont->find('td', 1)->plaintext;
@@ -82,15 +82,16 @@ class Comp_train {
 			$items = $compCont->find('td', 3)->find('table tbody tr');
 			$j = 0;
 				foreach($items as $item){
-				
+					$route = ($type == 'depart') ? element('origination', $conf).','.element('destination', $conf) : element('destination', $conf).','.element('origination', $conf);
 					$finalItem = array(
 						'company'  	=> $compName,
 						'price'	  	=> (str_replace('.', '',$item->find('td', 2)->plaintext)) *  element('passengers', $conf),
 						't_depart' 	=> $this->detectDate(element('original_date', $conf), $t_depart),
 						't_arrive' 	=> $this->detectDate(element('original_date', $conf), $t_depart, $t_arrive),
-						'class'  	=> strtolower($item->find('td', 0)->plaintext),
+						'class'  	=>  ucwords(strtolower($item->find('td', 0)->plaintext)),
 						'no_ka'		=> $no_ka,
 						'type'		=> $type,
+						'route'		=> $route,
 						'log_id'	=> $log_id
 					);
 					array_push($return , $finalItem);

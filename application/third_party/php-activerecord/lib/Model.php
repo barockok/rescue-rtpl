@@ -138,6 +138,7 @@ class Model
 	 * @var string
 	 */
 	static $table_name;
+	static $table_alias;
 
 	/**
 	 * Set this to override the default primary key name if different from default name of "id".
@@ -1539,9 +1540,12 @@ class Model
 	public static function find(/* $type, $options */)
 	{
 		$class = get_called_class();
-
+			if(!empty(static::$table_alias)) 
+				$table_name = static::$table_alias;
+			else
+				$table_name = $class;
 		if (func_num_args() <= 0)
-			throw new RecordNotFound("Couldn't find $class without an ID");
+			throw new RecordNotFound("Couldn't find $table_name without an ID");
 
 		$args = func_get_args();
 		$options = static::extract_and_validate_options($args);
@@ -1605,17 +1609,21 @@ class Model
 		if ($results != ($expected = count($values)))
 		{
 			$class = get_called_class();
+			if(!empty(static::$table_alias)) 
+				$table_name = static::$table_alias;
+			else
+				$table_name = $class;
 
 			if ($expected == 1)
 			{
 				if (!is_array($values))
 					$values = array($values);
 
-				throw new RecordNotFound("Couldn't find $class with ID=" . join(',',$values));
+				throw new RecordNotFound("Couldn't find $table_name with ID=" . join(',',$values));
 			}
 
 			$values = join(',',$values);
-			throw new RecordNotFound("Couldn't find all $class with IDs ($values) (found $results, but was looking for $expected)");
+			throw new RecordNotFound("Couldn't find all $table_name with IDs ($values) (found $results, but was looking for $expected)");
 		}
 		return $expected == 1 ? $list[0] : $list;
 	}
