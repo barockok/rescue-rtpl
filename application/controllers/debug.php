@@ -604,13 +604,15 @@ echo "</pre>";
 	}
 	public function testdom()
 	{
+		
+		$str = '<html><body><div>text</div></body></html>';
+		$dom = str_get_html($str);
 	
-		$str = file_get_contents('./train.dump.3.html');
-	 	$dom = $this->load->library('domize', $str);
-	//	$dom->find('body', 0)->plaintext = 'asuh';
-		$body = $dom->find('body', 0);
-		echo $body->find('div', 1)->find('div',20000);
+		echo  $dom->find('bodaay')->plaintext;
+
+	
 		
 	}
+	
 
 }
