@@ -43,7 +43,7 @@ class Tiketcom extends REST_Controller
 	}
 	public function location_get()
 	{
-		$q = $this->uri->rsegment(3);
+		$q = $this->get('q');
 		try {
 			$res = $this->comp_tiketcom->get_Location($q);
 		} catch (Exception $e) {
@@ -56,7 +56,7 @@ class Tiketcom extends REST_Controller
 		if(!$post = $this->post('src')) $this->response_error('please provide the variable to search');
 		$opt  = $this->post('opt');
 		try {
-			$log = new Search_hotel_log($post);
+			$log = new Service_hotel_log($post);
 			if(!$log->is_valid()) $this->response_error($log->errors->full_messages());
 			$log->save();
 			$this->response($log->to_array());
@@ -70,7 +70,7 @@ class Tiketcom extends REST_Controller
 		if(!$id = $this->uri->rsegment(3)) $this->response_error('please provide the id');
 		$option = $this->get('opt');
 		try {
-			$log = Search_hotel_log::find($id);
+			$log = Service_hotel_log::find($id);
 			$param = $log->to_array();
 			$param['checkin']  = show_date($log->checkin, 'Y-m-d');
 			$param['checkoout'] = show_date($log->checkout, 'Y-m-d');
@@ -78,7 +78,7 @@ class Tiketcom extends REST_Controller
 			try {
 				$res = $this->comp_tiketcom->do_search($param, $option);
 			} catch (Exception $e) {
-				throw new Exception($e->getMesage());
+				throw new Exception($e->getMessage());
 			}
 		
 			$return = array(
@@ -101,7 +101,7 @@ class Tiketcom extends REST_Controller
 		
 		
 		try {
-			$log = Search_hotel_log::find($idlog);
+			$log = Service_hotel_log::find($idlog);
 			$param = $log->to_array();
 			$param['checkin']  = show_date($log->checkin, 'Y-m-d');
 			$param['checkoout'] = show_date($log->checkout, 'Y-m-d');

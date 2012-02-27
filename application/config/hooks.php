@@ -31,7 +31,7 @@ $hook['post_controller_constructor'] = array(
 				                                'filename' => 'app_hook.php',
 				                                'filepath' => 'hooks/'
 										);
-		
+	
 $hook['pre_system'][]					= array(
                                 			'class'    => 'App_hook',
 			                                'function' => 'initial_overide_php_setting',

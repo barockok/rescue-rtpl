@@ -30,7 +30,7 @@ class Airlines extends REST_Controller
 			'max_fare'		=>  5,
 			'actor'			=> ($actor = $this->post('actor')) ? $actor : 'CUS',
 		);
-		$log = new Search_fare_log($posted);
+		$log = new Service_fare_log($posted);
 		if(!$log->is_valid()){
 			$this->response($log->errors->full_messages(), 500);
 		}else{
@@ -47,7 +47,7 @@ class Airlines extends REST_Controller
 	{
 			$id = $this->uri->rsegment(3);
 			try {
-				$log = Search_fare_log::find($id);
+				$log = Service_fare_log::find($id);
 			} catch (Exception $e) {
 				// CRETA LOG;
 				
@@ -121,7 +121,7 @@ class Airlines extends REST_Controller
 		$id = $this->uri->rsegment(3);
 		$maskapai = $this->uri->rsegment(4);
 		try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 		} catch (Exception $e) {
 			$this->response_error(array('no log found'));
 		}
@@ -138,7 +138,7 @@ class Airlines extends REST_Controller
 		
 		
 		if(
-			Search_fare_item::count(
+			Service_fare_item::count(
 				array(
 					'conditions' => 'log_id = '.$id.' && company = "'.strtoupper($maskapai).'"' 
 					)
@@ -157,7 +157,7 @@ class Airlines extends REST_Controller
 						// PUSHING RESULT to DB
 						foreach($result as $candidate_item)
 						{
-							$new_item = new Search_fare_item($candidate_item);
+							$new_item = new Service_fare_item($candidate_item);
 							$new_item->save();
 						}
 						// push to db and result fetch count != 0
@@ -175,7 +175,7 @@ class Airlines extends REST_Controller
 	private function _flag_comp_is_done($id, $maskapai)
 	{
 		try {
-			$log = Search_fare_log::find($id);		
+			$log = Service_fare_log::find($id);		
 		} catch (Exception $e) {
 			return TRUE;
 		}
@@ -191,7 +191,7 @@ class Airlines extends REST_Controller
 	private function _flag_comp_to_done($id, $maskapai, $value = true)
 	{
 		try {
-			$log = Search_fare_log::find($id);		
+			$log = Service_fare_log::find($id);		
 		} catch (Exception $e) {
 			return ;
 		}
@@ -211,7 +211,7 @@ class Airlines extends REST_Controller
 		if(!$id_log = element('id', $uri)) $this->response(array('error' => 'please provide the id log search'), 500);
 		
 		try {
-			$log = Search_fare_log::find($id_log);
+			$log = Service_fare_log::find($id_log);
 		
 			$_s_current_time = date('Y-m-d H:i:s');
 			$current_time 	= new DateTime($_s_current_time);
@@ -229,7 +229,7 @@ class Airlines extends REST_Controller
 			}
 		
 			// re-retrive log
-			$log = Search_fare_log::find($id_log);
+			$log = Service_fare_log::find($id_log);
 
 
 			// check flage commplete
@@ -267,7 +267,7 @@ class Airlines extends REST_Controller
 	{
 		if(!$id = $this->uri->rsegment(3)) $this->response_error('please provide id');
 		try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 			$this->response($log->to_array( array('include' => array('departure_airport', 'destination_airport')) ));
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
@@ -277,7 +277,7 @@ class Airlines extends REST_Controller
 	{
 		if (!$id = $this->uri->rsegment(3)) $this->response_error('Please provide error');
 		try {
-			$fare = Search_fare_item::find($id);
+			$fare = Service_fare_item::find($id);
 			$this->response($fare->to_array(array('include' => array('log'))));
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
@@ -287,7 +287,7 @@ class Airlines extends REST_Controller
 	{
 	
 		try {
-			$fare = Search_fare_item::find($this->input('fare_id'));
+			$fare = Service_fare_item::find($this->input('fare_id'));
 			$fare_data = $fare->to_array(array('include' => array('log')));
 		} catch (Exception $e) {
 			$this->response('there is no valid fare with id posted' ,500);
@@ -325,14 +325,14 @@ class Airlines extends REST_Controller
 	private function _retrive_oneway_result($log)
 	{
 		
-			$log = Search_fare_log::find(element('id', $log));
+			$log = Service_fare_log::find(element('id', $log));
 			$depart_q = array();
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, FALSE) : FALSE ;
 			
 			if($comps == FALSE) return array();
 			foreach ($comps as $comp => $status) {
 				if($status == FALSE) continue;
-					$depart_q_item = Search_fare_item::find('all', array(
+					$depart_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -366,7 +366,7 @@ class Airlines extends REST_Controller
 	private function _retrive_roundtrip_result($log)
 	{
 		
-			$log = Search_fare_log::find(element('id', $log));		
+			$log = Service_fare_log::find(element('id', $log));		
 			$comps = ($log->complete_comp != null) ? json_decode($log->complete_comp, FALSE) : FALSE ;
 			if($comps == FALSE) return array();
 			$depart_q = array(); $return_q = array();
@@ -374,7 +374,7 @@ class Airlines extends REST_Controller
 				if(!$status) continue;
 				
 				// Retrive Depart
-				$depart_q_item = Search_fare_item::find('all', array(
+				$depart_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'depart', strtoupper($comp)
@@ -388,7 +388,7 @@ class Airlines extends REST_Controller
 					foreach ($this->db_util->multiple_to_array($depart_q_item, array('except'=> array('meta_data'))) as $real_item) array_push($depart_q, $real_item);
 				
 				// Retrive return	
-				$return_q_item = Search_fare_item::find('all', array(
+				$return_q_item = Service_fare_item::find('all', array(
 							'conditions' => array(
 								'log_id = ? AND type = ? AND company = ?',
 								$log->id, 'return', strtoupper($comp)
@@ -426,19 +426,19 @@ class Airlines extends REST_Controller
 	public function _fetch_formula($id, $limit = FALSE)
 	{
 		//try {
-			$log = Search_fare_log::find($id);
+			$log = Service_fare_log::find($id);
 			$comps = json_decode($log->comp_include);
 			$limit = (is_numeric($limit)) ? $limit : $log->max_fare;
 			$depart_ids = array(); $return_ids = array();
 				$d_q = '';
 				for($i = 0 ; $i < count($comps) ; $i++){
 						$comp = $comps[$i] ;
-						$d_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
+						$d_q .= "(select * from service_fare_item where company = '".$comp."' and log_id = ".$id." AND type = 'depart' ORDER BY price ASC limit ".$limit."  )";
 						$d_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
 				}
 				$d_q .= ' order by price ASC';
 
-				$d_q = Search_fare_log::find_by_sql($d_q);
+				$d_q = Service_fare_log::find_by_sql($d_q);
 				if(count($d_q) > 0 ) foreach($d_q as $item) array_push($depart_ids, $item->to_array());
 			
 			if($log->type == 'roundtrip'){
@@ -446,12 +446,12 @@ class Airlines extends REST_Controller
 				$r_q = '';
 				for($i = 0 ; $i < count($comps) ; $i++){
 						$comp = $comps[$i] ;
-						$r_q .= "(select * from search_fare_items where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
+						$r_q .= "(select * from service_fare_item where company = '".$comp."' and log_id = ".$id." AND type = 'return'  ORDER BY price ASC limit ".$limit." )";
 						$r_q .= (($i+1) < count($comps)) ? "UNION ALL" : "";
 				}
 				$r_q .= ' order by price ASC';
 
-				$r_q = Search_fare_log::find_by_sql($r_q);
+				$r_q = Service_fare_log::find_by_sql($r_q);
 				if(count($r_q) > 0 ) foreach($r_q as $item) array_push($return_ids, $item->to_array());
 				
 				return array(
@@ -535,7 +535,177 @@ class Airlines extends REST_Controller
 	{
 		echo 'loaded';
 	}
+	public function search_promo_post()
+	{
+		if(!$post = $this->post('src')) $this->response_error('Please Provide the variable');
+		// check first in db that all ready have one;
+		$log = Service_fare_promo_log::find('last',
+			array('conditions' => 
+				array(
+					'original = ? and destination = ? and start_date = ? and end_date = ?', 
+					element('original', $post ),
+					element('destination', $post),
+					element('start_date', $post),
+					element('end_date', $post)
+					) 
+				)
+			);
+			
+			if($log){
+				$promo_log = $log->to_array(array('include' => array('destination_airport', 'departure_airport')));
+				$this->response($promo_log);
+			}
+		
+		// if not found , so create new one
+		
+		try {
+			$log = new Service_fare_promo_log($post);
+			if(!$log->is_valid()) $this->response_error($log->errors->full_messages());
+			$log->save();
+			$promo_log = $log->to_array(array('include' => array('destination_airport', 'departure_airport')));
+			// exceute promo
+			$this->_execute_promo($promo_log);
+			
+			$this->response($promo_log);
+			
+		} catch (Exception $e) {
+			$this->response_error($e->getMessage());
+		}
+		
+	}
+	public function search_promo_get()
+	{
+		$id = $this->uri->rsegment(3);
+		$limit = ($limit = $this->get('limit')) ? $limit : 3;
+		try {
+			$promo_log = Service_fare_promo_log::find($id);
+		} catch (Exception $e) {
+			$this->response_error($e->getMessage());
+		}
+		
+		$promo_log = $promo_log->to_array(array('include' => array('search')));
+		$fares = array();
+		foreach(element('search', $promo_log) as $a_log_search){
+			$raw = $this->_retrive_oneway_result($a_log_search);
+			foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
+		}
+		// sort by price
+		$fares = array_sort($fares, 'price', SORT_ASC);
+		// limited result
+		$fares = array_slice($fares, 0, $limit);
+		
+		$this->response($fares);
+		
+	}
+	private function _execute_promo($promo_log = array())
+	{
+		$formated_start_date = show_date(element('start_date', $promo_log), 'Y-m-d');
+		$formated_end_date = show_date(element('end_date', $promo_log), 'Y-m-d');		
+		for($i = 0 ; $i < element('count_day', $promo_log) ; $i++ ){
+			$depart_date = date('Y-m-d', strtotime('+'.$i.' day', strtotime($formated_start_date))) ;
+			$search_log = array(
+				'date_depart' 	=> $depart_date,
+				'route_from' 	=> element('original', $promo_log),
+				'route_to'    	=> element('destination', $promo_log),
+				'passengers'	=> 1,
+				'comp_include'  => 'batavia,garuda,merpati,sriwijaya,lion',
+				'max_fare'		=>  5,
+				'actor'			=>  element('actor', $promo_log),
+				'src_promo_id' => element('id', $promo_log),
+				
+			);
+			$log_search = new Service_fare_log($search_log);
+			if(!$log_search->is_valid()){
+				//	$this->response($log->errors->full_messages(), 500);
+				}else{
+				$log_search->save();
+			}
+			
+			suicide('service/airlines/process_promo_search/'.element('id', $promo_log).'/'.$log_search->id);
+			
+		}
+	}
+	public function process_promo_search_get()
+	{
+		$promo_id = $this->uri->rsegment(3);
+		$log_id   = $this->uri->rsegment(4);
+		
+		try {
+			$promo = Service_fare_promo_log::find($promo_id);
+		} catch (Exception $e) {
+			// create log
+			exit();
+		}
+		
+		suicide('service/airlines/process_search/'.$log_id, FALSE);
+		// falg this as coplete
+		// calculate percentage
+		$current = $promo->status;
+		$total = $promo->count_day;
+		$a_value = ((1*100)/$total);
+		$promo->status = $current+$a_value;
+		$promo->save();
+	
+	}
+	public function _last_promo_get()
+	{
+		
+		$limit = ($limit = $this->get('limit')) ? $limit : 100;
+		try {
+				$promo_log = Service_fare_promo_log::last();
+		} catch (Exception $e) {
+				$this->response_error($e->getMessage());
+		}
 
+		$promo_log = $promo_log->to_array(array('include' => array('search')));
+		$fares = array();
+		foreach(element('search', $promo_log) as $a_log_search){
+				$raw = $this->_retrive_oneway_result($a_log_search);
+				foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
+		}
+			// sort by price
+		$fares = array_sort($fares, 'price', SORT_ASC);
+			// limited result
+		$fares = array_slice($fares, 0, $limit);
+
+		$this->response($fares);
+	}
+	
+	public function last_promo_get()
+	{
+		
+		$limit = ($limit = $this->get('limit')) ? $limit : 100;
+	
+		try {
+				$promo_log = Service_fare_promo_log::last();
+		} catch (Exception $e) {
+				$this->response_error($e->getMessage());
+		}
+		//$this->response(array('asu'));
+		
+		$promo_log = $promo_log->to_array(array('include' => array('search')));
+		$fares = array();
+		//$this->response($promo_log);
+		
+		// building the search id
+		$search_ids = array();
+		//$this->response(array('asu'));
+		
+		foreach(element('search', $promo_log) as $a_log_search) {
+			$a_search = $this->_fetch_formula(element('id', $a_log_search), $limit) ;
+			if(count($a_search['depart']['fares']) > 0)
+				foreach($a_search['depart']['fares'] as $fare)
+				array_push($fares, $fare);
+		}
+		
+		shuffle($fares);
+		$fares = array_slice($fares, 0, $limit);
+	//	$fares = array_sort($fares, 'price', SORT_ASC);
+		$this->response($fares);
+		
+	}
+	
+	
 	
 	
 	

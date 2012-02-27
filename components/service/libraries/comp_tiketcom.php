@@ -25,6 +25,7 @@ class Comp_tiketcom
 			$build_item = array(
 				'id' => $this->encrypt(element('id', $ori)),
 				'name' => element('value', $ori),
+				'type' => element('category', $ori),
 			);
 			array_push($s_final, $build_item);
 		}
@@ -214,7 +215,6 @@ class Comp_tiketcom
 					
 					$picvar = $i."_L.s.jpg";
 					$classPic = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] a img[class=thumb]',0)->getAttribute('src');
-					$classPic = str_replace('.s.jpg', '.jpg', $classPic);
 					if ($class[$i]->find('div[class=roomWrapper] div[class=rateroom] div[itemprop=availability]',0)) {
 							$availability = element('1',explode(' ',
 							$class[$i]->find('div[class=roomWrapper] div[class=rateroom] div[itemprop=availability]',0)->plaintext));

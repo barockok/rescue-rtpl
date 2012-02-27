@@ -101,7 +101,9 @@ class Shoppingcart extends REST_Controller
 				if(!$item->is_valid())
 					throw new Exception(implode(',', $item->errors->full_messages()));
 				$item->save();
-				$this->response($item->to_array(array('include' => array('cart'))));
+				$updated_item = $item->to_array(array('include' => array('cart')));
+				$this->_hook_caller(element('type', $updated_item), 'update_item' , $updated_item);
+				$this->response($updated_item);
 			} catch (Exception $e) {
 				throw $e;
 			}
@@ -115,7 +117,9 @@ class Shoppingcart extends REST_Controller
 		try {
 			$item = Cart_item::find($id);
 			$item->delete();
-			$this->response($item->to_array());
+			$old_item = $item->to_array();
+			$this->_hook_caller(element('type', $old_item), 'delete_item' , $old_item);
+			$this->response($$old_item);
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
 		}

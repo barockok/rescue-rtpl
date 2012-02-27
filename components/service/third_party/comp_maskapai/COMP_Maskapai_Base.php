@@ -8,9 +8,8 @@ class Comp_maskapai_base {
 	{
 		$this->_ci =& get_instance();
 		$this->_3th_party = './components/partner/third_party/comp_maskapai/';
-		
+		include_once dirname(__FILE__).'/AirlinesExceptions.php';
 	
-
 	}
 	public function setSearch($array = array())
 	{
@@ -53,7 +52,7 @@ class Comp_maskapai_base {
 	{
 		if(!is_array($data)) return;
 		try {
-			$fare =  new Search_fare_item($data);
+			$fare =  new Service_fare_item($data);
 			if($fare->is_valid()) 
 				$fare->save();
 		} catch (Exception $e) {
