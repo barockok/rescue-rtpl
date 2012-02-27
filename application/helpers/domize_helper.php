@@ -31,7 +31,7 @@ define('HDOM_INFO_OUTER',   6);
 define('HDOM_INFO_ENDSPACE',7);
 
 
-class DomNodeNotFound extends Exception{}
+
 // helper functions
 // -----------------------------------------------------------------------------
 function removeEmptyLines($string)
@@ -365,13 +365,9 @@ class simple_html_dom_node {
             $found[] = $this->dom->nodes[$k];
 
         // return nth-element or array
-		if(count($found) == 0 && is_null($idx))  throw new DomNodeNotFound ( $selector . ' didnt match any nodes' );
         if (is_null($idx)) return $found;
 		else if ($idx<0) $idx = count($found) + $idx;
-		
-		if(!isset($found[$idx]))
-				 throw new DomNodeNotFound ( $selector . ' didnt match any nodes' );
-        return  $found[$idx]  ;
+        return (isset($found[$idx])) ? $found[$idx] : null;
     }
 
     // seek for given conditions

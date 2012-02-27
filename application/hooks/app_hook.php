@@ -10,11 +10,10 @@ class App_hook
 	{
 		ini_set('display_errors','On'); 
 		
-		error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
-
-		register_shutdown_function('_shutdown_handler');
-		set_error_handler('_error_handler');
-		set_exception_handler('exception_handler');
+	//	error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
+	//	register_shutdown_function('_shutdown_handler');
+	//	set_error_handler('_error_handler');
+	//	set_exception_handler('exception_handler');
 		
 	}
 	public function post_controller_constructor()

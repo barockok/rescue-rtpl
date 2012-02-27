@@ -613,6 +613,13 @@ echo "</pre>";
 	
 		
 	}
+	public function testcurl()
+	{
+		echo 'curl';
+		$this->load->library('acurl');
+		echo $this->acurl->simple_get('http://www.tiket.com/');
+		$this->acurl->debug();
+	}
 	
 
 }

@@ -44,64 +44,59 @@ class Comp_tiketcom
 	
 		$opt = array(
 			'q' 		=> element('query', $query),
+			
 			'startdate' => element('checkin', $query),
 			'enddate' 	=> element('checkout', $query),
 			'room' 		=> element('room', $query),
 			'adult' 	=> element('adult', $query),
 			'child' 	=> element('child', $query),
 			'uid'		=> $this->decrypt(element('id_identifier', $query)),
+			
 		);
-		// request OPT
-	
-		
+
 		$opt = array_merge($opt, $option);
-		$res =  $this->ci->acurl->simple_get($this->do_search_ep, $opt);
-		
-		// domize
+		$res =  $this->ci->acurl->simple_get('http://www.tiket.com/search/hotel?q=Bandung&startdate=2012-03-26&enddate=2012-03-31+00%3A00%3A00&room=1&adult=1&child=0&uid=city%3A165');
+		//return http_build_query($opt);
 		$html =  str_get_html($res);
+		
 		// result
 		$result = array();
-		
-		
-		try {
-				$lists = $html->find('div[class=mainbar] ul[class=searchresult] li');
-			
-					
-				foreach ($lists as $item) {
-					$id = $item->getAttribute('data-id');
-					if( $id <= 1 ) continue;
-					// detemine promo
-					$promo = $item->find('[class=itemarea] [class=itemDetail] p.promoWhat', 0);
-					$promo = (!empty($promo->plaintext)) ? $promo->plaintext : null;
-
-					$a_res = array(
-						'id' 		=> $this->encrypt($id),
-						'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h3', 0)->plaintext),
-						'img' 		=> $this->_encrypt_img_path(
-							$item->find('[class=itemarea] [class=itemimg] a img', 0)->getAttribute('src')
-							),
-						'startfrom' => substr($item->find('[class=selectarea] span[class=currency]', 0)->getAttribute('rel'), 0, -3),
-						'promo'		=> $promo,	
-						'star' 		=> substr($item->find('[class=itemarea] [class=itemDetail] strong[class=ir]', 0)->plaintext, 0,1),
-						'map_coor' 	=> $this->_extract_coor(
-							$item->find('[class=itemarea] [class=itemDetail] a[href*=maps.google.com]', 0)->getAttribute('href')
-							),
-						'identifier_path' => $this->_extract_path_identifier(
-							$item->find('[class=itemarea] [class=itemDetail] h3 a', 0)->getAttribute('href')
-							),		
-					);
-					$address = $item->find('div.itemDetail', 0);
-						//clean other sibling form root;
-					foreach($address->find('*') as $key => $val) $address->find('*', $key)->innertext = '';
-					$address = trim($address->plaintext);
-					$a_res['address'] = trim($address);
-					array_push($result, $a_res);
-				}
-				
-		} catch (Exception $e) {
-				throw new Exception('Not Found', 1);
-		}
 	
+		$lists = $html->find('div[class=mainbar] ul[class=searchresult] li');
+	
+		//if(count($lists) < 3)
+		//	throw new Exception('Not Found', 1);
+	
+		foreach ($lists as $item) {
+			$id = $item->getAttribute('data-id');
+			if( $id <= 1 ) continue;
+			// detemine promo
+			$promo = $item->find('[class=itemarea] [class=itemDetail] p.promoWhat', 0);
+			$promo = (!empty($promo->plaintext)) ? $promo->plaintext : null;
+			
+			$a_res = array(
+				'id' 		=> $this->encrypt($id),
+				'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h3', 0)->plaintext),
+				'img' 		=> $this->_encrypt_img_path(
+					$item->find('[class=itemarea] [class=itemimg] a img', 0)->getAttribute('src')
+					),
+				'startfrom' => substr($item->find('[class=selectarea] span[class=currency]', 0)->getAttribute('rel'), 0, -3),
+				'promo'		=> $promo,	
+				'star' 		=> substr($item->find('[class=itemarea] [class=itemDetail] strong[class=ir]', 0)->plaintext, 0,1),
+				'map_coor' 	=> $this->_extract_coor(
+					$item->find('[class=itemarea] [class=itemDetail] a[href*=maps.google.com]', 0)->getAttribute('href')
+					),
+				'identifier_path' => $this->_extract_path_identifier(
+					$item->find('[class=itemarea] [class=itemDetail] h3 a', 0)->getAttribute('href')
+					),		
+			);
+			$address = $item->find('div.itemDetail', 0);
+				//clean other sibling form root;
+			foreach($address->find('*') as $key => $val) $address->find('*', $key)->innertext = '';
+			$address = trim($address->plaintext);
+			$a_res['address'] = trim($address);
+			array_push($result, $a_res);
+		}
 		
 		return $result;
 		
@@ -125,7 +120,6 @@ class Comp_tiketcom
 			$opt['uid'] = 'business:'.$this->decrypt($id_encrypt);
 			$url  = $this->_tiketcom_url.'/'.$this->decrypt($path_identifier);
 			$page = str_get_html($this->ci->acurl->simple_get($url, $opt));
-		
 			$data = array();
 			$data['id'] = $id_encrypt;
 			$data['path_identifier'] = $path_identifier;
