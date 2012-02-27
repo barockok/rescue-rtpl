@@ -10,12 +10,14 @@ class Comp_tiketcom
 	private $e_key = 'asdasdasdasdabsdasdvgasdasg';
 	private $_platform_img_wrap ;
 	private $_tiketcom_url = 'http://www.tiket.com';
+	private $_cookie_file ;
 	
 	function __construct()
 	{
 		$this->ci =& get_instance();
 		$this->ci->load->library('acurl');
 		$this->_platform_img_wrap = 'http://assets.'.DOMAIN_BASE.'/assets/hotel/';
+		$this->_cookie_file = dirname(__FILE__).'/../third_party/comp_tiketcom/cookies.txt';
 	}
 	public function get_location($query)
 	{
@@ -55,10 +57,17 @@ class Comp_tiketcom
 		);
 
 		$opt = array_merge($opt, $option);
-		$res =  $this->ci->acurl->simple_get('http://www.tiket.com/search/hotel?q=Bandung&startdate=2012-03-26&enddate=2012-03-31+00%3A00%3A00&room=1&adult=1&child=0&uid=city%3A165');
+		
+		$this->ci->acurl->create('http://www.tiket.com/search/hotel'.'?'.http_build_query($opt));
+		$this->ci->acurl->option('cookiejar', $this->_cookie_file);
+		$this->ci->acurl->option('cookiefile', $this->_cookie_file);
+		$res = $this->ci->acurl->execute();
+		
+	//	$this->ci->acurl->debug();
+	//	$res =  $this->ci->acurl->simple_get($this->do_search_ep, $opt);
 		//return http_build_query($opt);
 		$html =  str_get_html($res);
-		
+	
 		// result
 		$result = array();
 	
