@@ -590,7 +590,7 @@ class Airlines extends REST_Controller
 			foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
 		}
 		// sort by price
-		$fares = array_sort($fares, 'id', SORT_ASC);
+		$fares = array_sort($fares, 'price', SORT_ASC);
 		// limited result
 		$fares = array_slice($fares, 0, $limit);
 		
@@ -647,7 +647,7 @@ class Airlines extends REST_Controller
 		$promo->save();
 	
 	}
-	public function last_promo_get()
+	public function _last_promo_get()
 	{
 		
 		$limit = ($limit = $this->get('limit')) ? $limit : 100;
@@ -664,13 +664,47 @@ class Airlines extends REST_Controller
 				foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
 		}
 			// sort by price
-		$fares = array_sort($fares, 'id', SORT_ASC);
+		$fares = array_sort($fares, 'price', SORT_ASC);
 			// limited result
 		$fares = array_slice($fares, 0, $limit);
 
 		$this->response($fares);
 	}
-
+	
+	public function last_promo_get()
+	{
+		
+		$limit = ($limit = $this->get('limit')) ? $limit : 100;
+	
+		try {
+				$promo_log = Service_fare_promo_log::last();
+		} catch (Exception $e) {
+				$this->response_error($e->getMessage());
+		}
+		//$this->response(array('asu'));
+		
+		$promo_log = $promo_log->to_array(array('include' => array('search')));
+		$fares = array();
+		//$this->response($promo_log);
+		
+		// building the search id
+		$search_ids = array();
+		//$this->response(array('asu'));
+		
+		foreach(element('search', $promo_log) as $a_log_search) {
+			$a_search = $this->_fetch_formula(element('id', $a_log_search), $limit) ;
+			if(count($a_search['depart']['fares']) > 0)
+				foreach($a_search['depart']['fares'] as $fare)
+				array_push($fares, $fare);
+		}
+		
+		shuffle($fares);
+		$fares = array_slice($fares, 0, $limit);
+		$this->response($fares);
+		
+	}
+	
+	
 	
 	
 	
