@@ -78,6 +78,29 @@ class Tour_package_cont extends REST_Controller
 		}
 		
 	}
+	public function edit_post()
+	{
+		if(!$id = $this->uri->rsegment(3)) $this->response_error('Id no Provide');
+		try {
+			$tp = Service_tp::find($id);
+		} catch (Exception $e) {
+			$this->response_error($e->getMessage());
+		}
+		$main = elements(array('title', 'cat_id', 'l_desc', 'stock', 'price'), $this->post() , NULL);
+		$list_file = array();
+		if(count($_FILES) > 0){
+			$virfile = (count($_FILES) == 1 ) ? array($_FILES) : $_FILES;
+			foreach($_FILES as $key => $val){
+				if(strpos($key, 'media_file_') !== FALSE ) array_push($list_file, $key);
+			}
+		}
+		
+		$tp->update_attributes($main);
+		if(!$tp->is_valid())
+			$this->response_error($tp->errors->full_messages());
+		$tp->save();
+		$this->response($tp->to_array());
+	}
 	public function view_get()
 	{
 	

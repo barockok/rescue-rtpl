@@ -8,6 +8,7 @@ class Service_tp extends ActiveRecord\Model
 	static $belongs_to = array(
 		array('category', 'class_name' => 'Service_tp_category', 'foreign_key' => 'cat_id')
 	);
+	static $validates_presence_of = array(array('title'), array('cat_id'), array('l_desc'), array('stock'), array('price'));
 	
 	public function get_default_media()
 	{
