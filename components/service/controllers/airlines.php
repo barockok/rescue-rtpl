@@ -700,7 +700,7 @@ class Airlines extends REST_Controller
 		
 		shuffle($fares);
 		$fares = array_slice($fares, 0, $limit);
-		$fares = array_sort($fares, 'price', SORT_ASC);
+	//	$fares = array_sort($fares, 'price', SORT_ASC);
 		$this->response($fares);
 		
 	}
