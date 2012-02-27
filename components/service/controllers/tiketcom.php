@@ -86,6 +86,7 @@ class Tiketcom extends REST_Controller
 				'option' => $option,
 				'results' => $res,
 			);
+		//	echo $res;
 			$this->response($return);
 			
 		} catch (Exception $e) {
