@@ -617,7 +617,7 @@ echo "</pre>";
 	{
 		echo 'curl';
 		$this->load->library('acurl');
-		echo $this->acurl->simple_get('http://www.tiket.com/');
+		echo $this->acurl->simple_get('http://id.tiket.com/search/hotel?q=Bandung&startdate=2012-03-26&enddate=2012-03-31+00%3A00%3A00&room=1&adult=1&child=0&uid=city%3A165');
 		$this->acurl->debug();
 	}
 	
