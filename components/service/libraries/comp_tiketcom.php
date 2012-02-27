@@ -61,42 +61,47 @@ class Comp_tiketcom
 		$html =  str_get_html($res);
 		// result
 		$result = array();
-	
-		$lists = $html->find('div[class=mainbar] ul[class=searchresult] li');
-	
-		if(count($lists) < 3)
-			throw new Exception('Not Found', 1);
-	
-		foreach ($lists as $item) {
-			$id = $item->getAttribute('data-id');
-			if( $id <= 1 ) continue;
-			// detemine promo
-			$promo = $item->find('[class=itemarea] [class=itemDetail] p.promoWhat', 0);
-			$promo = (!empty($promo->plaintext)) ? $promo->plaintext : null;
+		
+		
+		try {
+				$lists = $html->find('div[class=mainbar] ul[class=searchresult] li');
 			
-			$a_res = array(
-				'id' 		=> $this->encrypt($id),
-				'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h3', 0)->plaintext),
-				'img' 		=> $this->_encrypt_img_path(
-					$item->find('[class=itemarea] [class=itemimg] a img', 0)->getAttribute('src')
-					),
-				'startfrom' => substr($item->find('[class=selectarea] span[class=currency]', 0)->getAttribute('rel'), 0, -3),
-				'promo'		=> $promo,	
-				'star' 		=> substr($item->find('[class=itemarea] [class=itemDetail] strong[class=ir]', 0)->plaintext, 0,1),
-				'map_coor' 	=> $this->_extract_coor(
-					$item->find('[class=itemarea] [class=itemDetail] a[href*=maps.google.com]', 0)->getAttribute('href')
-					),
-				'identifier_path' => $this->_extract_path_identifier(
-					$item->find('[class=itemarea] [class=itemDetail] h3 a', 0)->getAttribute('href')
-					),		
-			);
-			$address = $item->find('div.itemDetail', 0);
-				//clean other sibling form root;
-			foreach($address->find('*') as $key => $val) $address->find('*', $key)->innertext = '';
-			$address = trim($address->plaintext);
-			$a_res['address'] = trim($address);
-			array_push($result, $a_res);
+					
+				foreach ($lists as $item) {
+					$id = $item->getAttribute('data-id');
+					if( $id <= 1 ) continue;
+					// detemine promo
+					$promo = $item->find('[class=itemarea] [class=itemDetail] p.promoWhat', 0);
+					$promo = (!empty($promo->plaintext)) ? $promo->plaintext : null;
+
+					$a_res = array(
+						'id' 		=> $this->encrypt($id),
+						'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h3', 0)->plaintext),
+						'img' 		=> $this->_encrypt_img_path(
+							$item->find('[class=itemarea] [class=itemimg] a img', 0)->getAttribute('src')
+							),
+						'startfrom' => substr($item->find('[class=selectarea] span[class=currency]', 0)->getAttribute('rel'), 0, -3),
+						'promo'		=> $promo,	
+						'star' 		=> substr($item->find('[class=itemarea] [class=itemDetail] strong[class=ir]', 0)->plaintext, 0,1),
+						'map_coor' 	=> $this->_extract_coor(
+							$item->find('[class=itemarea] [class=itemDetail] a[href*=maps.google.com]', 0)->getAttribute('href')
+							),
+						'identifier_path' => $this->_extract_path_identifier(
+							$item->find('[class=itemarea] [class=itemDetail] h3 a', 0)->getAttribute('href')
+							),		
+					);
+					$address = $item->find('div.itemDetail', 0);
+						//clean other sibling form root;
+					foreach($address->find('*') as $key => $val) $address->find('*', $key)->innertext = '';
+					$address = trim($address->plaintext);
+					$a_res['address'] = trim($address);
+					array_push($result, $a_res);
+				}
+				
+		} catch (Exception $e) {
+				throw new Exception('Not Found', 1);
 		}
+	
 		
 		return $result;
 		

@@ -608,7 +608,7 @@ echo "</pre>";
 		$str = '<html><body><div>text</div></body></html>';
 		$dom = str_get_html($str);
 	
-		echo  $dom->find('bodaay')->plaintext;
+		echo  $dom->findaa('bodaay')->plaintext;
 
 	
 		
