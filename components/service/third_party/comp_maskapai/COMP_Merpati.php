@@ -29,10 +29,13 @@ class Merpati extends Comp_maskapai_base {
 			'Content-Type: application/json; charset=UTF-8',
 		);
 		$this->roundTrip = false;
+		$this->login();
 	}
 	
 	
-		function index() {}
+		function index() {
+			echo "string";
+		}
 
 		function dateAdd($date){
 			$length = strlen($date);
@@ -204,7 +207,7 @@ class Merpati extends Comp_maskapai_base {
 				$price_dirt = str_replace('.00 IDR','',$price_dirty);
 				$price_dir = str_replace(',','',$price_dirt);
 				$price_di = str_replace('</input>','',$price_dir);
-				$price = ($price_di+10000+6000)*$this->_opt->passengers;
+				$price = ($price_di+6000+5000)*$this->_opt->passengers;
 				$jml_kursi = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',6)->plaintext),1);
 				
 				if (count($jml_kursi) > 1) {
@@ -386,9 +389,9 @@ class Merpati extends Comp_maskapai_base {
 		{
 			$this->_opt->route_from 	= 'CGK';
 			$this->_opt->route_to 		= 'SUB';
-			$this->_opt->date_depart 	= '2012-03-21';
+			$this->_opt->date_depart 	= '2012-04-21';
 			$this->_opt->date_return 	= NULL;
-			$this->_opt->passengers 	= 2;
+			$this->_opt->passengers 	= 1;
 			$this->_opt->id			= 1;
 			
 			foreach($opt as $key => $val ){$this->_opt->$key = $val;}
@@ -410,12 +413,10 @@ class Merpati extends Comp_maskapai_base {
 				$final = $this->search();
 				$this->closing();
 			}
-		
-			if (!is_array($final)) {
-				return array();
-			}
 			
-			//return array('opt' => $this->_opt, 'res' => array_values($final) );
+			if (count($final)==0 || is_array($final) == false) {
+				throw new ResultFareNotFound($opt);
+			}
 			return array_values($final);
 			
 			
@@ -727,9 +728,13 @@ class Merpati extends Comp_maskapai_base {
 			$bookingDate = $page->find('div[class=WrapperBody] div[class=BookingRefIteneraryDate]',0)->plaintext;
 			$bookingInfo = $table[0];
 			$passangerInfo = $table[1];
+			$paymentInfo	= $table[4];
+			
 			$countPassanger = count($passangerInfo->find('tr'));
 			$data = array();
 			$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(',','',str_replace('.00','',str_replace('Total Harga','',$table[2]->find('tr',6)->find('td',4)->find('span[class=FooterTotalLabel]',0)->plaintext))));
+			
+			$fp = str_replace(array(",",'.00 IDR'),'',preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$paymentInfo->find('tr',2)->find('td',4)->plaintext));
 			
 			$flightNumber = $bookingInfo->find('tr',1)->find('td',0)->plaintext;
 			$routeFrom = $bookingInfo->find('tr',1)->find('td',1)->plaintext;
@@ -744,7 +749,7 @@ class Merpati extends Comp_maskapai_base {
 			$data['fare_id']			=	$this->fare_id;
 			$data['meta_data']			=	json_encode($this->meta_data);
 			$data['passangers']			=	$this->passangers;
-			$data['final_price']		=	element('price',$this->meta_data);
+			$data['final_price']		=	$fp;
 			//$data['flightNumber'] = $flightNumber;
 			//$data['price']	=	$price;
 			//$data['routeFrom'] = $routeFrom;
@@ -836,9 +841,9 @@ class Merpati extends Comp_maskapai_base {
 		    return $text;
 		}
 		
-		//function preBooking(){
-		function preBooking($fare_data){		
-				/*$fare_data = array(
+		function preBooking(){
+		//function preBooking($fare_data){		
+				$fare_data = array(
 					'id'		=>	7323,
 					'log_id'	=>	34,
 					'company'	=>	'MERPATI',
@@ -847,25 +852,25 @@ class Merpati extends Comp_maskapai_base {
 					'type'		=>	'depart',
 					'class'		=>	'K',
 					'route'		=>	'CGK,DPS',
-					'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ640","t_depart":"2011-12-31 05:30","t_arrive":"2011-12-31 08:10","t_transit_depart":"2011-12-31 ","t_transit_arrive":"2011-12-31 ","type":"depart","class":"K","price":929000,"route":"CGK,DPS","radio_value":"{E50DFBFD-BD76-11DF-995B-0019DBB9D31C}|{FB651EAA-5CA7-11DF-9F19-0050BA01BA7A}||","log_id":1,"arrayIndex":11,"time_depart":"2011-12-31","passangers":2}',
+					'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ336","t_depart":"2012-03-21 11:40","t_arrive":"2012-03-21 13:00","t_transit_depart":null,"t_transit_arrive":null,"type":"depart","class":"M","price":802000,"route":"CGK,SUB","radio_value":"{FC8797A6-8169-4078-B5FD-4A1229C320DB}|{123450E7-04D3-47C5-AB73-D8DDF3F2D323}||","log_id":1,"arrayIndex":2,"time_depart":"2012-03-21","passangers":2}',
 					't_transit_arrive'	=>	'',
 					't_transit_depart'	=>	'',
-					'price'				=>	'929000',
-					'flight_no'			=>	'MZ640',
+					'price'				=>	'802000',
+					'flight_no'			=>	'MZ336',
 					'log'				=>	array(
 						'id'				=>	34,
 						'date_depart'		=>	'2011-12-31 00:00:00',
 						'date_return'		=>	'',
 						'route_from'		=>	'CGK',
-						'route_to'			=>	'DPS',
+						'route_to'			=>	'SUB',
 						'passangers'		=>	1,
 						'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
 						'c_time'			=>	'2011-12-20 11:56:15',
 						'max_fare'			=>	5,
 						'actor'				=> 'CUS',
 					),
-				);*/
-			
+				);
+				
 			$forBooking = json_decode($fare_data['meta_data'],1);
 			//$route = explode(',',$forBooking['route']);
 			$log = element('log',$fare_data);
@@ -884,29 +889,14 @@ class Merpati extends Comp_maskapai_base {
 			for ($i=0; $i < count($reSearch); $i++) { 
 				$meta[$i] = json_decode($reSearch[$i]['meta_data'],1);
 			}
-			print_r($meta);
-			//echo $arrayIndex = $this->multidimensional_search($meta,array('arrayIndex' => $forBooking['arrayIndex']));
-			$classArray = $this->multidimensional_search($meta,array('class' => $forBooking['class']));
-			if ($classArray == 'nothing') {
-				$this->logout();
-				return false;
-			}else{
-				$price = $meta[$classArray-1]['price'];
-				if ($price > $forBooking['price']) {
-					$this->logout();
-					return $price;
-				}else{
-					$this->logout();
-					return true;
-				}
-
-			}		
+			$classArray = $this->multidimensional_search($meta,array('radio_value' => $forBooking['radio_value']));
+			$array = element($classArray,$reSearch);
+			return $array;
 		}
 		
 		//function doBooking(){
 		function doBooking($fare_data,$passangers_data,$customer_data){
-			$this->login();
-			/*$fare_data = array(
+			$fare_data = array(
 				'id'		=>	7323,
 				'log_id'	=>	34,
 				'company'	=>	'MERPATI',
@@ -915,7 +905,7 @@ class Merpati extends Comp_maskapai_base {
 				'type'		=>	'depart',
 				'class'		=>	'K',
 				'route'		=>	'CGK,DPS',
-				'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ640","t_depart":"2011-12-31 05:30","t_arrive":"2011-12-31 08:10","t_transit_depart":"2011-12-31 ","t_transit_arrive":"2011-12-31 ","type":"depart","class":"M","price":1330000,"route":"CGK,DPS","radio_value":"{E50DFBFD-BD76-11DF-995B-0019DBB9D31C}|{8C0CE44C-7297-11DF-ABFC-0019DBB9AC4D}||","log_id":1,"arrayIndex":1,"time_depart":"2011-12-31","passangers":2}',
+				'meta_data'	=>	 '{"company":"MERPATI","flight_no":"MZ336","t_depart":"2012-03-21 11:40","t_arrive":"2012-03-21 13:00","t_transit_depart":null,"t_transit_arrive":null,"type":"depart","class":"M","price":802000,"route":"CGK,SUB","radio_value":"{FC8797A6-8169-4078-B5FD-4A1229C320DB}|{123450E7-04D3-47C5-AB73-D8DDF3F2D323}||","log_id":1,"arrayIndex":2,"time_depart":"2012-03-21","passangers":2}',
 				't_transit_arrive'	=>	'',
 				't_transit_depart'	=>	'',
 				'price'				=>	'929000',
@@ -968,7 +958,7 @@ class Merpati extends Comp_maskapai_base {
 									
 				),
 				
-			);*/
+			);
 			$this->passangers = $passangers_data;
 			$this->user = $customer_data;
 		
@@ -990,7 +980,13 @@ class Merpati extends Comp_maskapai_base {
 			$this->forBooking();
 
 			$booking = $this->booking();
-			$this->logout();
+			if (!is_array($booking)) {
+				throw new BookingFailed($fare_data);
+			}
+			if (element('final_price',$booking) > element('price',$forBooking)) {
+				throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+			}
+			$this->closing();
 			return $booking;
 		}
 		
@@ -1022,11 +1018,9 @@ class Merpati extends Comp_maskapai_base {
 				$this->roundTrip = true;
 				
 				$result2 = $this->search();
-				$this->closing();
 				$final = array_merge($result1,$result2);
 			}else{
 				$final = $this->search();
-				$this->closing();
 			}
 			return array_values($final);
 		}
