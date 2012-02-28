@@ -375,9 +375,13 @@ class Citilink extends Comp_maskapai_base {
 		$this->_opt->child 			= 0;
 		$this->_opt->infant		 	= 0;
 		$this->_opt->id				= 1;
+		
 		$this->roundTrip 			= false;
 		$this->login();
 		foreach($opt as $key => $val ){$this->_opt->$key = $val;}
+		if (isset($this->_opt->passengers)) {
+			$this->_opt->adult = $this->_opt->passengers;
+		}
 		if ($this->_opt->date_return) {
 			$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();	
 			$temp = '';
@@ -395,6 +399,9 @@ class Citilink extends Comp_maskapai_base {
 			return array();
 		}
 		$this->logout();
+		if (count($final) == 0 || is_array($final) == false) {
+			throw new ResultFareNotFound($opt);
+		}
 		return array_values($final);
 	}
 	
