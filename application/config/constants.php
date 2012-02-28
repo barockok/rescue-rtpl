@@ -53,6 +53,6 @@ define('DEV_NULL', '> /dev/null &');
 
 define('DOMAIN_BASE', 'dev-rumahtiket.com');
 define('DOMAIN_PLATFORM', 'platform');
-
+define('WORKING_STATUS', true);
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

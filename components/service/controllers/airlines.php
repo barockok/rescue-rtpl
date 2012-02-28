@@ -705,6 +705,22 @@ class Airlines extends REST_Controller
 		
 	}
 	
+	public function _sc_hook_add_item($cart_item)
+	{
+		// validate passenger dat ;
+	}
+	public function _sc_hook_delete_item($cart_item)
+	{
+	//	throw new Exception("Error Processing Request", 1);
+		return;
+	}
+	public function _sc_hook_update_item($cart_item)
+	{
+		throw new Exception("Error Processing Request", 1);
+		
+		
+	}
+	
 	
 	
 	

@@ -212,16 +212,9 @@ class Debug extends MX_Controller
 	}
 	public function testcreatecart()
 	{
-			$this->load->library('rest', array(
-				'server' => 'http://app.dev-rumahtiket.com/', 
-				'http_user' => 'admin',
-				'http_pass' => '1234',
-				'http_auth' => 'basic',
-				
-				)
-			);
-		$this->rest->api_key('abc');
-		$this->rest->post('service/shoppingcart/create/json', array('user_id' => 26, 'currency'=> 'IDR'));
+	
+		$this->rest->api_key('abc', 'X-API-KEY');
+		$this->rest->post('service/shoppingcart/create', array('user_id' => 26, 'currency'=> 'IDR'));
 		$this->rest->debug();
 	}
 	public function testretrivecart()
@@ -237,23 +230,23 @@ class Debug extends MX_Controller
 	}
 	public function testcartadditem()
 	{
-		$this->rest->post('service/shoppingcart/add_item/ba79988f0db02a15d4f00304fd7dcb4c/format/json', array(
+		$this->rest->post('service/shoppingcart/add_item/d56aafabf6ac7a1ca41da05501035a28/format/json', array(
 			'qty' => 3,
 			'name' => 'wede',
 			'price' => 15000,
 			'subtotal' => 5000,
-			'type' => 'airlines	'
+			'type' => 'airlines'
 			));
 		$this->rest->debug();
 	}
 	public function testcartupdateitem()
 	{
-		$this->rest->post('service/shoppingcart/update_item/092c30453bf313d6343034f86fac25a6/format/json', array('name' => 'product sample2', 'qty' => null));
+		$this->rest->post('service/shoppingcart/update_item/2c0caa71fc66f08adbf77f8a4fde0954/format/json', array('name' => 'product sample2', 'qty' => null));
 		$this->rest->debug();
 	}
 	public function testcartdeleteitem()
 	{
-		$this->rest->delete('service/shoppingcart/delete_item/cd566e55898c40e970fb203c501fc40c/format/json');
+		$this->rest->get('service/shoppingcart/delete_item/958766080424cefcfa82863fd07f66cf/format/json');
 		$this->rest->debug();
 	}
 	public function testcarthookcallpost()

@@ -23,5 +23,10 @@ class Cart_item extends ActiveRecord\Model
 	{
 		$this->id = random_string('unique');
 	} 
+	public function validate()
+	{
+		$valid_type = array('airlines', 'train', 'hotel', 'tourpackage');
+		if(!in_array($this->type, $valid_type)) $this->errors->add('type', 'not valid type of cart item');
+	}
 	
 }
