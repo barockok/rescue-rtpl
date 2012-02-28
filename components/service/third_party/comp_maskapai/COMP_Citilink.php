@@ -369,8 +369,8 @@ class Citilink extends Comp_maskapai_base {
 		
 		$this->_opt->route_from 	= 'CGK';
 		$this->_opt->route_to 		= 'MES';
-		$this->_opt->date_depart 	= '2012-03-25';
-		$this->_opt->date_return 	= NULL;
+		$this->_opt->date_depart 	= '2012-03-14';
+		$this->_opt->date_return 	= '2012-03-26';
 		$this->_opt->adult		 	= 2;
 		$this->_opt->child 			= 0;
 		$this->_opt->infant		 	= 0;
@@ -383,7 +383,7 @@ class Citilink extends Comp_maskapai_base {
 			$this->_opt->adult = $this->_opt->passengers;
 		}
 		if ($this->_opt->date_return) {
-			$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();	
+			$result1 = (is_array($rs1 = $this->searchResult())) ? $rs1 : array();	
 			$temp = '';
 			$temp = $this->_opt->route_from;
 			$this->_opt->route_from = $this->_opt->route_to;
