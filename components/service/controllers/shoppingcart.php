@@ -11,13 +11,14 @@ class Shoppingcart extends REST_Controller
 	}
 	public function create_post()
 	{
-		$post = validate_array(array('user_id', 'currency'), $this->post(), NULL);
-		if(!$post->is_valid) $this->response(array('error' => 'not procide : '.$post->unvalid_text), 500);
-		$data = $post->data;
+	
+		$data = $this->post();
+	//	$this->response($data);
 		try {
 			$cart  = new Cart($data);
+		
 			if(!$cart->is_valid())
-				$this->response(array('error' => $cart->errors->full_messages()), 500);
+				$this->response_error($cart->errors->full_messages());
 			$cart->save();
 			
 			$this->response($cart->to_array(), 200);
@@ -49,8 +50,11 @@ class Shoppingcart extends REST_Controller
 			$id = ($id = $this->uri->rsegment(3)) ? $id : $this->response(array('error' => 'provide the id please'), 500);
 			try {
 				$cart = Cart::find($id);
+				$tmp_cart = $cart->to_array();
 				$cart->delete();
-				$this->response($cart->to_array(), 200);
+				$this->_hook_caller(emlement('type', $temp_cart), $cart, 'delete_item', $temp_cart );
+				$this->response($tmp_cart, 200);
+				
 			} catch (Exception $e) {
 				$this->response(array('error' => $e->getMessage()));
 			}
@@ -70,7 +74,6 @@ class Shoppingcart extends REST_Controller
 			$post = $this->post();
 			$post['cart_id'] = $cart->id;
 			$post = $this->_hook_caller($post['type'], 'add_item', $post);
-			
 			$new_item = Cart_item::create($post);
 			
 			if(!$new_item->is_valid())
@@ -86,7 +89,6 @@ class Shoppingcart extends REST_Controller
 		$id = $this->uri->rsegment(3);
 		$post = $this->post();
 		try {
-			
 			$item = Cart_item::find($id);
 			// what ever check the cart first
 			try {
@@ -94,15 +96,17 @@ class Shoppingcart extends REST_Controller
 			} catch (Exception $e) {
 				throw $e;
 			}
-			
+		
 			// everything good so update the cart
 			try {
+				$post = array_merge($item->to_array(array('include' => array('cart'))), $post);
+				$post = $this->_hook_caller(element('type', $post), 'update_item' , $post);
+				if(isset($post['cart']))  unset($post['cart']);
 				$item->update_attributes($post);
 				if(!$item->is_valid())
 					throw new Exception(implode(',', $item->errors->full_messages()));
 				$item->save();
 				$updated_item = $item->to_array(array('include' => array('cart')));
-				$this->_hook_caller(element('type', $updated_item), 'update_item' , $updated_item);
 				$this->response($updated_item);
 			} catch (Exception $e) {
 				throw $e;
@@ -111,15 +115,15 @@ class Shoppingcart extends REST_Controller
 			$this->response_error($e->getMessage());
 		}
 	}
-	public function delete_item_delete()
+	public function delete_item_get()
 	{
 		$id = $this->uri->rsegment(3);
 		try {
 			$item = Cart_item::find($id);
-			$item->delete();
 			$old_item = $item->to_array();
 			$this->_hook_caller(element('type', $old_item), 'delete_item' , $old_item);
-			$this->response($$old_item);
+			$item->delete();
+			$this->response($old_item);
 		} catch (Exception $e) {
 			$this->response_error($e->getMessage());
 		}

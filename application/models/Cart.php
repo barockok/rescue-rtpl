@@ -16,4 +16,16 @@ class Cart extends ActiveRecord\Model
 	{
 		$this->id = random_string('unique');
 	}
+	
+	public function validate()
+	{
+		try {
+			$user = User::find($this->user_id);
+		} catch (Exception $e) {
+			$this->errors->add('user_id', $e->getMessage());
+		}
+		// valid currency
+		$currencies = array('IDR');
+		if(!in_array($this->currency, $currencies )) $this->errors->add('currency', 'we curently cannot serve with '.$this->currency.' currency');
+	}
 }

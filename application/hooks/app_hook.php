@@ -8,12 +8,16 @@ class App_hook
 	}
 	public function initial_overide_php_setting()
 	{
-		ini_set('display_errors','On'); 
+		if(WORKING_STATUS != true){
+			ini_set('display_errors','Off'); 
 		
-	//	error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
-	//	register_shutdown_function('_shutdown_handler');
-	//	set_error_handler('_error_handler');
-	//	set_exception_handler('exception_handler');
+			error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
+			register_shutdown_function('_shutdown_handler');
+			set_error_handler('_error_handler');
+			set_exception_handler('exception_handler');
+		}
+		else
+			ini_set('display_errors','On'); 
 		
 	}
 	public function post_controller_constructor()
@@ -92,7 +96,8 @@ function _output_error($data = array(), $http_code = 500, $error_data = FALSE, $
 		$output = json_encode($data);
 		header('HTTP/1.1: ' . $http_code);
 		header('Status: ' . $http_code);
-		header('Content-Length: ' . strlen($output));
+		if(WORKING_STATUS != true)
+			header('Content-Length: ' . strlen($output));
 		if($exit == TRUE) exit($output);
 		echo print_r($data);
 	
