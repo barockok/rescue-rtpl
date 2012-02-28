@@ -8,9 +8,8 @@ class Comp_maskapai_base {
 	{
 		$this->_ci =& get_instance();
 		$this->_3th_party = './components/partner/third_party/comp_maskapai/';
-		
+		include_once dirname(__FILE__).'/AirlinesExceptions.php';
 	
-
 	}
 	public function setSearch($array = array())
 	{

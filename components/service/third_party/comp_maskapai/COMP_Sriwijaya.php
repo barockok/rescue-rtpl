@@ -387,7 +387,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$data['fare_id']			=	$this->fare_id;
 		$data['meta_data']			=	json_encode($this->meta_data);
 		$data['passangers']			=	$this->passangers;
-		$data['final_price']		=	$this->meta_data['price'];
+		$data['final_price']		=	$price;
 		//$data['limit'] 			=	$limit_time[0].' '.str_replace(' (GMT+0700)','',$limit_time[1]);
 		//$data['bookingDate']	=	$bookingDate;
 		//$data['status']			=	$status;
@@ -452,6 +452,9 @@ class Sriwijaya extends Comp_maskapai_base{
 		}else{
 			$final = $this->search();
 			$this->logOut();
+		}
+		if (count($final == 0) || is_array($final) == false) {
+			throw new ResultFareNotFound($opt);
 		}
 		return array_values($final);	
 	}
@@ -624,6 +627,15 @@ class Sriwijaya extends Comp_maskapai_base{
 	//return $metafinnal;
 		$this->selectSummary(element('2',$radioValue));
 		$booking = $this->booking();
+		$booking = $this->booking();
+		if (!is_array($booking)) {
+			throw new BookingFailed($fare_data);
+		}
+		if (element('price',$booking) > element('price',$forBooking)) {
+			throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+		}
+		$this->closing();
+		return $booking;
 		$this->logout();
 		return $booking;
 	}

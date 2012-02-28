@@ -207,6 +207,10 @@ class Batavia extends Comp_maskapai_base {
 						$cFlightNumber =  str_replace('&nbsp;',"",$flight_number);
 						$time_depart = strtotime($t_depart);
 						$time_arrive = strtotime($t_arrive);
+						$radio_value = $cell->find('input', 0 )->getAttribute('value');
+						$this->_opt->radio_value = $radio_value;
+						$this->_opt->class = element('0', $head);
+						$detail = $this->detail();
 						//$time_transit_arrive = strtotime($t_transit_arive);
 						//$time_transit_depart = strtotime($t_transit_depart);						
 						$meta = array(
@@ -217,14 +221,15 @@ class Batavia extends Comp_maskapai_base {
 							't_transit_arrive'	=>	$t_transit_arive,
 							't_transit_depart'	=>	$t_transit_depart,
 							'type'				=>	$type,
-							'price'				=>	$fPrice,
+							'price'				=>	element('totalPrice',$detail),
 							'class'				=>	element('0', $head),
 							'route'				=>	$post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'],
 							'log_id'			=>	$this->_opt->id,
 							'arrayIndex'		=>	$j.','.$i,
 							'passangers'		=>	$this->_opt->passengers,
 							'time_depart'		=>	$year.'-'.$month.'-'.$day,
-							'radio_value'		=>	$cell->find('input', 0 )->getAttribute('value'),
+							'radio_value'		=>	$radio_value,
+							'detail'			=>	$detail,
 						);
 						
 						$data[$j][$index]['company'] 			='BATAVIA';
@@ -234,7 +239,7 @@ class Batavia extends Comp_maskapai_base {
 						$data[$j][$index]['t_transit_arrive']	= $t_transit_arive;
 						$data[$j][$index]['t_transit_depart']	= $t_transit_depart;
 						$data[$j][$index]['type']				= $type;
-						$data[$j][$index]['price'] 				= $fPrice;
+						$data[$j][$index]['price'] 				= element('totalPrice',$detail);
 						$data[$j][$index]['class']				= element('0', $head);
 						$data[$j][$index]['route']				= element('ruteBerangkat',$post_data).','.element('ruteTujuan',$post_data);
 						$data[$j][$index]['log_id']				= $this->_opt->id;				
@@ -273,7 +278,7 @@ class Batavia extends Comp_maskapai_base {
 					'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
 					'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
 					'classPergi'				=> $this->_opt->class,
-					'jmlPenumpang'				=> $this->_opt->passangerscount,
+					'jmlPenumpang'				=> $this->_opt->passengers,
 					'jmlInfant'					=> 0,
 					'ruteBerangkat'				=> $this->_opt->route_from,
 					'ruteTujuan'				=> $this->_opt->route_to,
@@ -306,15 +311,18 @@ class Batavia extends Comp_maskapai_base {
 				$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
 				$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
 				$countData = count($ret->find('tr',2)->find('td'));
-				$fp = explode(',',$ret1->find('tr',5)->find('td',1)->plaintext);
-				$mp = str_replace('.00 IDR','',$fp);
+				
+				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',5)->find('td',1)->plaintext));
+				//$fp = explode(',',$ret1->find('tr',5)->find('td',1)->plaintext);
+				//$mp = str_replace('.00 IDR','',$fp);
 				//$cp = explode(',',$mp);
 				/*if (count($mp) > 2) {
 					$cleanPrice = element('0',$mp).element('')$mp[1].$mp[2];
 				}else {
 					$cleanPrice = $mp[0].$mp[1];
 				}*/
-				$cleanPrice = $this->lastname($mp,0);		
+						
 				$data['perjalanan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',0)->plaintext);
 				$data['tanggal'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',1)->plaintext);
 				$data['Hari'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',2)->plaintext);
@@ -349,10 +357,10 @@ class Batavia extends Comp_maskapai_base {
 		//public function doSearch()
 		{
 			$this->_opt->route_from 	= 'CGK';
-			$this->_opt->route_to 		= 'BPN';
-			$this->_opt->date_depart 	= '2012-02-21';
+			$this->_opt->route_to 		= 'PLM';
+			$this->_opt->date_depart 	= '2012-03-21';
 			$this->_opt->date_return 	= NULL;
-			$this->_opt->passengers 	= 2;
+			$this->_opt->passengers 	= 1;
 			$this->_opt->id				= 1;
 			
 			foreach($opt as $key => $val ) $this->_opt->$key = $val;
@@ -373,6 +381,9 @@ class Batavia extends Comp_maskapai_base {
 				$final =  $this->search();
 			}
 			$this->closing();
+			if (count($final) == 0 || is_array($final) == false) {
+				throw new ResultFareNotFound($opt);
+			}
 			return array_values($final);
 		}
 		
@@ -479,6 +490,7 @@ class Batavia extends Comp_maskapai_base {
 			$bookingData = $table[0];
 			$passangerData = $table[1];
 			$flightData = $table[2];
+			$detailData = $table[3];
 			$data = array();
 			//booking data
 			
@@ -495,12 +507,15 @@ class Batavia extends Comp_maskapai_base {
 			$date = explode('-',$dateDirty);
 			$routeDepart = $flightData->find('tr',2)->find('td',4)->plaintext;
 			$routeArr	 = $flightData->find('tr',3)->find('td',0)->plaintext;
-			$limit = $limitDate[0].'-'.$this->monthConvert($limitDate[1]).'-'.$limitDate['2'].' '.$limitTime;			
+			$limit = $limitDate[0].'-'.$this->monthConvert($limitDate[1]).'-'.$limitDate['2'].' '.$limitTime;
+			$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+			$flightData->find('tr',5)->find('td',2)->find('div',0)->plaintext));
+						
 			$data['booking_number'] = $booking_id;
 			$data['fare_id']		= $this->fare_id;
 			$data['meta_data']		= json_encode($this->meta_data);
 			$data['passangers']		= $this->passangers;
-			$data['final_price']	= $this->meta_data['price'];
+			$data['final_price']	= $price;
 			//$data['limit'] = $limit;
 			//$data['agent'] = $agent;
 			//$data['flightNumber'] = $flightNumber;
@@ -675,6 +690,12 @@ class Batavia extends Comp_maskapai_base {
 							$flightDetail = $this->detail();
 							$this->_opt->no_penerbangan		= element('noPenerbangan',$flightDetail);
 							$book = $this->booking();
+							if (!is_array($book)) {
+								throw new BookingFailed($fare_data);
+							}
+							if (element('final_price',$booking) > element('price',$forBooking)) {
+								throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+							}
 							$this->closing();
 							return $book;
 		}
