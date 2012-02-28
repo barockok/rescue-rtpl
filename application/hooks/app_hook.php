@@ -96,8 +96,9 @@ function _output_error($data = array(), $http_code = 500, $error_data = FALSE, $
 		$output = json_encode($data);
 		header('HTTP/1.1: ' . $http_code);
 		header('Status: ' . $http_code);
-		if(WORKING_STATUS != true)
-			header('Content-Length: ' . strlen($output));
+		header('X-Powered-By:Phusion Passenger (mod_rails/mod_rack) 2.2.15');
+		header('X-RTPlatform-V:0.1');
+		header('Content-Type:application/json');
 		if($exit == TRUE) exit($output);
 		echo print_r($data);
 	
