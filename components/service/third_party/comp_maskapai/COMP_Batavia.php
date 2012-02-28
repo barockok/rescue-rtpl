@@ -210,6 +210,7 @@ class Batavia extends Comp_maskapai_base {
 						$radio_value = $cell->find('input', 0 )->getAttribute('value');
 						$this->_opt->radio_value = $radio_value;
 						$this->_opt->class = element('0', $head);
+						$this->_opt->passangerscount = $this->_opt->passengers;
 						$detail = $this->detail();
 						//$time_transit_arrive = strtotime($t_transit_arive);
 						//$time_transit_depart = strtotime($t_transit_depart);						
@@ -278,7 +279,7 @@ class Batavia extends Comp_maskapai_base {
 					'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
 					'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
 					'classPergi'				=> $this->_opt->class,
-					'jmlPenumpang'				=> $this->_opt->passengers,
+					'jmlPenumpang'				=> $this->_opt->passangerscount,
 					'jmlInfant'					=> 0,
 					'ruteBerangkat'				=> $this->_opt->route_from,
 					'ruteTujuan'				=> $this->_opt->route_to,
@@ -391,15 +392,7 @@ class Batavia extends Comp_maskapai_base {
 			$dataPassanger = array();
 			$ip = 1;
 			foreach ($this->passangers as $key => $value){
-				$name = explode(' ',element('name',$value));
-				/*if (count($name) > 1) {
-					$namaDepan = $name[0];
-					$namaBelakang = $name[1];
-				}elseif (count($name) < 2){
-					$namaDepan = $name[0];
-					$namaBelakang = '';
-				}*/
-				
+				$name = explode(' ',element('name',$value));				
 				$dataPassanger['title'.$ip] = $value['title'].'.';
 				$dataPassanger['tfPaxdepan'.$ip] = element('0',$name);
 				$dataPassanger['tfPaxbelakang'.$ip] = $this->lastname($name,1);
@@ -464,15 +457,16 @@ class Batavia extends Comp_maskapai_base {
 			
 			$this->_ci->my_curl->setup($conf);
 		 	$exc = $this->_ci->my_curl->exc();
-			$res_info = $this->_ci->my_curl->res_info();
-			$this->topage($res_info->url, false);
 			return $exc;
+			//$res_info = $this->_ci->my_curl->res_info();
+			//print_r($res_info);
+			//$this->topage($res_info->url, false);
 			
 		}
 		
 		function lastname($array,$startIndex){
 			$name = '';
-			if (array_key_exists($startIndex)) {
+			if (array_key_exists($startIndex,$array)) {
 				for ($i=$startIndex; $i < count($array); $i++) { 
 					$name .= element($i,$array).' ';
 				}
@@ -539,12 +533,12 @@ class Batavia extends Comp_maskapai_base {
 				'id'		=>	7323,
 				'log_id'	=>	34,
 				'company'	=>	'BATAVIA',
-				't_depart'	=>	'2012-01-28 01:00:00',
-				't_arrive'	=>	'2012-01-28 03:40:00',
+				't_depart'	=>	'2012-03-21 01:00',
+				't_arrive'	=>	'2012-03-21 02:00',
 				'type'		=>	'depart',
-				'class'		=>	'Z',
-				'route'		=>	'CGK,DPS',
-				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"743","t_depart":"2012-01-28 01:00","t_arrive":"2012-01-28 03:40","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":436200,"class":"Z","route":"CGK,DPS","log_id":34,"arrayIndex":"2,5","passanger":1,"time_depart":"2012-01-28","radio_value":"25171533"}',
+				'class'		=>	'P',
+				'route'		=>	'CGK,PLM',
+				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-21 01:00","t_arrive":"2012-03-21 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":"375400","class":"P","route":"CGK,PLM","log_id":1,"arrayIndex":"1,7","passangers":1,"time_depart":"2012-3-21","radio_value":"24519016","detail":{"perjalanan":"Berangkat","tanggal":"21-March-12 ","Hari":"Wednesday ","transit":"-","rute":"CGK-PLM ","noPenerbangan":"Y6-515 ","keterangan":"ETDJakarta (CGK) 13.00 LT ETAPalembang (PLM) 14.00 LT","price":"331,727.00 IDR","class":"P","totalPrice":"375400","maskapai":"Batavia"}}',
 				't_transit_arrive'	=>	'',
 				't_transit_depart'	=>	'',
 				'price'				=>	'436200',
@@ -554,7 +548,7 @@ class Batavia extends Comp_maskapai_base {
 					'date_depart'		=>	'2012-01-28 00:00:00',
 					'date_return'		=>	'',
 					'route_from'		=>	'CGK',
-					'route_to'			=>	'DPS',
+					'route_to'			=>	'PLM',
 					'passangers'		=>	1,
 					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
 					'c_time'			=>	'2011-12-20 11:56:15',
@@ -601,106 +595,92 @@ class Batavia extends Comp_maskapai_base {
 		}
 		
 		function doBooking($fare_data,$passangers_data,$customer_data){
-			/*		function doBooking(){
-						$fare_data = array(
-							'id'		=>	7323,
-							'log_id'	=>	34,
-							'company'	=>	'BATAVIA',
-							't_depart'	=>	'2012-12-31 01:00:00',
-							't_arrive'	=>	'2012-12-31 03:40:00',
-							'type'		=>	'depart',
-							'class'		=>	'R',
-							'route'		=>	'CGK,DPS',
-							'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2011-12-31 01:00","t_arrive":"2011-12-31 02:05","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":872400,"class":"X","route":"CGK,PLM","log_id":1,"arrayIndex":"1,9","passangers":2,"time_depart":"2011-12-31","radio_value":"13898970"}',
-							't_transit_arrive'	=>	'',
-							't_transit_depart'	=>	'',
-							'price'				=>	'615500',
-							'flight_no'			=>	'743',
-							'log'				=>	array(
-								'id'				=>	34,
-								'date_depart'		=>	'2012-01-28 00:00:00',
-								'date_return'		=>	'',
-								'route_from'		=>	'CGK',
-								'route_to'			=>	'DPS',
-								'passangers'		=>	1,
-								'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-								'c_time'			=>	'2011-12-20 11:56:15',
-								'max_fare'			=>	5,
-								'actor'				=> 'CUS',
-							),
-						);
+		//function doBooking(){
+			/*$fare_data = array(
+				'id'		=>	7323,
+				'log_id'	=>	34,
+				'company'	=>	'BATAVIA',
+				't_depart'	=>	'2012-03-21 01:00',
+				't_arrive'	=>	'2012-03-21 02:00',
+				'type'		=>	'depart',
+				'class'		=>	'P',
+				'route'		=>	'CGK,PLM',
+				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-21 01:00","t_arrive":"2012-03-21 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":"375400","class":"P","route":"CGK,PLM","log_id":1,"arrayIndex":"1,7","passangers":1,"time_depart":"2012-3-21","radio_value":"24519016","detail":{"perjalanan":"Berangkat","tanggal":"21-March-12 ","Hari":"Wednesday ","transit":"-","rute":"CGK-PLM ","noPenerbangan":"Y6-515 ","keterangan":"ETDJakarta (CGK) 13.00 LT ETAPalembang (PLM) 14.00 LT","price":"331,727.00 IDR","class":"P","totalPrice":"375400","maskapai":"Batavia"}}',
+				't_transit_arrive'	=>	'',
+				't_transit_depart'	=>	'',
+				'price'				=>	'436200',
+				'flight_no'			=>	'743',
+				'log'				=>	array(
+					'id'				=>	34,
+					'date_depart'		=>	'2012-01-28 00:00:00',
+					'date_return'		=>	'',
+					'route_from'		=>	'CGK',
+					'route_to'			=>	'PLM',
+					'passangers'		=>	1,
+					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
+					'c_time'			=>	'2011-12-20 11:56:15',
+					'max_fare'			=>	5,
+					'actor'				=> 'CUS',
+				),
+			);
 
-						$passangers_data = array(
-							array(
-									'title' 			=>	'Mr',
-									'name' 				=>	'Zidni Mubarock',
-									'no_id'				=>	'3671081902880001',
+				$passangers_data = array(
+					array(
+						'title' 			=>	'Mr',
+						'name' 				=>	'Mubarock Zidni',
+						'no_id'				=>	'3671081902880001',
+					),
+				);
 
-							),
-							array(
-									'title' 			=>	'Mr',
-									'name' 				=>	'Fauzan Qadri',
-									'no_id'				=>	'3671081902880001',
-
-							),
-						);
-
-						$customer_data = array(
-							'f_name'	=>	'Zidni',
-							'l_name'	=>	'Mubarok',
-							'email'		=>	'zidmubarock@gmail.com',
-							'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
-							'role_id'	=>	1,
-							'c_time'	=>	'2011-12-11 21:04:04',
-							'm_time'	=>	'',
-							'status'	=>	'active',
-							'actv_key'	=>	'',
-
-							'user_detail'	=> 	array(
-								'user_id'	=>	26,
-								//'no_id'		=>	'3671081902880001'
-								'phone'		=>	'0215579315134',
-								'mobile'	=>	'0215579315134',
-								'address'	=>	'jalan anggrek no',
-								'gender'	=>	'M',
-
-							),
-
-						);
-						*/
-							$this->login();
-							$forBooking = json_decode($fare_data['meta_data'],1);
-							//$route = explode(',',$forBooking['route']);
-							$log = element('log',$fare_data);
-							$route_from = element('route_from',$log);
-							$route_to	= element('route_to',$log);
-							$date_depart = element('time_depart',$forBooking);
-							$passanger	 = element('passangers',$forBooking);
-							$this->passangers = $passangers_data;
-							$this->user	= $customer_data;
-							$this->fare_id = element('id',$fare_data);
-							$this->meta_data = $forBooking;
-
-							$this->_opt->radio_value		= element('radio_value',$forBooking);
-							$this->_opt->route_from 		= $route_from;
-							$this->_opt->route_to 			= $route_to;
-							$this->_opt->date_depart 		= $date_depart;
-							$this->_opt->class 				= element('class',$forBooking);
-							$this->_opt->passangerscount	= count($this->passangers);
-							$flightDetail = $this->detail();
-							$this->_opt->no_penerbangan		= element('noPenerbangan',$flightDetail);
-							$book = $this->booking();
-							if (!is_array($book)) {
-								throw new BookingFailed($fare_data);
-							}
-							if (element('final_price',$booking) > element('price',$forBooking)) {
-								throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
-							}
-							$this->closing();
-							return $book;
+				$customer_data = array(
+					'f_name'	=>	'Mubarok',
+					'l_name'	=>	'Zidni',
+					'email'		=>	'zidmubarock@gmail.com',
+					'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
+					'role_id'	=>	1,
+					'c_time'	=>	'2011-12-11 21:04:04',
+					'm_time'	=>	'',
+					'status'	=>	'active',
+					'actv_key'	=>	'',
+					'user_detail'	=> 	array(
+						'user_id'	=>	26,
+						'phone'		=>	'0215579315134',
+						'mobile'	=>	'0215579315134',
+						'address'	=>	'jalan anggrek no',
+						'gender'	=>	'M',
+					),
+				);*/
+			//	$this->login();
+			$forBooking = json_decode($fare_data['meta_data'],1);
+			$log = element('log',$fare_data);
+			$route_from = element('route_from',$log);
+			$route_to	= element('route_to',$log);
+			$date_depart = element('time_depart',$forBooking);
+			$passanger	 = element('passangers',$forBooking);
+			$this->passangers = $passangers_data;
+			$this->user	= $customer_data;
+			$this->fare_id = element('id',$fare_data);
+			$this->meta_data = $forBooking;
+			$this->_opt->radio_value		= element('radio_value',$forBooking);
+			$this->_opt->route_from 		= $route_from;
+			$this->_opt->route_to 			= $route_to;
+			$this->_opt->date_depart 		= $date_depart;
+			$this->_opt->class 				= element('class',$forBooking);
+			$this->_opt->passangerscount	= count($this->passangers);
+			$this->_opt->no_penerbangan		= element('noPenerbangan',element('detail',$forBooking));
+			$flightDetail = $this->detail();
+			$book = $this->booking();
+			if (!is_array($book)) {
+				throw new BookingFailed($fare_data);
+			}
+			if (element('final_price',$booking) > element('price',$forBooking)) {
+				throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+			}
+			$this->closing();
+			return $book;
 		}
 
-		function multidimensional_search($parents, $searched) { 
+		function multidimensional_search($parents, $searched){ 
 		 	  if (empty($searched) || empty($parents)) { 
 			    return 'nothing'; 
 			  } 

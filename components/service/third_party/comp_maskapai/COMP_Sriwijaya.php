@@ -2,7 +2,7 @@
 
 class Sriwijaya extends Comp_maskapai_base{
 	
-	private $username 			= 'idbooking6';
+	private $username 			= 'idbooking5';
 	private $password 			= 'indonesia';
 	private $_default_url 		= 'https://agent.sriwijayaair.co.id/b2b/secure/home.jsp';
 	private $_login_url 		= 'https://agent.sriwijayaair.co.id/b2b/secure/j_security_check';
@@ -429,7 +429,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	{
 		$this->_opt->route_from 	= 'CGK';
 		$this->_opt->route_to 		= 'BPN';
-		$this->_opt->date_depart 	= '2012-02-25';
+		$this->_opt->date_depart 	= '2012-03-25';
 		$this->_opt->date_return 	= NULL;
 		$this->_opt->passengers 	= 1;
 		$this->_opt->id				= 1;		
@@ -453,7 +453,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			$final = $this->search();
 			$this->logOut();
 		}
-		if (count($final == 0) || is_array($final) == false) {
+		if (count($final) == 0 || is_array($final) == false) {
 			throw new ResultFareNotFound($opt);
 		}
 		return array_values($final);	
@@ -538,16 +538,16 @@ class Sriwijaya extends Comp_maskapai_base{
 			't_depart'	=>	'2012-01-31 06:10',
 			't_arrive'	=>	'2012-01-31 09:10',
 			'type'		=>	'depart',
-			'class'		=>	'W',
+			'class'		=>	'G',
 			'route'		=>	'CGK,BPN',
-			'meta_data'	=>	 '{"company":"SRIWIJAYA","flight_no":"SJ 160","t_depart":"2012-01-31 06:10","t_arrive":"2012-01-31 09:10","type":"depart","class":"W","price":1612000,"route":"CGK,BPN","t_transit_arrive":null,"t_transit_depart":null,"log_id":1,"arrayIndex":"0,14","radio_value":"4addddfc-f73c-4e41-acea-f4559c14d381|5d6eabe4-4751-4154-a014-94bc0d581947|cf938774-fef9-42e5-98d6-c6d9d24d7fbb","time_depart":"2012-1-31","passangers":1}',
+			'meta_data'	=>	 '{"company":"SRIWIJAYA","flight_no":"SJ 160","t_depart":"2012-03-25 06:10","t_arrive":"2012-03-25 09:10","type":"depart","class":"G","price":652000,"route":"CGK,BPN","t_transit_arrive":null,"t_transit_depart":null,"log_id":1,"arrayIndex":"0,4","radio_value":"bdc3e6a3-6cfb-4b8d-a086-e00d3eaf556c|8f00af66-94ba-4987-a3ff-5f6983a91ad8|6c1db049-d518-4c10-88ab-e77950b5a095","time_depart":"2012-3-25","passangers":1}',
 			't_transit_arrive'	=>	'',
 			't_transit_depart'	=>	'',
 			'price'				=>	'1612000',
 			'flight_no'			=>	'SJ 160',
 			'log'				=>	array(
 				'id'				=>	34,
-				'date_depart'		=>	'2012-01-31 00:00:00',
+				'date_depart'		=>	'2012-03-31 00:00:00',
 				'date_return'		=>	'',
 				'route_from'		=>	'CGK',
 				'route_to'			=>	'BPN',
@@ -623,10 +623,8 @@ class Sriwijaya extends Comp_maskapai_base{
 		$this->data = array(
 			$radioValue[1]	=> $metafinnal[$arrayIndex-1]['radio_value'],
 		);
-	//print_r($this->data);
-	//return $metafinnal;
+		
 		$this->selectSummary(element('2',$radioValue));
-		$booking = $this->booking();
 		$booking = $this->booking();
 		if (!is_array($booking)) {
 			throw new BookingFailed($fare_data);
@@ -634,8 +632,6 @@ class Sriwijaya extends Comp_maskapai_base{
 		if (element('price',$booking) > element('price',$forBooking)) {
 			throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
 		}
-		$this->closing();
-		return $booking;
 		$this->logout();
 		return $booking;
 	}
