@@ -300,6 +300,8 @@ class REST_Controller extends CI_Controller {
 
 		header('HTTP/1.1: ' . $http_code);
 		header('Status: ' . $http_code);
+		header('X-Powered-By:Phusion Passenger (mod_rails/mod_rack) 2.2.15');
+		header('X-RTPlatform-V:0.1');
 	//	if(WORKING_STATUS != true)
 	//	header('Content-Length: '.strlen($output));
 	//	$this->output->set_output($output);
