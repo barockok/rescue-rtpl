@@ -606,12 +606,10 @@ echo "</pre>";
 	
 		
 	}
-	public function testcurl()
+	public function test_login()
 	{
-		echo 'curl';
-		$this->load->library('acurl');
-		echo $this->acurl->simple_get('http://id.tiket.com/search/hotel?q=Bandung&startdate=2012-03-26&enddate=2012-03-31+00%3A00%3A00&room=1&adult=1&child=0&uid=city%3A165');
-		$this->acurl->debug();
+		$this->rest->post('user/auth/login/format/json', array('user' => array('email' => 'zidmubarock@gmail.com', 'password' => 'alzid4ever')));
+		$this->rest->debug();
 	}
 	
 
