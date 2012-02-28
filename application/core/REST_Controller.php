@@ -302,8 +302,9 @@ class REST_Controller extends CI_Controller {
 		header('Status: ' . $http_code);
 	//	if(WORKING_STATUS != true)
 	//	header('Content-Length: '.strlen($output));
-	
-		exit($output);
+		$this->output->set_output($output);
+		echo $this->output->get_output();
+		//exit($output);
 	}
 
 	/*
