@@ -236,9 +236,9 @@ class Citilink extends Comp_maskapai_base {
 			'toAirport'						=>	$this->_opt->route_to,
 			'dateFrom'						=>	element('0',$dateExplode).$this->dateAdd(element('1',$dateExplode)).$this->dateAdd(element('2',$dateExplode)),
 			'dateTo'						=>	'',
-			'iAdult'						=>	$this->_opt->adult,
-			'iChild'						=>	$this->_opt->child,
-			'iInfant'						=>	$this->_opt->infant,
+			'iAdult'						=>	$this->_opt->passengers,
+			'iChild'						=>	0,
+			'iInfant'						=>	0,
 			'BDClass'						=>	'Y',
 			'isSearchGroup'					=>	0,
 			'FareSelect'					=>	'',
@@ -293,7 +293,7 @@ class Citilink extends Comp_maskapai_base {
 			$price_dirt = str_replace('.00 IDR','',$price_dirty);
 			$price_dir = str_replace(',','',$price_dirt);
 			$price_di = str_replace('</input>','',$price_dir);
-			//$price = ($price_di+10000+6000)*$this->_opt->passengers;
+			$price = $price_di*$this->_opt->passengers;
 			$jml_kursi = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',6)->plaintext),1);
 			$time_depart = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',2)->plaintext),5);
 			$time_arrive = str_split(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$flight_data[$i]->find('td',3)->plaintext),5);
@@ -324,9 +324,9 @@ class Citilink extends Comp_maskapai_base {
 			}
 			
 			$radio_value = $flight_data[$i]->find('td',7)->find('input',0)->getAttribute('value');
-			$this->_opt->radioValue = $radio_value;
-			$this->_opt->time_depart = str_replace(':','_',element('0',$time_depart));
-			$detailData = $this->parsDetail();
+			//$this->_opt->radioValue = $radio_value;
+			//$this->_opt->time_depart = str_replace(':','_',element('0',$time_depart));
+			//$detailData = $this->parsDetail();
 			
 			$meta = array(
 				'company'			=>	'CITILINK',
@@ -337,17 +337,17 @@ class Citilink extends Comp_maskapai_base {
 				't_transit_arrive'	=>	$t_transit_arrive,					
 				'type'				=>	$type,
 				'class'				=>	$class,
-				'price'				=>	element('price',$detailData),
+				'price'				=>	$price,
 				'route'				=>	$this->_opt->route_from.','.$this->_opt->route_to,
 				'radio_value'		=>	$radio_value,
 				'log_id'			=>	$this->_opt->id,
 				'arrayIndex'		=>	$i,
 				'time_depart'		=>	element('2',$date).'-'.element('1',$date).'-'.element('0',$date),
-				'passangers'		=>	$this->_opt->adult+$this->_opt->child+$this->_opt->infant,
-				'adult'				=> 	$this->_opt->adult,
-				'child'				=>	$this->_opt->child,
-				'infant'			=>	$this->_opt->infant,
-				'detail'			=>	$detailData,
+				'passangers'		=>	$this->_opt->passengers,
+				//'adult'				=> 	$this->_opt->adult,
+				//'child'				=>	$this->_opt->child,
+				//'infant'			=>	$this->_opt->infant,
+				//'detail'			=>	$detailData,
 			);
 			$data[$i]['company'] 			= 'CITILINK';
 			$data[$i]['flight_no'] 			= $flightNo;
@@ -357,7 +357,7 @@ class Citilink extends Comp_maskapai_base {
 			$data[$i]['t_transit_arrive'] 	= $t_transit_arrive;
 			$data[$i]['type'] 				= $type;
 			$data[$i]['class'] 				= $class;
-			$data[$i]['price'] 				= element('price',$detailData);
+			$data[$i]['price'] 				= $price;
 			$data[$i]['route'] 				= $this->_opt->route_from.','.$this->_opt->route_to;
 			$data[$i]['log_id']				= $this->_opt->id;
 			$data[$i]['meta_data']			= json_encode($meta);
@@ -371,10 +371,12 @@ class Citilink extends Comp_maskapai_base {
 		$this->_opt->route_to 		= 'MES';
 		$this->_opt->date_depart 	= '2012-03-14';
 		$this->_opt->date_return 	= '2012-03-26';
-		$this->_opt->adult		 	= 2;
+		$this->_opt->passengers		= 2;
+		$this->_opt->id				= 1;
+		/*$this->_opt->adult		 	= 2;
 		$this->_opt->child 			= 0;
 		$this->_opt->infant		 	= 0;
-		$this->_opt->id				= 1;
+		$this->_opt->id				= 1;*/
 		
 		$this->roundTrip 			= false;
 		$this->login();
@@ -449,7 +451,7 @@ class Citilink extends Comp_maskapai_base {
 		$page = str_get_html($str);
 	}
 	
-	function getDetail(){
+	function detail(){
 		$this->getStep3();
 		$header = array(
 			"Content-Type:application/json; charset=UTF-8",
@@ -476,7 +478,7 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	function parsDetail(){
-		$page = $this->getDetail();
+		$page = $this->detail();
 		$errPage = $page->find('div[class=WrapperTBLStep3] span[id=ctl00_GridItinerary]',0)->plaintext;
 		if ($errPage == 'Missing xml data and xls file') {return array();}
 		$table1 = $page->find('div[class=WrapperTBLStep3] span tbody',0);
@@ -500,19 +502,105 @@ class Citilink extends Comp_maskapai_base {
 			$passDetail[$index]['pax']	=	$tax;
 			$passDetail[$index]['ppn']	=	$ppn;
 			if ($passType=='ADULT') {
-				$price = ($pricePerson+$tax+$ppn)*$this->_opt->adult;
-			}else if($passType=='CHD'){
+				$price = ($pricePerson+$tax+$ppn)*$this->_opt->passengers;
+			}/*else if($passType=='CHD'){
 				$price = ($pricePerson+$tax+$ppn)*$this->_opt->child;
 			}else if ($passType=='INF') {
 				$price = ($pricePerson+$tax+$ppn)*$this->_opt->infant;
-			}
+			}*/
 			$passDetail[$index]['total_per_type'] = $price;
 			$totalPirice[$index] = $price;
 			$passDetail['price'] = array_sum($totalPirice);
 			$index++;
 		}
+		//$price = array_sum($totalPirice);
+		
+		$metaArray = json_decode(element('meta_data',$this->fare_data),1);
+		$meta = array(
+			'comapny'			=>	element('company',$this->fare_data),
+			'flight_no'			=>	element('flight_no',$this->fare_data),
+			't_depart'			=>	element('t_depart',$this->fare_data),
+			't_arrive'			=>	element('t_arrive',$this->fare_data),
+			't_transit_arrive'	=>	element('t_transit_arrive',$this->fare_data),
+			't_transit_depart'	=>	element('t_transit_depart',$this->fare_data),
+			'type'				=>	element('type',$this->fare_data),
+			'price'				=>	element('price',$passDetail),
+			'class'				=>	element('class',$this->fare_data),
+			'route'				=>	element('route',$this->fare_data),
+			'log_id'			=>	element('log_id',$this->fare_data),
+			'arrayIndex'		=>	element('arrayIndex',$metaArray),
+			'passangers'		=>	$this->_opt->passengers,
+			//'adult'				=>	$this->_opt->adult,
+			//'child'				=> 	$this->_opt->child,
+			//'infant'			=>	$this->_opt->infant,
+			'time_depart'		=>	$this->_opt->date_depart,
+			'radio_value'		=>	$this->_opt->radioValue,
+			'price_detail'		=>	$passDetail
+		);
+		
+		$fare_data['id'] = element('id',$this->fare_data);
+		$fare_data['log_id'] = element('log_id',$this->fare_data);
+		$fare_data['company'] = element('company',$this->fare_data);
+		$fare_data['flight_no'] = element('flight_no',$this->fare_data);
+		$fare_data['t_depart'] = element('t_depart',$this->fare_data);
+		$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
+		$fare_data['type'] = element('type',$this->fare_data);
+		$fare_data['class'] = element('class',$this->fare_data);
+		$fare_data['route'] = element('route',$this->fare_data);
+		$fare_data['t_transit_arrive'] = element('t_transit_arrive',$this->fare_data);
+		$fare_data['t_transit_depart'] = element('t_transit_depart',$this->fare_data);
+		$fare_data['price'] = element('price',$passDetail);
+		$fare_data['meta_data'] = json_encode($meta);
+		$fare_data['log'] = element('log',$this->fare_data);
+		return $fare_data;
 		$this->backToResult();
 		return $passDetail;
+	}
+	
+	public function getDetail($fare_data = array()){
+		/*$fare_data = array(
+			'id'		=>	7323,
+			'log_id'	=>	34,
+			'company'	=>	'CITILINK',
+			't_depart'	=>	'2012-03-25 05:20',
+			't_arrive'	=>	'2012-03-25 07:35',
+			'type'		=>	'depart',
+			'class'		=>	'M',
+			'route'		=>	'CGK,MES',
+			'meta_data'	=>	 '{"company":"CITILINK","flight_no":"GA040","t_depart":"2012-03-14 05:20","t_arrive":"2012-03-14 07:35","t_transit_depart":null,"t_transit_arrive":null,"type":"depart","class":"R","price":1076000,"route":"CGK,MES","radio_value":"{10D8D774-DF46-43C2-9532-331C0E830881}|{C60DBA6A-5F0D-11DF-8E35-18A905E04790}||","log_id":1,"arrayIndex":1,"time_depart":"2012-03-14","passangers":2}',
+			't_transit_arrive'	=>	'',
+			't_transit_depart'	=>	'',
+			'price'				=>	'1076000',
+			'flight_no'			=>	'GA040',
+			'log'				=>	array(
+				'id'				=>	34,
+				'date_depart'		=>	'2012-03-25 00:00:00',
+				'date_return'		=>	'',
+				'route_from'		=>	'CGK',
+				'route_to'			=>	'MES',
+				'passangers'		=>	1,
+				'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
+				'c_time'			=>	'2011-12-20 11:56:15',
+				'max_fare'			=>	5,
+				'actor'				=> 'CUS',
+			),
+		);*/
+		$this->login();
+		$meta_data = json_decode(element('meta_data',$fare_data),1);
+		$log = element('log',$fare_data);
+		
+		$this->_opt->radioValue = element('radio_value',$meta_data);
+		$this->_opt->date_depart = element('time_depart',$meta_data);
+		$this->_opt->time_depart = str_replace(":","_",element('1',explode(' ',element('t_depart',$meta_data))));
+		$this->_opt->route_from 	= element('route_from',$log);
+		$this->_opt->route_to 		= element('route_to',$log);
+		$this->_opt->date_return 	= NULL;
+		$this->_opt->passengers		= element('passangers',$meta_data);
+		$this->fare_data = $fare_data;
+		$this->forBooking();
+ 		$res = $this->parsDetail();
+		$this->logout();
+		return $res;
 	}
 	
 	function loadStep4(){
@@ -532,7 +620,7 @@ class Citilink extends Comp_maskapai_base {
 		if (!$table) {return false;}
 		$data = array();
 		$index = 0;
-		for ($i=1; $i <= $this->_opt->passangerTotal; $i++) {
+		for ($i=1; $i <= $this->_opt->passengers; $i++) {
 			$passId = $table->find('input[id=uxPassengerID]',$i-1)->getAttribute('value');
 			$passType = $table->find('input[id=uxPassengerType_'.$i.']',0)->getAttribute('value');
 			$data[$index] = array(
@@ -734,10 +822,12 @@ class Citilink extends Comp_maskapai_base {
 		$bookingDate = $page->find('div[class=WrapperBody] div[class=BookingRefIteneraryDate]',0)->plaintext;
 		$bookingInfo = $table[0];
 		$passangerInfo = $table[1];
+		$detailInfo = $table[2];
 		$countPassanger = count($passangerInfo->find('tr'));
 		$data = array();
-		//$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(',','',str_replace('.00','',str_replace('Total Harga','',
-		//$table[2]->find('tr',6)->find('td',4)->find('span[class=FooterTotalLabel]',0)->plaintext))));
+		
+		$price = $this->cleanString(preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(',','',str_replace('.00','',str_replace('Total Harga','',
+		$table[2]->find('tr',6)->find('td',4)->find('span[class=FooterTotalLabel]',0)->plaintext)))));
 		
 		$flightNumber = $bookingInfo->find('tr',1)->find('td',0)->plaintext;
 		$routeFrom = $bookingInfo->find('tr',1)->find('td',1)->plaintext;
@@ -752,7 +842,7 @@ class Citilink extends Comp_maskapai_base {
 		$data['fare_id']			=	$this->fare_id;
 		$data['meta_data']			=	json_encode($this->meta_data);
 		$data['passangers']			=	$this->passangers;
-		$data['final_price']		=	element('price',$this->meta_data);
+		$data['final_price']		=	$price;
 		//$data['flightNumber'] = $flightNumber;
 		//$data['price']	=	$price;
 		//$data['routeFrom'] = $routeFrom;
@@ -780,7 +870,7 @@ class Citilink extends Comp_maskapai_base {
 	function booking(){
 		$this->login();
 		$this->search();
-		$this->getDetail();
+		$this->detail();
 		$this->savestep4();
 		$this->loadssr();
 		$this->loadstep5();
@@ -790,7 +880,7 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	function doBooking($fare_data = array(),$passangers_data = array(),$customer_data = array()){
-		$fare_data = array(
+		/*$fare_data = array(
 			'id'		=>	7323,
 			'log_id'	=>	34,
 			'company'	=>	'CITILINK',
@@ -799,10 +889,10 @@ class Citilink extends Comp_maskapai_base {
 			'type'		=>	'depart',
 			'class'		=>	'M',
 			'route'		=>	'CGK,MES',
-			'meta_data'	=>	 '',
+			'meta_data'	=>	 '{"comapny":"CITILINK","flight_no":"GA040","t_depart":"2012-03-25 05:20","t_arrive":"2012-03-25 07:35","t_transit_arrive":false,"t_transit_depart":false,"type":"depart","price":1197600,"class":"M","route":"CGK,MES","log_id":34,"arrayIndex":1,"passangers":2,"time_depart":"2012-03-14","radio_value":"{10D8D774-DF46-43C2-9532-331C0E830881}|{C60DBA6A-5F0D-11DF-8E35-18A905E04790}||","price_detail":{"0":{"passanger_type":"ADULT","price_per_pax":"538000","pax":"7000","ppn":"53800","total_per_type":1197600},"price":1197600}}',
 			't_transit_arrive'	=>	'',
 			't_transit_depart'	=>	'',
-			'price'				=>	'1875200',
+			'price'				=>	'1197600',
 			'flight_no'			=>	'GA040',
 			'log'				=>	array(
 				'id'				=>	34,
@@ -821,6 +911,12 @@ class Citilink extends Comp_maskapai_base {
 			array(
 					'title' 			=>	'Mr',
 					'name' 				=>	'Zidni Mubarock',
+					'no_id'				=>	'3671081902880001',
+
+			),
+			array(
+					'title' 			=>	'Mr',
+					'name' 				=>	'Fauzan Qadri',
 					'no_id'				=>	'3671081902880001',
 
 			),
@@ -847,7 +943,7 @@ class Citilink extends Comp_maskapai_base {
 								
 			),
 			
-		);
+		);*/
 		
 		$this->passangers = $passangers_data;
 		$this->user = $customer_data;
@@ -865,15 +961,23 @@ class Citilink extends Comp_maskapai_base {
 		$this->_opt->route_to 		= $route_to;
 		$this->_opt->date_depart 	= element('time_depart',$forBooking);
 		$this->_opt->date_return 	= NULL;
-		$this->_opt->adult		 	= element('adult',$forBooking);
+		$this->_opt->id				= element('log_id',$forBooking);
+		$this->_opt->passengers		= element('passangers',$forBooking);
+		/*$this->_opt->adult		 	= element('adult',$forBooking);
 		$this->_opt->child		 	= element('child',$forBooking);
 		$this->_opt->infant		 	= element('infant',$forBooking);
-		$this->_opt->id				= element('log_id',$forBooking);
+		$this->_opt->id				= element('log_id',$forBooking);*/
 		$this->_opt->radioValue		= element('radio_value',$forBooking);
 		$this->_opt->time_depart	= $time_depart;
-		$this->_opt->passangerTotal = $this->_opt->passengers+$this->_opt->child+$this->_opt->child;
+		//$this->_opt->passangerTotal = $this->_opt->passengers+$this->_opt->child+$this->_opt->child;
 		$data = $this->booking();
 		$this->logout();
+		if (is_array($data) == false) {
+			throw new BookingFailed($fare_data);
+		}
+		if (element('final_price',$data) > element('price',$fare_data)) {
+			throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+		}
 		return $data;
 	}
 }
