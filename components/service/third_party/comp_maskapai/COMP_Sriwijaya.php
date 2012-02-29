@@ -286,7 +286,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	
 	public function getDetail($fare_data = array())
 	{
-		$fare_data = array(
+		/*$fare_data = array(
 			'id'		=>	7323,
 			'log_id'	=>	34,
 			'company'	=>	'SRIWIJAYA',
@@ -312,7 +312,7 @@ class Sriwijaya extends Comp_maskapai_base{
 				'max_fare'			=>	5,
 				'actor'				=> 'CUS',
 			),
-		);
+		);*/
 		
 		$meta_data = json_decode(element('meta_data',$fare_data),1);
 		$log = element('log',$fare_data);
