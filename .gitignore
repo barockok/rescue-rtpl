@@ -1,6 +1,7 @@
 components/service/third_party/comp_maskapai/cookies/*
 assets/hotel_cache/*
-application/config/deploy.rb
-Capfile
 !.gitkeep
 .DS_Store
+
+deploy.rb
+Capfile

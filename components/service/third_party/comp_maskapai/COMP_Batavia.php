@@ -22,15 +22,62 @@ class Batavia extends Comp_maskapai_base {
 	function __construct() {
 		parent::__construct();
 		$this->roundTrip = false;
-		/* 
-		$this->_ci->load->helper('array');
-		$this->_ci->load->library('my_curl');
-		*/
 		$this->_cookies_file 	= "./components/service/third_party/comp_maskapai/cookies/batavia_airline.txt";
 		$this->login();
 	}
 		
 		function index() {}
+		
+		function curl($url,$post_data = array(),$header = array())
+		{
+			if ($post_data != null) {
+				$conf = array(
+					'url'				=> $url,
+					'timeout'			=> 60,
+					'header'			=> 0,
+					'followlocation'	=> 1,
+					'cookiejar'			=> $this->_cookies_file,
+					'cookiefile'		=> $this->_cookies_file,
+					'returntransfer'	=> 1,
+					'post'				=> true,
+					'ssl_verifyhost'	=> 0,
+					'referer'			=> $this->_referer_url,
+					'SSL_VERIFYPEER'	=> 0,
+					'postfields'		=> http_build_query($post_data),
+					'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+				);
+			}else{
+				$conf = array(
+					'url'				=> $url,
+					'timeout'			=> 60,
+					'header'			=> 0,
+					'cookiejar'			=> $this->_cookies_file,
+					'cookiefile'		=> $this->_cookies_file,
+					'returntransfer'	=> 1,
+					'ssl_verifyhost'	=> 0,
+					//'referer'			=> $this->_referer_url,
+					'SSL_VERIFYPEER'	=> 0,
+					'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+				);
+			}
+			
+			if ($header != null) {
+				$head = array(
+					'httpheader'	=>	$header,
+				);
+				$conf = array_merge($header,$conf);
+			}
+			$this->_ci->my_curl->setup($conf);
+			$exc = $this->_ci->my_curl->exc();
+			$res_info = $this->_ci->my_curl->res_info();
+			if ($res_info->http_code == 302) {
+				$this->curl($res_info->url,null,null);
+			}else if ($res_info->http_code == (400|404|403)) {
+				return false;
+			}
+			$page = str_get_html($exc);
+			return $page;
+		}
 
 		function convertDayMonth($number){
 			if ($number < 10) {
@@ -40,71 +87,56 @@ class Batavia extends Comp_maskapai_base {
 			}
 		}
 		
-		function topage($url , $return = true){
-			$conf = array(
-					'url' => $url,
-					'cookiejar' 		=> $this->_cookies_file,
-					'cookiefile' 		=> $this->_cookies_file,
-					'header'		=> 0,
-					'nobody'	=> false,
-					'returntransfer' => 1,
-					'timeout'			=> 30,
-				//	'returntransfer' => 1
-				);
-			$this->_ci->my_curl->setup($conf);
-			$exc = $this->_ci->my_curl->exc();
-			if($return == true ) return $this->_ci->my_curl;
-			return $exc;
+		function monthConvert($month){
+			$month_number = "";
+			for($i=1;$i<=12;$i++){ 
+				if(date("F", mktime(0, 0, 0, $i, 1, 0)) == $month){ 
+					$month_number = $i; 
+					break; 
+				} 
+			}
+			return $month_number;
 		}
 		
+		function lastname($array,$startIndex){
+			$name = '';
+			if (array_key_exists($startIndex,$array)) {
+				for ($i=$startIndex; $i < count($array); $i++) { 
+					$name .= element($i,$array).' ';
+				}
+			}
+			return $name;
+		}
+		
+		function multidimensional_search($parents, $searched) { 
+		 	  if (empty($searched) || empty($parents)) { 
+			    return 'nothing'; 
+			  } 
+
+			  foreach ($parents as $key => $value) { 
+			    $exists = true; 
+			    foreach ($searched as $skey => $svalue) { 
+			      $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue); 
+			    } 
+			    if($exists){ return $key+1; } 
+			  } 
+
+			  return 'nothing'; 
+			}
+				
 		function login(){
 			$post_data = array(
 				'useridmp'		=> $this->username,
 				'passwordmp'	=> $this->password,
 			);
-
-			$conf = array(
-				'url'				=> $this->_login_url,
-				'timeout'			=> 30,
-				'header'			=> 0,
-				'followlocation'	=> 1,
-				'cookiejar'			=> $this->_cookies_file,
-				'cookiefile'		=> $this->_cookies_file,
-				'returntransfer'	=> 1,
-				'post'				=> true,
-				'referer'			=> $this->_referer_url,
-				'ssl_verifyhost'	=> 0,
-				'SSL_VERIFYPEER'	=> 0,
-				'postfields'		=> http_build_query($post_data),
-				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-			);
-
-			$this->_ci->my_curl->setup($conf);
-			$this->_ci->my_curl->exc();
-			$res_info = $this->_ci->my_curl->res_info();
-			$this->topage($res_info->url, false);
+			
+			$url = 'https://222.124.141.100/MyPage/loginproses.php';	
+			$this->curl($url,$post_data,null);
 		}
 
 		function logout(){
-			$conf = array(
-				'url'				=> $this->_referer_url,
-				'timeout'			=> 30,
-				'header'			=> 0,
-				'followlocation'	=> 1,
-				'cookiejar'			=> $this->_cookies_file,
-				'cookiefile'		=> $this->_cookies_file,
-				'returntransfer'	=> 1,
-				'referer'			=> $this->_referer_url,
-				'ssl_verifyhost'	=> 0,
-				'SSL_VERIFYPEER'	=> 0,
-				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-			);
-			$this->_ci->my_curl->setup($conf);
-			$this->_ci->my_curl->exc();
-			$res_info = $this->_ci->my_curl->res_info();
-			if ($res_info->http_code == 301 || 301) {
-				$fin = $this->topage($res_info->url, false);
-			}
+			$url = 'https://222.124.141.100/MyPage/logout.php';
+			$this->curl($url,null,null);
 		}
 		
 		function closing(){
@@ -116,256 +148,146 @@ class Batavia extends Comp_maskapai_base {
 			$dateExplode = explode('-',$this->_opt->date_depart);
 			$this->_ci->load->helper('array');
 			$year = str_split($dateExplode[0]);
-				$post_data = array(
-					'ruteBerangkat' 		=> $this->_opt->route_from,
-					'ruteTujuan' 			=> $this->_opt->route_to,
-					'ruteKembali' 			=> 'kembali',
-					'tglBerangkatPergi' 	=> $this->convertDayMonth(element('2',$dateExplode)),
-					'blnBerangkatPergi' 	=> $this->convertDayMonth(element('1',$dateExplode)),
-					'thnBerangkatPergi' 	=> element('2',$year).element('3',$year),
-					'jmlPenumpang' 			=> $this->_opt->passengers,
-					'jmlInfant'				=> 0,
-				);
-
-				$conf = array(
-					'url'				=> $this->_search_url,
-					'timeout'			=> 60,
-					'header'			=> 0,
-					'followlocation'	=> 1,
-					'cookiejar'			=> $this->_cookies_file,
-					'cookiefile'		=> $this->_cookies_file,
-					'returntransfer'	=> 1,
-					'post'				=> true,
-					'referer'			=> $this->_referer_url,
-					'ssl_verifyhost'	=> 0,
-					'SSL_VERIFYPEER'	=> 0,
-					'postfields'		=> http_build_query($post_data),
-					'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-				);
-				$this->_ci->my_curl->setup($conf);
-				$html = $this->_ci->my_curl->exc();
-				$page = str_get_html($html);
-				if (!$page) {return false;}
-				$qty = $post_data['jmlPenumpang'];
-				if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return false;
-				$date = $page->find('div[id=pilihPenerbanganPergi] table tbody',0)->find('tr',2)->plaintext;
-				$cdate = explode(':',$date);
-				$fullDate = explode('-',$cdate[1]);
-				$month = $this->monthConvert($fullDate[1]);		
-				$cnt_flight = count($go_wrap->find('tr'));
-				$cnt_class = count($go_wrap->find('tr', 0)->find('td'));
-				$data = array();
-				$index = 0;
-
-				for($i = 4 ; $i < $cnt_class ; $i ++)
-				{
-
-					for($j = 1 ; $j < $cnt_flight ; $j ++  )
-					{				
-						$cell = $go_wrap->find('tr', $j)->find('td', $i);
-
-						if($cell->find('input', 0 )->getAttribute('disabled') == 'disabled') { 	continue;}
-						$head = $go_wrap->find('tr', 0)->find('td', $i)->plaintext;
-						$head = preg_replace('/\s+/', ' ',str_replace('&nbsp;' ,' ', trim($head , ' &nbsp;. ')));
-						$head = explode(' ', trim($head) );
-
-						$dep = explode(' ', str_replace('&nbsp;', '', $go_wrap->find('tr', $j)->find('td', 1)->plaintext));
-						$dep = element('0', $dep);
-						$arr = explode(' ', str_replace('&nbsp;', '', $go_wrap->find('tr', $j)->find('td', 2)->plaintext));
-						$arr = element('0', $arr);
-						$price = element('2', $head).'000';
-
-						$timeDep = str_replace('.',':',$dep);
-						$timeArr = str_replace('.',':',$arr);
-						$year = preg_replace('/\s+/', '',$fullDate[2]);
-						$day = 	preg_replace('/\s+/', '',$fullDate[0]);
-						$t_arrive = $year.'-'.$month.'-'.$day.' '.$timeArr;	
-						$t_depart = $year.'-'.$month.'-'.$day.' '.$timeDep;
-						$flight_number = $go_wrap->find('tr',$j)->find('td',0)->plaintext;
-
-						if ($this->roundTrip) {
-							$type = 'return';				
-						}else{
-							$type = 'depart';
-						}
-						$tl = $go_wrap->find('tr',$j)->find('td',3)->find('div',0)->plaintext;
-						$transit_location = explode('-',$tl);
-						if (count($transit_location) > 1) {
-
-						}
-						if ($tl != '-') {
-							$t_transit_arive 	= NULL;
-							$t_transit_depart 	= NULL;
-							$transitLocation	= ','.$tl;
-						}else{
-							$t_transit_arive 	= NULL;
-							$t_transit_depart	= NULL;
-							$transitLocation	= '';
-						}	
-						
-						$fPrice = ($price+($price*0.1)+5000+5500)*$this->_opt->passengers;
-						$cFlightNumber =  str_replace('&nbsp;',"",$flight_number);
-						$time_depart = strtotime($t_depart);
-						$time_arrive = strtotime($t_arrive);
-						$radio_value = $cell->find('input', 0 )->getAttribute('value');
-						$this->_opt->radio_value = $radio_value;
-						$this->_opt->class = element('0', $head);
-						$this->_opt->passangerscount = $this->_opt->passengers;
-						$detail = $this->detail();
-						//$time_transit_arrive = strtotime($t_transit_arive);
-						//$time_transit_depart = strtotime($t_transit_depart);						
-						$meta = array(
-							'comapny'			=>	'BATAVIA',
-							'flight_no'			=>	$cFlightNumber,
-							't_depart'			=>	date("Y-m-d h:i",$time_depart),
-							't_arrive'			=>	date("Y-m-d h:i",$time_arrive),
-							't_transit_arrive'	=>	$t_transit_arive,
-							't_transit_depart'	=>	$t_transit_depart,
-							'type'				=>	$type,
-							'price'				=>	element('totalPrice',$detail),
-							'class'				=>	element('0', $head),
-							'route'				=>	$post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'],
-							'log_id'			=>	$this->_opt->id,
-							'arrayIndex'		=>	$j.','.$i,
-							'passangers'		=>	$this->_opt->passengers,
-							'time_depart'		=>	$year.'-'.$month.'-'.$day,
-							'radio_value'		=>	$radio_value,
-							'detail'			=>	$detail,
-						);
-						
-						$data[$j][$index]['company'] 			='BATAVIA';
-						$data[$j][$index]['flight_no']			= $cFlightNumber ;
-						$data[$j][$index]['t_depart']			= date("Y-m-d h:i",$time_depart);
-						$data[$j][$index]['t_arrive']			= date("Y-m-d h:i",$time_arrive);
-						$data[$j][$index]['t_transit_arrive']	= $t_transit_arive;
-						$data[$j][$index]['t_transit_depart']	= $t_transit_depart;
-						$data[$j][$index]['type']				= $type;
-						$data[$j][$index]['price'] 				= element('totalPrice',$detail);
-						$data[$j][$index]['class']				= element('0', $head);
-						$data[$j][$index]['route']				= element('ruteBerangkat',$post_data).','.element('ruteTujuan',$post_data);
-						$data[$j][$index]['log_id']				= $this->_opt->id;				
-						$data[$j][$index]['meta_data'] 			= json_encode($meta);
-						$index ++;
-					}
-
-				}
-				$data_dep = $data;
-				$finnal = array();
-
-				foreach ($data_dep as $dta => $item) {
-					foreach ($item as $fare) {
-						$final[$i]	=	$fare;
-						$i++;
-					}
-				}
-				
-				return $final;
-		}
-
-		function detail(){
-				/*$this->_opt->radio_value		= '25173255';
-				$this->_opt->route_from 		= 'CGK';
-				$this->_opt->route_to 			= 'DPS';
-				$this->_opt->date_depart 		= '2011-5-03';
-				$this->_opt->class 				= 'N';
-				$this->_opt->passangerscount	= 2;*/
-
-				$date = explode('-',$this->_opt->date_depart);
-				$year = str_split($date[0]);
-
-				$post_data = array(
-					'flightBerangkatPergi'		=> $this->_opt->radio_value,
-					'tglBerangkatPergi'			=> $this->convertDayMonth(element('2',$date)),
-					'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
-					'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
-					'classPergi'				=> $this->_opt->class,
-					'jmlPenumpang'				=> $this->_opt->passangerscount,
-					'jmlInfant'					=> 0,
-					'ruteBerangkat'				=> $this->_opt->route_from,
-					'ruteTujuan'				=> $this->_opt->route_to,
-					'ruteKembali'				=> 'kembali',
-				);
-
-				$conf = array(
-					'url'				=> $this->_detail_url,
-					'timeout'			=> 30,
-					'header'			=> 0,
-					'followlocation'	=> 1,
-					'cookiejar'			=> $this->_cookies_file,
-					'cookiefile'		=> $this->_cookies_file,
-					'returntransfer'	=> 1,
-					'post'				=> true,
-					'referer'			=> $this->_referer_url,
-					'ssl_verifyhost'	=> 0,
-					'SSL_VERIFYPEER'	=> 0,
-					'postfields'		=> http_build_query($post_data),
-					'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-				);
-
-				$this->_ci->my_curl->setup($conf);
-				$html = $this->_ci->my_curl->exc();
-
-				$page = str_get_html($html);
-				if (!$page) {return false;}
-				$table = $page->find('div[id=centerright] form[id=cekHarga] table');
-				if (count($table)==0) {return array();}
-				$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
-				$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
-				$countData = count($ret->find('tr',2)->find('td'));
-				
-				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',5)->find('td',1)->plaintext));
-				//$fp = explode(',',$ret1->find('tr',5)->find('td',1)->plaintext);
-				//$mp = str_replace('.00 IDR','',$fp);
-				//$cp = explode(',',$mp);
-				/*if (count($mp) > 2) {
-					$cleanPrice = element('0',$mp).element('')$mp[1].$mp[2];
-				}else {
-					$cleanPrice = $mp[0].$mp[1];
-				}*/
-						
-				$data['perjalanan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',0)->plaintext);
-				$data['tanggal'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',1)->plaintext);
-				$data['Hari'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',2)->plaintext);
-				$data['transit'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',3)->plaintext);
-				$data['rute'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',4)->plaintext);
-				$data['noPenerbangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
-				$data['keterangan'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',6)->plaintext);
-				$data['price'] = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
-				$data['class']	= $post_data['classPergi'];
-				$data['totalPrice']	= $cleanPrice;
-				$data['maskapai'] = 'Batavia';
-
-				return $data;
 			
+			$post_data = array(
+				'ruteBerangkat' 		=> $this->_opt->route_from,
+				'ruteTujuan' 			=> $this->_opt->route_to,
+				'ruteKembali' 			=> 'kembali',
+				'tglBerangkatPergi' 	=> $this->convertDayMonth(element('2',$dateExplode)),
+				'blnBerangkatPergi' 	=> $this->convertDayMonth(element('1',$dateExplode)),
+				'thnBerangkatPergi' 	=> element('2',$year).element('3',$year),
+				'jmlPenumpang' 			=> $this->_opt->passengers,
+				'jmlInfant'				=> 0,
+			);
+			
+			$url = 'https://222.124.141.100/MyPage/booking/index.php';
+			$page = $this->curl($url,$post_data,null);
+				
+			if (!$page) {return false;}
+			$qty = $post_data['jmlPenumpang'];
+			if(!$go_wrap = $page->find('div[id=pilihPenerbanganPergi] table tbody tr td table tbody', 0)) return false;
+			$date = $page->find('div[id=pilihPenerbanganPergi] table tbody',0)->find('tr',2)->plaintext;
+			$cdate = explode(':',$date);
+			$fullDate = explode('-',$cdate[1]);
+			$month = $this->monthConvert($fullDate[1]);		
+			$cnt_flight = count($go_wrap->find('tr'));
+			$cnt_class = count($go_wrap->find('tr', 0)->find('td'));
+			$data = array();
+			$index = 0;
 
-		}
+			for($i = 4 ; $i < $cnt_class ; $i ++){
+				for($j = 1 ; $j < $cnt_flight ; $j ++  ){				
+					$cell = $go_wrap->find('tr', $j)->find('td', $i);
 
-		function monthConvert($month){
-			$month_number = "";
-			for($i=1;$i<=12;$i++){ 
-				if(date("F", mktime(0, 0, 0, $i, 1, 0)) == $month){ 
-					$month_number = $i; 
-					break; 
-				} 
+					if($cell->find('input', 0 )->getAttribute('disabled') == 'disabled') { 	continue;}
+					$head = $go_wrap->find('tr', 0)->find('td', $i)->plaintext;
+					$head = preg_replace('/\s+/', ' ',str_replace('&nbsp;' ,' ', trim($head , ' &nbsp;. ')));
+					$head = explode(' ', trim($head) );
+					$dep = explode(' ', str_replace('&nbsp;', '', $go_wrap->find('tr', $j)->find('td', 1)->plaintext));
+					$dep = element('0', $dep);
+					$arr = explode(' ', str_replace('&nbsp;', '', $go_wrap->find('tr', $j)->find('td', 2)->plaintext));
+					$arr = element('0', $arr);
+					$price = element('2', $head).'000';
+					$timeDep = str_replace('.',':',$dep);
+					$timeArr = str_replace('.',':',$arr);
+					$year = preg_replace('/\s+/', '',$fullDate[2]);
+					$day = 	preg_replace('/\s+/', '',$fullDate[0]);
+					$t_arrive = $year.'-'.$month.'-'.$day.' '.$timeArr;	
+					$t_depart = $year.'-'.$month.'-'.$day.' '.$timeDep;
+					$flight_number = $go_wrap->find('tr',$j)->find('td',0)->plaintext;
+					if ($this->roundTrip) {
+						$type = 'return';				
+					}else{
+						$type = 'depart';
+					}
+					$tl = $go_wrap->find('tr',$j)->find('td',3)->find('div',0)->plaintext;
+					$transit_location = explode('-',$tl);
+					if (count($transit_location) > 1) {
+					}
+					if ($tl != '-') {
+						$t_transit_arive 	= NULL;
+						$t_transit_depart 	= NULL;
+						$transitLocation	= ','.$tl;
+					}else{
+						$t_transit_arive 	= NULL;
+						$t_transit_depart	= NULL;
+						$transitLocation	= '';
+					}
+					
+					$radioValue = $cell->find('input', 0 )->getAttribute('value');
+					
+					$this->_opt->radio_value = $radioValue;
+					$this->_opt->class = element('0', $head);
+					//$passangerscount = $this->_opt->adult + $this->_opt->child + $this->_opt->infant;					
+					//$fPrice = ($price+($price*0.1)+5000+5500)*$this->_opt->passengers;
+					$cFlightNumber =  str_replace('&nbsp;',"",$flight_number);
+					$time_depart = strtotime($t_depart);
+					$time_arrive = strtotime($t_arrive);
+					//$time_transit_arrive = strtotime($t_transit_arive);
+					//$time_transit_depart = strtotime($t_transit_depart);						
+					$meta = array(
+						'comapny'			=>	'BATAVIA',
+						'flight_no'			=>	$cFlightNumber,
+						't_depart'			=>	date("Y-m-d h:i",$time_depart),
+						't_arrive'			=>	date("Y-m-d h:i",$time_arrive),
+						't_transit_arrive'	=>	$t_transit_arive,
+						't_transit_depart'	=>	$t_transit_depart,
+						'type'				=>	$type,
+						'price'				=>	$price*$this->_opt->passengers,
+						'class'				=>	element('0', $head),
+						'route'				=>	$post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'],
+						'log_id'			=>	$this->_opt->id,
+						'arrayIndex'		=>	$j.','.$i,
+						'passangers'		=>	$this->_opt->passengers,
+						//'adult'				=>	$this->_opt->adult,
+						//'child'				=> 	$this->_opt->child,
+						//'infant'			=>	$this->_opt->infant,
+						'time_depart'		=>	$year.'-'.$month.'-'.$day,
+						'radio_value'		=>	$radioValue,
+					);
+					
+					$data[$j][$index]['company'] 			='BATAVIA';
+					$data[$j][$index]['flight_no']			= $cFlightNumber;
+					$data[$j][$index]['t_depart']			= date("Y-m-d h:i",$time_depart);
+					$data[$j][$index]['t_arrive']			= date("Y-m-d h:i",$time_arrive);
+					$data[$j][$index]['t_transit_arrive']	= $t_transit_arive;
+					$data[$j][$index]['t_transit_depart']	= $t_transit_depart;
+					$data[$j][$index]['type']				= $type;
+					$data[$j][$index]['price'] 				= $price*$this->_opt->passengers;
+					$data[$j][$index]['class']				= element('0', $head);
+					$data[$j][$index]['route']				= element('ruteBerangkat',$post_data).','.element('ruteTujuan',$post_data);
+					$data[$j][$index]['log_id']				= $this->_opt->id;				
+					$data[$j][$index]['meta_data'] 			= json_encode($meta);
+					$index ++;
+				}
+
 			}
-			return $month_number;
+			$data_dep = $data;
+			$finnal = array();
+
+			foreach ($data_dep as $dta => $item) {
+				foreach ($item as $fare) {
+					$final[$i]	=	$fare;
+					$i++;
+				}
+			}
+				
+			return $final;
 		}
-
-		// API REQUIREMENT
-
+		
 		public function doSearch($opt = array())
-		//public function doSearch()
 		{
+			//$this->_opt->child			= 0;
+			//$this->_opt->infant			= 1;
+			//$this->_opt->adult			= 2;
 			$this->_opt->route_from 	= 'CGK';
 			$this->_opt->route_to 		= 'PLM';
-			$this->_opt->date_depart 	= '2012-03-21';
-			$this->_opt->date_return 	= NULL;
-			$this->_opt->passengers 	= 1;
+			$this->_opt->date_depart 	= '2012-03-14';
+			$this->_opt->date_return 	= '2012-03-17';
+			$this->_opt->passengers		= 1;
 			$this->_opt->id				= 1;
 			
-			foreach($opt as $key => $val ) $this->_opt->$key = $val;
-						
+			foreach($opt as $key => $val ) $this->_opt->$key = $val;			
 			if ($this->_opt->date_return) {
 				$result1 = $this->search();
 				
@@ -387,9 +309,204 @@ class Batavia extends Comp_maskapai_base {
 			}
 			return array_values($final);
 		}
+
+		function detail(){
+			//$this->_opt->infant = 0;
+			
+			$date = explode('-',$this->_opt->date_depart);
+			$year = str_split($date[0]);
+			$post_data = array(
+				'flightBerangkatPergi'		=> $this->_opt->radio_value,
+				'tglBerangkatPergi'			=> $this->convertDayMonth(element('2',$date)),
+				'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
+				'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
+				'classPergi'				=> $this->_opt->class,
+				'jmlPenumpang'				=> $this->_opt->passengers,
+				'jmlInfant'					=> 0,
+				'ruteBerangkat'				=> $this->_opt->route_from,
+				'ruteTujuan'				=> $this->_opt->route_to,
+				'ruteKembali'				=> 'kembali',
+			);
+			
+			$url = 'https://222.124.141.100/MyPage/booking/cekHarga.php';
+			$page = $this->curl($url,$post_data,null);
+			if (!$page) {return false;}
+			$table = $page->find('div[id=centerright] form[id=cekHarga] table');
+			if (count($table)==0) {return array();}
+			$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
+			$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
+			$countData = count($ret->find('tr',2)->find('td'));
+			$flight_number = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
+			$adult_price_per_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
+			$pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',6)->find('div',0)->plaintext);
+			$iwjr =  str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',7)->find('div',0)->plaintext);
+			$another_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',9)->plaintext);
+
+			$data[0]['passanger_type'] = 'ADULT';
+			$data[0]['price_per_pax']  = $adult_price_per_pax;
+			$data[0]['pax']			= $pax;
+			$data[0]['iwjr']		= $iwjr;
+			$data[0]['another_pax'] = $another_pax;
+
+			if (element('jmlInfant',$post_data) == 0) {
+				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',5)->find('td',1)->plaintext));
+			}else{
+				$infant_price_per_pax = str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',6)->find('td',4)->plaintext);
+
+				$pax = str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',6)->find('td',6)->find('div',0)->plaintext);
+
+				$iwjr =  str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',6)->find('td',7)->find('div',0)->plaintext);
+
+				$another_pax = 0;
+
+				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+				$ret1->find('tr',9)->find('td',1)->plaintext));
+
+				$data[1]['passanger_type'] = 'INFANT';
+				$data[1]['price_per_pax']  = $infant_price_per_pax;
+				$data[1]['pax']			= $pax;
+				$data[1]['iwjr']		= $iwjr;
+				$data[1]['another_pax'] = $another_pax;
+			}
+			//$data['totalPrice']	= $cleanPrice;
+			$metaArray = json_decode(element('meta_data',$this->fare_data),1);
+			$meta = array(
+				'comapny'			=>	'BATAVIA',
+				'flight_no'			=>	$flight_number,
+				't_depart'			=>	element('t_depart',$this->fare_data),
+				't_arrive'			=>	element('t_arrive',$this->fare_data),
+				't_transit_arrive'	=>	element('t_transit_arrive',$this->fare_data),
+				't_transit_depart'	=>	element('t_transit_depart',$this->fare_data),
+				'type'				=>	element('type',$this->fare_data),
+				'price'				=>	$cleanPrice,
+				'class'				=>	element('class',$this->fare_data),
+				'route'				=>	element('route',$this->fare_data),
+				'log_id'			=>	element('log_id',$this->fare_data),
+				'arrayIndex'		=>	element('arrayIndex',$metaArray),
+				'passangers'		=>	$this->_opt->passengers,
+				//'adult'				=>	$this->_opt->adult,
+				//'child'				=> 	$this->_opt->child,
+				//'infant'			=>	$this->_opt->infant,
+				'time_depart'		=>	$this->_opt->date_depart,
+				'radio_value'		=>	$this->_opt->radio_value,
+				'price_detail'		=>	$data,
+			);
+			
+			$fare_data['id'] = element('id',$this->fare_data);
+			$fare_data['log_id'] = element('log_id',$this->fare_data);
+			$fare_data['company'] = element('company',$this->fare_data);
+			$fare_data['flight_no'] = $flight_number;
+			$fare_data['t_depart'] = element('t_depart',$this->fare_data);
+			$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
+			$fare_data['type'] = element('type',$this->fare_data);
+			$fare_data['class'] = element('class',$this->fare_data);
+			$fare_data['route'] = element('route',$this->fare_data);
+			$fare_data['t_transit_arrive'] = element('t_transit_arrive',$this->fare_data);
+			$fare_data['t_transit_depart'] = element('t_transit_depart',$this->fare_data);
+			$fare_data['price'] = $cleanPrice;
+			$fare_data['meta_data'] = json_encode($meta);
+			$fare_data['log'] = element('log',$this->fare_data);
+			return $fare_data;
+		}
 		
-		function _booking(){		
+		public function getDetail($fare_data = array())
+		{
+			/*$fare_data = array(
+				'id'		=>	7323,
+				'log_id'	=>	34,
+				'company'	=>	'BATAVIA',
+				't_depart'	=>	'2012-03-14 01:00',
+				't_arrive'	=>	'2012-03-14 02:00',
+				'type'		=>	'depart',
+				'class'		=>	'E',
+				'route'		=>	'CGK,PLM',
+				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-14 01:00","t_arrive":"2012-03-14 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":231000,"class":"E","route":"CGK,PLM","log_id":1,"arrayIndex":"1,4","passangers":1,"time_depart":"2012-3-14","radio_value":"29744808"}',
+				't_transit_arrive'	=>	'',
+				't_transit_depart'	=>	'',
+				'price'				=>	'687800',
+				'flight_no'			=>	'515',
+				'log'				=>	array(
+					'id'				=>	34,
+					'date_depart'		=>	'2012-01-28 00:00:00',
+					'date_return'		=>	'',
+					'route_from'		=>	'CGK',
+					'route_to'			=>	'PLM',
+					'passangers'		=>	1,
+					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
+					'c_time'			=>	'2011-12-20 11:56:15',
+					'max_fare'			=>	5,
+					'actor'				=> 'CUS',
+				),
+			);*/
+			
+			$log = element('log',$fare_data);
+			$meta = json_decode(element('meta_data',$fare_data),1);
+			$this->fare_data = $fare_data;
+			
+			$this->_opt->radio_value = element('radio_value',$meta);
+			$this->_opt->class = element('class',$meta);
+ 			$this->_opt->passengers = element('passangers',$meta);
+			$this->_opt->route_from = element('route_from',$log);
+			$this->_opt->route_to = element('route_to',$log);
+			$this->_opt->date_depart = element('time_depart',$log);			
+			$final = $this->detail();
+			$this->logout();
+			
+			if (is_array($final) == false || count($final)==0) {
+				return $this;
+			}
+			return $final;
+		}
+		 
+		
+		function booking(){		
 			$dataPassanger = array();
+			/*$ip = 1;
+			$adultCount = 0;
+			$childCount = 0;
+			$infantCount = 0;
+			
+			if ($adult = element('ADULT',$this->passangers)) {
+				$adultCount = count($adult);
+				foreach ($adult as $value) {					
+					$name = explode(' ',element('name',$value));
+					$dataPassanger['title'.$ip] = $value['title'].'.';
+					$dataPassanger['tfPaxdepan'.$ip] = element('0',$name);
+					$dataPassanger['tfPaxbelakang'.$ip] = $this->lastname($name,1);
+					$dataPassanger['noID'.$ip] = $value['no_id'];
+					$ip++;
+				}
+				
+			}
+			
+			if ($child = element('CHILD',$this->passangers)) {
+				$childCount = count($child);
+				foreach ($child as $value) {
+					$name = explode(' ',element('name',$value));
+					$dataPassanger['title'.$ip] = $value['title'].'.';
+					$dataPassanger['tfPaxdepan'.$ip] = element('0',$name);
+					$dataPassanger['tfPaxbelakang'.$ip] = $this->lastname($name,1);
+					$dataPassanger['noID'.$ip] = $value['no_id'];
+					$ip++;
+				}
+				
+			}
+			
+			if ($infant = element('INFANT',$this->passangers)) {
+				$infantCount = count($infant);
+				foreach ($child as $value) {
+					$name = explode(' ',element('name',$value));
+					$dataPassanger['tfInfantdepan'.$ip] = element('0',$name);
+					$dataPassanger['tfInfantbelakang'.$ip] = $this->lastname($name,1);
+					$dataPassanger['tfReferensi'.$ip] = 1;
+					$ip++;
+				}
+				
+			}*/
 			$ip = 1;
 			foreach ($this->passangers as $key => $value){
 				$name = explode(' ',element('name',$value));				
@@ -399,7 +516,7 @@ class Batavia extends Comp_maskapai_base {
 				$dataPassanger['noID'.$ip] = $value['no_id'];
 				$ip++;
 			}
-			
+					
 			$dataContact = array(
 				'receivedF'			=>	element('f_name',$this->user).' '.element('l_name',$this->user),
 				'telp_pax'			=>	$this->user['user_detail']['mobile'],
@@ -416,8 +533,8 @@ class Batavia extends Comp_maskapai_base {
 			$flightRouteInfoData = array(
 				'flightBerangkat'	=>	$this->_opt->radio_value, //value dari radio
 				'flightKembali'		=>	'',
-				'jmlPenumpang'		=>	count($this->passangers),
-				'jmlInfant'			=>	0,
+				'jmlPenumpang'		=>	$adultCount+$childCount,
+				'jmlInfant'			=>	$infantCount,
 				'childInt'			=>	'',
 				'tglBerangkat'		=>	$this->convertDayMonth($date[2]),
 				'blnBerangkat'		=>	$this->convertDayMonth($date[1]),
@@ -437,46 +554,11 @@ class Batavia extends Comp_maskapai_base {
 
 			//not needed
 
-			
 			$post_data = array_merge($dataPassanger,$dataContact,$flightRouteInfoData,$currencyData,$maskapaiInfo);
-			$conf = array(
-				'url'				=> $this->_booking_url,
-				'timeout'			=> 30,
-				'header'			=> 0,
-				'followlocation'	=> 1,
-				'cookiejar'			=> $this->_cookies_file,
-				'cookiefile'		=> $this->_cookies_file,
-				'returntransfer'	=> 1,
-				'post'				=> true,
-				'referer'			=> $this->_referer_url,
-				'ssl_verifyhost'	=> 0,
-				'SSL_VERIFYPEER'	=> 0,
-				'postfields'		=> http_build_query($post_data),
-				'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-			);
 			
-			$this->_ci->my_curl->setup($conf);
-		 	$exc = $this->_ci->my_curl->exc();
-			return $exc;
-			//$res_info = $this->_ci->my_curl->res_info();
-			//print_r($res_info);
-			//$this->topage($res_info->url, false);
+			$url = 'https://222.124.141.100/MyPage/booking/cekHarga.php';
+			$page = $this->curl($url,$post_data,null);
 			
-		}
-		
-		function lastname($array,$startIndex){
-			$name = '';
-			if (array_key_exists($startIndex,$array)) {
-				for ($i=$startIndex; $i < count($array); $i++) { 
-					$name .= element($i,$array).' ';
-				}
-			}
-			return $name;
-		}
-		
-		function booking(){
-			$page = str_get_html($this->_booking());
-			//$page = file_get_html("./mod_office/o_partner/third_party/comp_maskapai/ojankillbooking_data/HTML/batavia/Booking.html");
 			if (!$page) {return false;}
 			$table = $page->find('div[id=centerright] table tbody tr td table tbody');
 			$cntTable = count($table);
@@ -502,14 +584,15 @@ class Batavia extends Comp_maskapai_base {
 			$routeDepart = $flightData->find('tr',2)->find('td',4)->plaintext;
 			$routeArr	 = $flightData->find('tr',3)->find('td',0)->plaintext;
 			$limit = $limitDate[0].'-'.$this->monthConvert($limitDate[1]).'-'.$limitDate['2'].' '.$limitTime;
-			$price = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
-			$flightData->find('tr',5)->find('td',2)->find('div',0)->plaintext));
+			
+			$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+			$detailData->find('tr',5)->find('td',1)->find('div',0)->plaintext));
 						
 			$data['booking_number'] = $booking_id;
 			$data['fare_id']		= $this->fare_id;
 			$data['meta_data']		= json_encode($this->meta_data);
 			$data['passangers']		= $this->passangers;
-			$data['final_price']	= $price;
+			$data['final_price']	= $cleanPrice;
 			//$data['limit'] = $limit;
 			//$data['agent'] = $agent;
 			//$data['flightNumber'] = $flightNumber;
@@ -524,25 +607,25 @@ class Batavia extends Comp_maskapai_base {
 				//$data['penumpang '.$ip] = $dataPenumpang;
 				$ip++;
 			}
-			return $data;
+			return $data;			
 		}
-				
+						
 		//function preBooking(){
 		public function preBooking($fare_data){			
 			/*$fare_data = array(
 				'id'		=>	7323,
 				'log_id'	=>	34,
 				'company'	=>	'BATAVIA',
-				't_depart'	=>	'2012-03-21 01:00',
-				't_arrive'	=>	'2012-03-21 02:00',
+				't_depart'	=>	'2012-03-14 01:00',
+				't_arrive'	=>	'2012-03-14 02:00',
 				'type'		=>	'depart',
-				'class'		=>	'P',
+				'class'		=>	'E',
 				'route'		=>	'CGK,PLM',
-				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-21 01:00","t_arrive":"2012-03-21 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":"375400","class":"P","route":"CGK,PLM","log_id":1,"arrayIndex":"1,7","passangers":1,"time_depart":"2012-3-21","radio_value":"24519016","detail":{"perjalanan":"Berangkat","tanggal":"21-March-12 ","Hari":"Wednesday ","transit":"-","rute":"CGK-PLM ","noPenerbangan":"Y6-515 ","keterangan":"ETDJakarta (CGK) 13.00 LT ETAPalembang (PLM) 14.00 LT","price":"331,727.00 IDR","class":"P","totalPrice":"375400","maskapai":"Batavia"}}',
+				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-14 01:00","t_arrive":"2012-03-14 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":231000,"class":"E","route":"CGK,PLM","log_id":1,"arrayIndex":"1,4","passangers":1,"time_depart":"2012-3-14","radio_value":"29744808"}',
 				't_transit_arrive'	=>	'',
 				't_transit_depart'	=>	'',
-				'price'				=>	'436200',
-				'flight_no'			=>	'743',
+				'price'				=>	'687800',
+				'flight_no'			=>	'515',
 				'log'				=>	array(
 					'id'				=>	34,
 					'date_depart'		=>	'2012-01-28 00:00:00',
@@ -564,14 +647,18 @@ class Batavia extends Comp_maskapai_base {
 			$route_from = element('route_from',$log);
 			$route_to	= element('route_to',$log);
 			$date_depart = element('time_depart',$forBooking);
-			$passanger	 = element('passanger',$forBooking);
+			$adult		 = element('adult',$forBooking);
+			$child		 = element('child',$forBooking);
+			$infant		 = element('infant',$forBoking);
 						
 			$opt = array(
 				'route_from' 	=> $route_from,
 				'route_to' 		=> $route_to,
 				'date_depart' 	=> $date_depart,
 				'date_return' 	=> NULL,
-				'passengers' 	=> $passanger,
+				'adult'		 	=> $adult,
+				'child'			=> $child,
+				'infant'		=> $infant,
 				'id'			=> element('log_id',$forBooking),
 			);
 			$getMeta = $this->doSearch($opt);
@@ -594,22 +681,21 @@ class Batavia extends Comp_maskapai_base {
 			}
 		}
 		
-		function doBooking($fare_data,$passangers_data,$customer_data){
-		//function doBooking(){
+		function doBooking($fare_data = array(),$passangers_data = array(),$customer_data = array()){
 			/*$fare_data = array(
 				'id'		=>	7323,
 				'log_id'	=>	34,
 				'company'	=>	'BATAVIA',
-				't_depart'	=>	'2012-03-21 01:00',
-				't_arrive'	=>	'2012-03-21 02:00',
+				't_depart'	=>	'2012-03-14 01:00',
+				't_arrive'	=>	'2012-03-14 02:00',
 				'type'		=>	'depart',
-				'class'		=>	'P',
+				'class'		=>	'E',
 				'route'		=>	'CGK,PLM',
-				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-21 01:00","t_arrive":"2012-03-21 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":"375400","class":"P","route":"CGK,PLM","log_id":1,"arrayIndex":"1,7","passangers":1,"time_depart":"2012-3-21","radio_value":"24519016","detail":{"perjalanan":"Berangkat","tanggal":"21-March-12 ","Hari":"Wednesday ","transit":"-","rute":"CGK-PLM ","noPenerbangan":"Y6-515 ","keterangan":"ETDJakarta (CGK) 13.00 LT ETAPalembang (PLM) 14.00 LT","price":"331,727.00 IDR","class":"P","totalPrice":"375400","maskapai":"Batavia"}}',
+				'meta_data'	=>	 '{"comapny":"BATAVIA","flight_no":"515","t_depart":"2012-03-14 01:00","t_arrive":"2012-03-14 02:00","t_transit_arrive":null,"t_transit_depart":null,"type":"depart","price":231000,"class":"E","route":"CGK,PLM","log_id":1,"arrayIndex":"1,4","passangers":1,"time_depart":"2012-3-14","radio_value":"29744808"}',
 				't_transit_arrive'	=>	'',
 				't_transit_depart'	=>	'',
-				'price'				=>	'436200',
-				'flight_no'			=>	'743',
+				'price'				=>	'687800',
+				'flight_no'			=>	'515',
 				'log'				=>	array(
 					'id'				=>	34,
 					'date_depart'		=>	'2012-01-28 00:00:00',
@@ -622,77 +708,113 @@ class Batavia extends Comp_maskapai_base {
 					'max_fare'			=>	5,
 					'actor'				=> 'CUS',
 				),
-			);
-
-				$passangers_data = array(
-					array(
+			);*/
+			/*$passangers_data = array(
+				array(
 						'title' 			=>	'Mr',
-						'name' 				=>	'Mubarock Zidni',
+						'name' 				=>	'Zidni Mubarock',
 						'no_id'				=>	'3671081902880001',
-					),
-				);
 
-				$customer_data = array(
-					'f_name'	=>	'Mubarok',
-					'l_name'	=>	'Zidni',
-					'email'		=>	'zidmubarock@gmail.com',
-					'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
-					'role_id'	=>	1,
-					'c_time'	=>	'2011-12-11 21:04:04',
-					'm_time'	=>	'',
-					'status'	=>	'active',
-					'actv_key'	=>	'',
-					'user_detail'	=> 	array(
-						'user_id'	=>	26,
-						'phone'		=>	'0215579315134',
-						'mobile'	=>	'0215579315134',
-						'address'	=>	'jalan anggrek no',
-						'gender'	=>	'M',
-					),
-				);*/
-			//	$this->login();
+				),
+				array(
+						'title' 			=>	'Mr',
+						'name' 				=>	'Fauzan Qadri',
+						'no_id'				=>	'3671081902880001',
+
+				),
+			);*/
+
+						/*$passangers_data = array(
+							'ADULT'	=>	
+								array(
+									array(
+										'title' 			=>	'Mr',
+										'name' 				=>	'Zidni Mubarock',
+										'no_id'				=>	'3671081902880001',
+									),
+									array(
+										'title' 			=>	'Mrs',
+										'name' 				=>	'asdd adasdasdas',
+										'no_id'				=>	'3671081902880001',
+									),
+								),				
+
+							'CHILD'	=>	
+								array(
+									array(
+										'title' 			=>	'Mstr',
+										'name' 				=>	'Zidni Mubarock',
+										'no_id'				=>	'3671081902880001',
+									),
+								),
+							'INFANT'	=>	
+								array(
+									array(
+										'title' 			=>	'Mr',
+										'name' 				=>	'Zidni Mubarock',
+										'no_id'				=>	'3671081902880001',
+									),
+								),
+						);*/
+
+						/*$customer_data = array(
+							'f_name'	=>	'Zidni',
+							'l_name'	=>	'Mubarok',
+							'email'		=>	'zidmubarock@gmail.com',
+							'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
+							'role_id'	=>	1,
+							'c_time'	=>	'2011-12-11 21:04:04',
+							'm_time'	=>	'',
+							'status'	=>	'active',
+							'actv_key'	=>	'',
+
+							'user_detail'	=> 	array(
+								'user_id'	=>	26,
+								//'no_id'		=>	'3671081902880001'
+								'phone'		=>	'0215579315134',
+								'mobile'	=>	'0215579315134',
+								'address'	=>	'jalan anggrek no',
+								'gender'	=>	'M',
+
+							),
+
+						);*/
+			$this->passangers = $passangers_data;
+			$this->user	= $customer_data;		
+										
+			$this->login();
 			$forBooking = json_decode($fare_data['meta_data'],1);
 			$log = element('log',$fare_data);
 			$route_from = element('route_from',$log);
 			$route_to	= element('route_to',$log);
 			$date_depart = element('time_depart',$forBooking);
-			$passanger	 = element('passangers',$forBooking);
-			$this->passangers = $passangers_data;
-			$this->user	= $customer_data;
+			//$adult		 = element('adult',$forBooking);
+			//$child		 = element('child',$forBooking);
+			//$infant		 = element('infant',$forBoking);
+			$this->_opt->passengers = count($passangers_data);
+
 			$this->fare_id = element('id',$fare_data);
 			$this->meta_data = $forBooking;
+			
 			$this->_opt->radio_value		= element('radio_value',$forBooking);
 			$this->_opt->route_from 		= $route_from;
 			$this->_opt->route_to 			= $route_to;
 			$this->_opt->date_depart 		= $date_depart;
 			$this->_opt->class 				= element('class',$forBooking);
-			$this->_opt->passangerscount	= count($this->passangers);
-			$this->_opt->no_penerbangan		= element('noPenerbangan',element('detail',$forBooking));
+			//$this->_opt->passangerscount	= count($this->passangers);
 			$flightDetail = $this->detail();
+			$this->_opt->no_penerbangan		= element('flight_no',$flightDetail);
 			$book = $this->booking();
-			if (!is_array($book)) {
+			$this->closing();
+			if (is_array($book) == false) {
 				throw new BookingFailed($fare_data);
 			}
-			if (element('final_price',$booking) > element('price',$forBooking)) {
+			
+			if (element('final_price',$book) > element('price',$forBooking)) {
 				throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
 			}
-			$this->closing();
 			return $book;
 		}
 
-		function multidimensional_search($parents, $searched){ 
-		 	  if (empty($searched) || empty($parents)) { 
-			    return 'nothing'; 
-			  } 
-
-			  foreach ($parents as $key => $value) { 
-			    $exists = true; 
-			    foreach ($searched as $skey => $svalue) { 
-			      $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue); 
-			    } 
-			    if($exists){ return $key+1; } 
-			  } 
-
-			  return 'nothing'; 
-			}
+		
 	}

@@ -26,8 +26,6 @@ class App_hook
 		$ci->output->set_header('X-Powered-By:Phusion Passenger (mod_rails/mod_rack) 2.2.15');
 		$ci->output->set_header('X-RTPlatform-V:0.1');
 	}
-
-
 }
 function exception_handler($exception) {
   	
