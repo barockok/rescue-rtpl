@@ -41,7 +41,6 @@ class Auth extends REST_Controller
 	{
 		
 	}
-	
+
 }
-git commit --amend --author='Zidni Mubarock <zidmubarock@gmail.com>'
 
