@@ -673,7 +673,8 @@ class Airlines extends REST_Controller
 	
 	public function last_promo_get()
 	{
-		
+	
+		/*
 		$limit = ($limit = $this->get('limit')) ? $limit : 100;
 	
 		try {
@@ -702,6 +703,33 @@ class Airlines extends REST_Controller
 		$fares = array_slice($fares, 0, $limit);
 	//	$fares = array_sort($fares, 'price', SORT_ASC);
 		$this->response($fares);
+		*/
+		
+		$limit = ($limit = $this->get('limit')) ? $limit : 10;
+		$airlines  = array('sriwijaya', 'merpati', 'lion', 'citilink', 'batavia');
+		$fares = array();
+		foreach($airlines as $comp){
+			$fares_comp = Service_fare_item::find('all',
+					array(
+						'conditions' => array(
+							'company = ?', 
+							strtoupper($comp),
+						),
+						'limit' => $limit,
+						'order' => 'price asc'
+					)
+				);
+			if(count($fares_comp) > 0) 
+				foreach($this->db_util->multiple_to_array($fares_comp) as $afare)
+					$fares[] = $afare;
+		}
+		shuffle($fares);
+		$fares = array_slice($fares, 0, $limit);
+		$fares = array_values(array_sort($fares, 'price', SORT_ASC));
+		
+		$this->response($fares);
+				
+		
 		
 	}
 	
