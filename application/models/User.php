@@ -5,6 +5,9 @@ class User extends ActiveRecord\Model
 	static $belongs_to = array(
 		array('role','class_name' => 'User_role', 'foreign_key' => 'role_id')
 	);
+	static $has_many = array(
+		array('object', 'class_name' => 'User_object', 'foreign_key' => 'user_id'),
+	);
 
 	static $before_create = array('_before_create');
 	static $before_update = array('_before_update');

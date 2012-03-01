@@ -608,8 +608,8 @@ echo "</pre>";
 	}
 	public function test_login()
 	{
-		$this->rest->api_key('asas', 'X-CUSTOMER-KEY');
-		$this->rest->post('user/auth/login/format/json', array('user' => array('email' => 'zidmubarock@gmail.com', 'password' => 'alzid4ever')));
+	//	$this->rest->api_key('dff8ef74f6602e67e7d317d1d73d9317', 'X-CUSTOMER-KEY');
+		$this->rest->get('user/object/contact/address');
 		$this->rest->debug();
 	}
 	

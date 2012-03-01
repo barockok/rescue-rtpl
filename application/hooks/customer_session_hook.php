@@ -36,7 +36,7 @@ class CustomerSession
 	public static function getModel()
 	{
 		if(empty(self::$model))
-			throw new CustomerSessionException("Error Processing Request", 1);
+			throw new CustomerSessionException("No Customer Session Token Provided", 1);
 		
 		if(self::$model instanceof User == FALSE)
 			throw new CustomerSessionException("Error Processing Request", 1);
@@ -44,6 +44,7 @@ class CustomerSession
 		return self::$model;	
 			
 	}
+	
 }
 
 
