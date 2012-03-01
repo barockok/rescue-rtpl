@@ -6,7 +6,7 @@ class Lion extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();
 		ini_set('memory_limit', '120M');
-		$this->_cookies_file = './components/service/third_party/comp_maskapai/cookies/lion_air.txt';
+		$this->_cookies_file = realpath('./components/service/third_party/comp_maskapai/cookies/lion_air.txt');
 		$this->login_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->src_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step1.aspx';
@@ -88,16 +88,23 @@ class Lion extends Comp_maskapai_base {
 		
 	public function doSearch($opt=array()){		
 		//$this->_opt->date_depart =  '2012-01-25';
-		$this->_opt->date_depart =  '2012-03-16';
+		$this->_opt->date_depart =  '2012-04-20';
 		$this->_opt->date_return =  NULL;
-		$this->_opt->passengers = 5;
+		$this->_opt->adult = 1;
+		$this->_opt->child = 1;
+		$this->_opt->infant = 0;
 		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'DPS';
+		$this->_opt->route_to = 'MES';
 		$this->_opt->id = 1;
 		$this->_opt->max_fare = 5;		
 
 		foreach($opt as $key => $val) $this->_opt->$key = $val;
-		return $this->src_flight();
+		$fare_result = $this->src_flight();
+				
+		if($fare_result == null) 
+			throw new ResultFareNotFound($log);
+		else 
+			return $fare_result;
 	}
 	
 	function src_flight(){
@@ -177,7 +184,7 @@ class Lion extends Comp_maskapai_base {
 	function preSearch(){
 		$this->login();
 		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=53298', false);
-		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);
+		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);		
 		$vKey = str_get_html($start)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
 		
 		$this->format_date(); //adjust the date format
@@ -191,11 +198,11 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$txtOri' => $this->_opt->route_from,
 			'UcFlightSelection$ddlDepMonth' => $this->dep_month, //Nov 2011
 			'UcFlightSelection$ddlDepDay' => $this->dep_day, //17
-			'UcFlightSelection$ddlADTCount' => $this->_opt->passengers,
+			'UcFlightSelection$ddlADTCount' => $this->_opt->adult,
 			'UcFlightSelection$txtSelDes' => $this->_opt->route_to,
 			'UcFlightSelection$txtDes' => $this->_opt->route_to,
-			'UcFlightSelection$ddlCNNCount' => '0',
-			'UcFlightSelection$ddlINFCount' => '0',
+			'UcFlightSelection$ddlCNNCount' => $this->_opt->child,
+			'UcFlightSelection$ddlINFCount' => $this->_opt->infant,
 			'UcFlightSelection$txtDepartureDate' => $this->dep_date,  //17 Nov 2011
 			'UcFlightSelection$txtReturnDate' => $this->dep_date,
 		);
@@ -218,7 +225,6 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$txtDepartureDate' => '16 Mar 2012',
 			'UcFlightSelection$txtReturnDate' => '24 Mar 2012',			
 				);*/
-		
 		//print_r($post_data);
 		
 		
@@ -303,8 +309,8 @@ class Lion extends Comp_maskapai_base {
 				
 				//define return variable
 				$final_data[$idx]=array(
-					'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
-				 // 'price' => $this->getPrice($vKey,$cellID,$rowID),
+					//'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
+				 	'price' => $this->getPrice($vKey,$cellID,$rowID),
 					'company' => 'LION',
 					't_depart' => $t_depart,	//depart from origin location
 					't_transit_arrive' => '', //arrive in transit airport
@@ -320,16 +326,16 @@ class Lion extends Comp_maskapai_base {
 						'flight_number_transit' => '',
 						'rowID' => $rowID,
 						'cellID' => $cellID,
-						'passenger' => $this->_opt->passengers					
+						'passenger' => $this->_opt->adult					
 					))
 				);												
 				$idx++;
 				if($idx==($this->_opt->max_fare)) break;
 			}																			
 		}
-		// return $final_data;			
+		return $final_data;			
 		// FINAL PRICE is HERE					
-		return $this->simultant_fetch_price($final_data, $vKey);
+		//return $this->simultant_fetch_price($final_data, $vKey);
 	}
 	public function continously_fetch_price($pre_fare_data, $key)
 	{
@@ -445,6 +451,8 @@ class Lion extends Comp_maskapai_base {
 	{
 		if(!is_string($raw_result) || $raw_result == null ) return '0';
 		
+		$raw_result;
+		
 		return str_replace(',','',str_get_html($raw_result)->find('td[id=tdAmtTotal]',0)->plaintext);
 	}
 	private function _prepare_price($vKey=null,$cellID,$rowID)
@@ -467,13 +475,13 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$txtOri' => $this->_opt->route_from,//'Banjarmasin (BDJ)',
 			'UcFlightSelection$ddlDepMonth' => $this->dep_month,//'Mar 2012',
 			'UcFlightSelection$ddlDepDay' => $this->dep_day,//'16',
-			'UcFlightSelection$ddlADTCount' => $this->_opt->passengers,//2,
+			'UcFlightSelection$ddlADTCount' => $this->_opt->adult,//2,
 			'UcFlightSelection$txtSelDes' => $this->_opt->route_to,//'SUB',
 			'UcFlightSelection$txtDes' => $this->_opt->route_to,//'Surabaya (SUB)',
 			'UcFlightSelection$ddlRetMonth' => $this->dep_month,//'Mar 2012',
 			'UcFlightSelection$ddlRetDay' => $this->dep_day,//'17',
-			'UcFlightSelection$ddlCNNCount' => 0,
-			'UcFlightSelection$ddlINFCount' => 0,
+			'UcFlightSelection$ddlCNNCount' => $this->_opt->child,
+			'UcFlightSelection$ddlINFCount' => $this->_opt->infant,
 			'UcFlightSelection$txtDepartureDate' => $this->dep_date,//'16 Mar 2012',
 			'UcFlightSelection$txtReturnDate' => $this->dep_date,//'17 Mar 2012',
 			'txtOBNNCellID' => $cellID,
@@ -521,7 +529,7 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$txtOri' => $this->_opt->route_from,//'Banjarmasin (BDJ)',
 			'UcFlightSelection$ddlDepMonth' => $this->dep_month,//'Mar 2012',
 			'UcFlightSelection$ddlDepDay' => $this->dep_day,//'16',
-			'UcFlightSelection$ddlADTCount' => $this->_opt->passengers,//2,
+			'UcFlightSelection$ddlADTCount' => $this->_opt->adult,//2,
 			'UcFlightSelection$txtSelDes' => $this->_opt->route_to,//'SUB',
 			'UcFlightSelection$txtDes' => $this->_opt->route_to,//'Surabaya (SUB)',
 			'UcFlightSelection$ddlRetMonth' => $this->dep_month,//'Mar 2012',
@@ -537,6 +545,7 @@ class Lion extends Comp_maskapai_base {
 			'txtUserSelectedOneway' => '',
 			'__ASYNCPOST' => true,
 		);
+				
 		
 		$conf = array(
 			'url' 				=> $this->step2_url,
