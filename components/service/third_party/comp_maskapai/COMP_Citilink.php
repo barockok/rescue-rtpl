@@ -204,7 +204,7 @@ class Citilink extends Comp_maskapai_base {
 	function login(){
 		$this->mainPage();
 		$post_data = array(
-			'userName'		 => 'tiket001',
+			'userName'		 => 'tiket0001',
 			'PassWord'		 => '1234rewq1',
 			'companyname'	 => 'CGKTICKET801',
 		);
@@ -216,17 +216,19 @@ class Citilink extends Comp_maskapai_base {
 		$url = 'https://booking.citilink.co.id/b2b/WebService/BaseService.asmx/UserLogOn';
 		
 		$exc = $this->curl($url,$post_data,$header);
+		$this->mainPage();
 	}
 	
 	function logout(){
 		$header = array(
 			"application/json; charset=UTF-8",
-			"Origin:https://booking.citilink.co.id",
+			//"Origin:https://booking.citilink.co.id",
 			"Host:booking.citilink.co.id",
 			'Content-Length:'.strlen(''),
 		);
 		$url = 'https://booking.citilink.co.id/b2b/WebService/BaseService.asmx/Logout';
 		$exc = $this->curl($url,null,$header);
+		unlink($this->_cookies_file) ;
 	}
 	
 	function search(){
@@ -267,6 +269,7 @@ class Citilink extends Comp_maskapai_base {
 	
 	function searchResult(){
 		$array = json_decode($this->search(),1);
+		//echo implode($array);
 		if (!is_array($array)) {return false;}
 		$page = str_get_html(implode($array));
 		if (!$page) {return false;}
@@ -366,20 +369,18 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	public function doSearch($opt = array(), $debug = false){
-		
+		$this->login();
 		$this->_opt->route_from 	= 'CGK';
 		$this->_opt->route_to 		= 'MES';
-		$this->_opt->date_depart 	= '2012-03-14';
-		$this->_opt->date_return 	= '2012-03-26';
+		$this->_opt->date_depart 	= '2012-03-21';
+		$this->_opt->date_return 	= NULL;
 		$this->_opt->passengers		= 2;
 		$this->_opt->id				= 1;
 		/*$this->_opt->adult		 	= 2;
 		$this->_opt->child 			= 0;
 		$this->_opt->infant		 	= 0;
 		$this->_opt->id				= 1;*/
-		
 		$this->roundTrip 			= false;
-		$this->login();
 		foreach($opt as $key => $val ){$this->_opt->$key = $val;}
 		if (isset($this->_opt->passengers)) {
 			$this->_opt->adult = $this->_opt->passengers;
@@ -397,9 +398,6 @@ class Citilink extends Comp_maskapai_base {
 		}else{
 			$final = $this->searchResult();
 		}
-		if (!is_array($final)) {
-			return array();
-		}
 		$this->logout();
 		if (count($final) == 0 || is_array($final) == false) {
 			throw new ResultFareNotFound($opt);
@@ -408,24 +406,6 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	function forBooking(){
-		/*if ($this->_opt->date_return) {
-			$result1 = (is_array($rs1 = $this->search())) ? $rs1 : array();	
-			$temp = '';
-			$temp = $this->_opt->route_from;
-			$this->_opt->route_from = $this->_opt->route_to;
-			$this->_opt->route_to = $temp;
-			$this->_opt->date_depart = $this->_opt->date_return;
-			$this->roundTrip = true;
-			$result2 = (is_array($rs2 = $this->search())) ? $rs2 : array();
-			$final = array_merge($result1,$result2);
-		}else{
-			$final = $this->search();
-		}
-		if (!is_array($final)) {
-			return array();
-		}
-		//$this->logout();
-		return array_values($final);*/
 		$this->roundTrip = false;
 		$finnal = $this->search();
 	}
@@ -868,7 +848,6 @@ class Citilink extends Comp_maskapai_base {
 	}
 
 	function booking(){
-		$this->login();
 		$this->search();
 		$this->detail();
 		$this->savestep4();
@@ -944,7 +923,7 @@ class Citilink extends Comp_maskapai_base {
 			),
 			
 		);*/
-		
+		$this->login();
 		$this->passangers = $passangers_data;
 		$this->user = $customer_data;
 	

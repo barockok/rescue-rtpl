@@ -27,7 +27,8 @@ class Auth extends REST_Controller
 				if($user->status != 'active'){
 					$this->response(array('warning' => 'your account not active yet, we already resend the activation key to your email ('.$user->email.')'), 200);
 				}else{
-					$this->response($user->to_array(array('except' => array('password'), 'include' => array('role'))), 200);
+					$user_response = $user->to_array(array('except' => array('password'), 'include' => array('role')));
+					$this->response($user_response, 200);
 				}
 			}else{
 				$this->response(array('error' => 'combination failed'), 500);

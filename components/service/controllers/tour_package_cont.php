@@ -84,7 +84,7 @@ class Tour_package_cont extends REST_Controller
 		try {
 			$tp = Service_tp::find($id);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		$main = elements(array('title', 'cat_id', 'l_desc', 'stock', 'price'), $this->post() , NULL);
 		$list_file = array();

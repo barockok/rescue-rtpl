@@ -270,7 +270,7 @@ class Airlines extends REST_Controller
 			$log = Service_fare_log::find($id);
 			$this->response($log->to_array( array('include' => array('departure_airport', 'destination_airport')) ));
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	}
 	public function fare_get()
@@ -280,7 +280,7 @@ class Airlines extends REST_Controller
 			$fare = Service_fare_item::find($id);
 			$this->response($fare->to_array(array('include' => array('log'))));
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	}
 	public function book_post()
@@ -569,7 +569,7 @@ class Airlines extends REST_Controller
 			$this->response($promo_log);
 			
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		
 	}
@@ -580,7 +580,7 @@ class Airlines extends REST_Controller
 		try {
 			$promo_log = Service_fare_promo_log::find($id);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		
 		$promo_log = $promo_log->to_array(array('include' => array('search')));
@@ -654,7 +654,7 @@ class Airlines extends REST_Controller
 		try {
 				$promo_log = Service_fare_promo_log::last();
 		} catch (Exception $e) {
-				$this->response_error($e->getMessage());
+				$this->response_error($e);
 		}
 
 		$promo_log = $promo_log->to_array(array('include' => array('search')));
@@ -679,7 +679,7 @@ class Airlines extends REST_Controller
 		try {
 				$promo_log = Service_fare_promo_log::last();
 		} catch (Exception $e) {
-				$this->response_error($e->getMessage());
+				$this->response_error($e);
 		}
 		//$this->response(array('asu'));
 		
