@@ -28,7 +28,7 @@ class Train extends REST_Controller
 				}
 			$this->response($log);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}	
 	}
 	public function search_get()
@@ -38,7 +38,7 @@ class Train extends REST_Controller
 		try {
 			$log = Service_train_log::find($id);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		$log = $log->to_array(array('include' => array('destination_stasiun', 'original_stasiun')));
 		$log['type'] = (element('date_return', $log) == null) ? 'oneway' : 'roundtrip';

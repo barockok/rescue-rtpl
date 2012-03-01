@@ -18,7 +18,12 @@ $hook['pre_system'][]					= array(
 			                                );
 
 
-
+$hook['pre_system'][] = array(
+	'class' => 'RTBootstrap',
+	'function' => 'init',
+	'filename' => 'RTBootstrap.php',
+	'filepath' => 'third_party/RT-Core',
+);
 $hook['pre_controller'][] 			= array(
 										    'class'    => '',
 										    'function' => 'initialize_php_activerecord',

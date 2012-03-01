@@ -231,6 +231,10 @@ class REST_Controller extends CI_Controller {
 
 	public function response_error($data)
 	{
+		if($data instanceof Exception){
+			$data = RTException::handler($data);
+		}
+			
 		$data = array('error' => $data);
 		$this->response($data, 500);
 	}

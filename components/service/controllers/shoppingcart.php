@@ -81,7 +81,7 @@ class Shoppingcart extends REST_Controller
 			$new_item->save();
 			$this->response($new_item->to_array(array('include' => array('cart'))));
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	}
 	public function update_item_post()
@@ -112,7 +112,7 @@ class Shoppingcart extends REST_Controller
 				throw $e;
 			}
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	}
 	public function delete_item_get()
@@ -125,7 +125,7 @@ class Shoppingcart extends REST_Controller
 			$item->delete();
 			$this->response($old_item);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	}
 	public function hook_call_post()

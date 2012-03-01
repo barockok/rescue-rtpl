@@ -24,7 +24,7 @@ class Tiketcom extends REST_Controller
 			$res = $this->comp_tiketcom->do_search($opt) ;
 			$this->response($res);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 			
 	}
@@ -47,7 +47,7 @@ class Tiketcom extends REST_Controller
 		try {
 			$res = $this->comp_tiketcom->get_Location($q);
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		$this->response($res);
 	}
@@ -61,7 +61,7 @@ class Tiketcom extends REST_Controller
 			$log->save();
 			$this->response($log->to_array());
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 	
 	}
@@ -90,7 +90,7 @@ class Tiketcom extends REST_Controller
 			$this->response($return);
 			
 		} catch (Exception $e) {
-			$this->response_error($e->getMessage());
+			$this->response_error($e);
 		}
 		
 	}

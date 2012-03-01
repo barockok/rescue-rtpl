@@ -10,15 +10,14 @@ class App_hook
 	{
 		if(WORKING_STATUS != true){
 			ini_set('display_errors','Off'); 
-		
 			error_reporting(E_USER_ERROR | E_RECOVERABLE_ERROR | E_ERROR);
 			register_shutdown_function('_shutdown_handler');
 			set_error_handler('_error_handler');
 			set_exception_handler('exception_handler');
+			
 		}
 		else
 			ini_set('display_errors','On'); 
-		
 	}
 	public function post_controller_constructor()
 	{
@@ -29,8 +28,7 @@ class App_hook
 }
 function exception_handler($exception) {
   	
-		$output = json_encode(array('error' => 'Something really bad happens, we so sorry about this, we gonna fix it immediately'));
-		
+		$output = json_encode(array('error' => RTException::handler($exception)));
 		header('HTTP/1.1: ' . 500);
 		header('Status: ' . 500);
 		header('Content-Length: ' . strlen($output));

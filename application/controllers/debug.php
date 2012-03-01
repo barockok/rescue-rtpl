@@ -600,7 +600,6 @@ echo "</pre>";
 		
 		$str = '<html><body><div>text</div></body></html>';
 		$dom = str_get_html($str);
-	
 		echo  $dom->findaa('bodaay')->plaintext;
 
 	
@@ -608,8 +607,8 @@ echo "</pre>";
 	}
 	public function test_login()
 	{
-	//	$this->rest->api_key('dff8ef74f6602e67e7d317d1d73d9317', 'X-CUSTOMER-KEY');
-		$this->rest->get('user/object/contact/address');
+		$this->rest->api_key('dff8ef74f6602e67e7d317d1d73d9317', 'X-CUSTOMER-KEY');
+		$this->rest->post('user/edit', array('user' => array('first_name' => 'Sir Zidni', 'object' => array('name' => 'address'))));
 		$this->rest->debug();
 	}
 	

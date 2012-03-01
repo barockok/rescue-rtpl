@@ -94,6 +94,22 @@ function array_sort($array, $on, $order=SORT_ASC)
 
     return $new_array;
 }
+function array_group($array, $index)
+{
+	$new_array = array();
+	foreach($array as $key => $val)
+				$new_array[$val[$index]][] =  $val;
+	
+	return $new_array;
+	
+
+			
+	
+			
+	
+	
+	
+}
 function encrypt($sData, $secretKey){
     $sResult = '';
     for($i=0;$i<strlen($sData);$i++){
