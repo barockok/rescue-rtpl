@@ -11,12 +11,12 @@ class Shoppingcart extends REST_Controller
 	}
 	public function create_post()
 	{
-	
+		
 		$data = $this->post();
+		$data['user_id'] = CustomerSession::getModel()->id;
 	//	$this->response($data);
 		try {
 			$cart  = new Cart($data);
-		
 			if(!$cart->is_valid())
 				$this->response_error($cart->errors->full_messages());
 			$cart->save();
@@ -73,7 +73,7 @@ class Shoppingcart extends REST_Controller
 		try {
 			$post = $this->post();
 			$post['cart_id'] = $cart->id;
-			$post = $this->_hook_caller($post['type'], 'add_item', $post);
+			$post = $this->_hook_caller(element('type', $post), 'add_item', $post);
 			$new_item = Cart_item::create($post);
 			
 			if(!$new_item->is_valid())
@@ -135,6 +135,7 @@ class Shoppingcart extends REST_Controller
 	
 	private function _hook_caller($sibling, $func, $param)
 	{
+	
 		$file_name = strtolower($sibling).'.php';
 		$func = '_sc_hook_'.$func;
 		if(!is_file($inc = dirname(__FILE__).'/'.$file_name)) return $param;
@@ -144,7 +145,8 @@ class Shoppingcart extends REST_Controller
 			if(!class_exists($class = ucfirst($sibling) ) ) return $param;
 			if(!is_callable( array($class, $func) ) ) return $param;
 			// TOTO : check first, to func called, if null or void, return to original $param
-			$return = call_user_func_array($class.'::'.$func, array($param));
+			$return = Modules::run('service/airlines/'.$func, $param);
+		//	$return = call_user_func_array($class.'::'.$func, array($param));
 			return ($return != null) ? $return : $param;
 		}
 	}

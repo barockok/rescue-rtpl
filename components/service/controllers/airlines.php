@@ -9,6 +9,7 @@ class Airlines extends REST_Controller
 	{
 		parent::__construct();
 		$this->fetch_time_limit = 5;
+		$this->load->library('comp_maskapai');
 	}
 	public function test_get()
 	{
@@ -735,7 +736,35 @@ class Airlines extends REST_Controller
 	
 	public function _sc_hook_add_item($cart_item)
 	{
-		// validate passenger dat ;
+		$option = ($opt = element('option', $cart_item)) ? $opt : array();
+		if(!element('depart_id', $option))
+			throw new Exception("Please Provide the Fare Id for Departure", 1);
+		if(!element('passengers_data', $option))
+			throw new Exception("Please Prove the Passenger data", 1);
+	//	if(!element('contact_data', $option))
+	//		throw new Exception("Please provide contact data");
+			
+		$booking_data = array();
+		try {
+			$depart_fare = Service_fare_item::find(element('depart_id', $option));
+			$comp 	= $this->comp_maskapai->_load($depart_fare->company);
+			$result =  $comp->doBooking($depart_fare->to_array(array('include' => array('log'))));
+			$comp->closing();
+			$boooking_data['departure'] = $result;
+		} catch (Exception $e) {
+			throw new Exception("fare Id for departure not valid", 1);	
+		}
+		if(element('return_id', $option)){
+			try {
+				
+			} catch (Exception $e) {
+				
+			}
+		}
+		
+		
+			
+		
 	}
 	public function _sc_hook_delete_item($cart_item)
 	{

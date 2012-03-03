@@ -611,6 +611,10 @@ echo "</pre>";
 		$this->rest->post('user/edit', array('user' => array('first_name' => 'Sir Zidni', 'object' => array('name' => 'address'))));
 		$this->rest->debug();
 	}
+	public function test_adding_cart()
+	{
+		# code...
+	}
 	
 
 }
