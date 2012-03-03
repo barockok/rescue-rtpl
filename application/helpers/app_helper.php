@@ -57,7 +57,7 @@ function suicide($endpoint='', $bgvoid = TRUE , $pre = '', $post = "")
 	else{
 			system(CURL_BIN_LOC.' '.$pre.' --header "X-API-KEY:'.SELF_API_KEY.'" '.$url.' '.$post.' '.$bgflag, $return);
 			return $return;
-		}
+	}
 
 }
 function array_sort($array, $on, $order=SORT_ASC)
@@ -170,3 +170,28 @@ function cleanup_string($string)
 		return (count($return) == 0) ? FALSE : $return;
 	}
 
+function validate_date($dateString)
+	{
+	
+		$ci =& get_instance();
+		$ci->load->helper('array');
+		$date = explode('-', $dateString);
+		if(isset($date[1][0])) {
+			if($date[1][0] == '0')
+				$date[1] = $date[1][1];
+		}else{
+			return false;
+		}
+		
+		if(isset($date[2][0])){
+			if($date[2][0] == '0')
+		 		$date[2] = $date[2][1];
+		}else{
+			return false;
+		}
+	
+		$return = checkdate (element(1, $date), element(2, $date), element(0, $date));
+		return $return;
+	
+		
+	}

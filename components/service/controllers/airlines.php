@@ -4,12 +4,17 @@
 */
 class Airlines extends REST_Controller
 {
-	
+	protected $archive_interval = '3 days';
+	protected $search_interval = '1 days';
 	function __construct()
 	{
 		parent::__construct();
 		$this->fetch_time_limit = 5;
 		$this->load->library('comp_maskapai');
+		$this->airlines_comp = array('citilink', 'batavia', 'garuda', 'merpati', 'sriwijaya', 'lion');
+		$this->archive_interval_time = 	date('Y-m-d H:i:s', strtotime('-'.$this->archive_interval, strtotime(date('Y-m-d H:i:s'))));
+		$this->search_interval_time = 	date('Y-m-d H:i:s', strtotime('-'.$this->search_interval, strtotime(date('Y-m-d H:i:s'))));
+		
 	}
 	public function test_get()
 	{
@@ -19,7 +24,7 @@ class Airlines extends REST_Controller
 	{
 		$this->response(suicide('service/airlines/test', FALSE));
 	}
-	public function search_post()
+	public function backup_search_post()
 	{
 		$posted = array(
 			'date_depart' 	=> $this->post('depart'),
@@ -110,10 +115,7 @@ class Airlines extends REST_Controller
 			// close master process
 			curl_multi_close($master_process);
 			echo $mrc;
-			
-			//TODO : Grap all result to a log ..
-			
-			
+			//TODO : Grap all result to a log ..	
 	}
 	
 	// only rest suicide will call this function
@@ -205,6 +207,218 @@ class Airlines extends REST_Controller
 		$log->complete_comp = json_encode($complete);
 		$log->save();
 	}
+	public function search_post()
+	{
+		
+		$params  = elements(array('from', 'to', 'depart', 'return', 'adult', 'child', 'infant'), $this->uri->uri_to_assoc(3), null);
+		$comps = (!$this->post('airlines') ) ? array(): explode(',', $this->post('airlines'));
+		$depart_exclude =   (!$this->post('ex_depart') ) ? null: explode(',', $this->post('ex_depart'));
+		$return_exclude =   (!$this->post('ex_return') ) ? null: explode(',', $this->post('ex_return'));
+		
+		foreach($comps as $key => $val)
+			if(!in_array($val, $this->airlines_comp)) unset($comps[$key]);
+	
+		if(count($comps) == 0)
+			$comps = $this->airlines_comp;
+	
+		$required = array('from', 'to', 'depart','adult');
+		$miss_required = array();
+		foreach($params as $key => $val)
+			if(in_array($key, $required) AND is_null($val))
+				array_push($miss_required, $key.' is required');			
+		foreach($params as $key => $val)
+			if(is_null($val)) 
+				unset($params[$key]);
+		
+		
+	//	$this->response($params);
+		// check date depart
+		if(!validate_date(element('depart', $params)))
+				array_push($miss_required, 'depart date is not valid');
+		if(element('return', $params) AND !validate_date(element('return', $params)))
+				array_push($miss_required, 'depart date is not valid');
+		if(element('adult', $params) < 1)
+				array_push($miss_required, 'adult value must be greater than 0');
+				
+		if(isset($params['child']) )
+				if($params['child'] < 1)
+					array_push($miss_required, 'child value must be greater than 0');
+		if(isset($params['infant']) )
+				if($params['infant'] < 1)
+					array_push($miss_required, 'infant value must be greater than 0');			
+		// check route
+		$route_to = Ext_data_airport::find('last', array('conditions' => array('code = ?', strtoupper(element('to', $params)))));
+		$route_from = Ext_data_airport::find('last', array('conditions' => array('code = ?', strtoupper(element('from', $params)))));
+		if(!$route_to)
+			array_push($miss_required, 'not valid destination airport code');	
+		if(!$route_from)
+			array_push($miss_required, 'not valid original airport code');	
+		
+		if(count($miss_required) > 0)
+			$this->response_error(implode(', ', $miss_required));
+	
+		// build the log
+		
+		$param_depart = array(
+			'route_from'	 	=> element('from', $params),
+			'route_to'	 		=> element('to', $params),
+			'date_depart' 		=> element('depart', $params),
+			'adult' 			=> element('adult', $params),
+			'infant' 			=> (element('infant', $params)) ? element('infant', $params) : 0,
+			'child' 			=> (element('child', $params)) ? element('child', $params) : 0,
+		);
+			$depart_fares = $this->do_theSeacrh($param_depart, $comps, $depart_exclude);
+	
+		if(element('return', $params)){
+			$param_return =  array(
+				'route_from'	 	=> element('to', $params),
+				'route_to'	 		=> element('from', $params),
+				'date_depart' 		=> element('return', $params),
+				'adult' 			=> element('adult', $params),
+				'infant' 			=> (element('infant', $params)) ? element('infant', $params) : 0,
+				'child' 			=> (element('child', $params)) ? element('child', $params) : 0,
+			);
+			
+			$return_fares = $this->do_theSeacrh($param_return, $comps, $return_exclude);
+		}
+		
+		// rountrip res
+		if(element('return', $params)){
+				$this->response(array(
+					'depart' => array(
+						'fares' => $depart_fares,
+					),
+					'return' => array(
+						'fares' => $return_fares
+					)
+				));
+		}
+		//oneway res
+		else{
+				$this->response(array(
+					'depart' => array(
+						'fares' => $depart_fares,
+					)
+				));
+		}
+	
+	}
+	public function do_theSeacrh($param, $comps, $exclude = null)
+	{
+		
+		// mark as acrhive all old item if there;
+		try {
+		$old_fares = Service_fare_item::find('all', array('conditions' =>  array('created_at < and archive = ?', $this->archive_interval_time, 'N')) ) ;
+
+		if(count($old_fares) > 0)
+			foreach($old_fares as $old_fare) 
+				 $old_fare->archive = 'Y'; $old_fare->save();
+		} catch (Exception $e) {
+			
+		}
+	
+			
+		
+		// now we need to determine the which comp with assing to curl
+		$assign_to_curl = array();
+		foreach($this->airlines_comp as $comp){
+			$comp = strtoupper($comp);
+			$count_comp_fares = Service_fare_item::count( 
+				array(
+					'conditions' => array(
+						'company = ? and date_depart = ? and route_from = ? and route_to = ? and adult = ? and child = ? and infant = ? and created_at > ? and archive = ?',
+						$comp, $param['date_depart'], $param['route_from'], $param['route_to'], $param['adult'], $param['child'], $param['infant'],
+						$this->search_interval_time, 'N'
+					)
+				)
+			);
+			// fares was 0, and there is no worker are current doin the job with same signature, so we regiter i to curl;
+			if($count_comp_fares == 0 and $this->_check_worker($comp, 'search', $param))
+				array_push($assign_to_curl, $comp);
+		}
+		if(count($assign_to_curl) > 0)
+			$this->_register_workers($assign_to_curl, 'doSearch', $param);
+		
+		// howerver, currently event there or not the fare items just search and return this fucking stuff
+		if( is_null($exclude) ){
+			$query = array(
+				'conditions' => array(
+					'date_depart = ? and route_to =? and route_from = ? and adult = ? and child = ? and infant = ? and archive = ?',
+					$param['date_depart'], $param['route_to'], $param['route_from'], $param['adult'], $param['child'], $param['infant'], 'N'
+					),
+				'order' => 'price asc',
+			);
+			$fares = Service_fare_item::find('all', $query);
+		}else{
+			$query = array(
+				'conditions' => array(
+					'date_depart = ? and route_to =? and route_from =? and adult =? and child =? and infant =? and archive = ? and id not in (?)',
+					$param['date_depart'], $param['route_to'], $param['route_from'], $param['adult'], $param['child'], $param['infant'], 'N', $exclude
+					),
+				'order' => 'price asc',
+			);
+			$fares = Service_fare_item::find('all', $query);
+		}
+		return (count($fares) > 0 ) ? $this->db_util->multiple_to_array($fares) : array();
+		
+		
+	}
+	private function _register_workers($company, $job, $param)
+	{
+		$company = (!is_array($company)) ? array($company) : $company ;
+		foreach($company as $comp)
+			$this->_register_worker($comp, $job, $param);
+		
+	}
+	public function _register_worker($company, $job, $param)
+	{
+		$param = http_build_query(array('params' => $param));
+			suicide('service/airlines/execute_worker/'.$company.'/'.$job.'/?'.$param);
+	}
+	private function _worker_progress($company, $job, $param)
+	{
+		ksort($param);
+		$sig = implode('_', array_values($param));
+		$new = array(
+			'airlines' => strtolower($company),
+			'job' => $job,
+			'signature' => $sig,
+		);
+		$worker = new Airlines_comp_worker($new);
+		$worker->save();
+		return $worker;
+	}
+
+	public function execute_worker_get()
+	{
+		$air_comp = $this->uri->rsegment(3); 
+		$job = $this->uri->rsegment(4);
+		$params = $this->get('params');
+		// START FETCHING
+		$worker = $this->_worker_progress($company, $job, $param);
+		try {
+			$comp 	= $this->comp_maskapai->_load($air_comp);
+			$result =  $comp->doSearch($params);
+			$comp->closing();
+			if(is_array($result) && count($result) > 0 ) {
+					// PUSHING RESULT to DB
+				foreach($result as $candidate_item)
+				{
+					$new_item = new Service_fare_item($candidate_item);
+					$new_item->save();
+				}
+			}
+			$worker->status = "complete";
+			$worker->save();
+		} catch (Exception $e) {
+			$worker->log_error = $e->getMessage();
+			$worker->status = "complete";
+			$worker->save();
+		}
+	
+	
+	}
+	
 	public function search_get()
 	{
 		// validate log id
@@ -315,10 +529,7 @@ class Airlines extends REST_Controller
 				// book failed
 				break;
 		}
-		
-		
-		
-		
+
 	}
 	
 	// PRIVATE FUNCTION //
@@ -532,10 +743,7 @@ class Airlines extends REST_Controller
 		return $best_limit;
 	
 	}
-	public function testa_get()
-	{
-		echo 'loaded';
-	}
+
 	public function search_promo_post()
 	{
 		if(!$post = $this->post('src')) $this->response_error('Please Provide the variable');
@@ -675,36 +883,7 @@ class Airlines extends REST_Controller
 	public function last_promo_get()
 	{
 	
-		/*
-		$limit = ($limit = $this->get('limit')) ? $limit : 100;
-	
-		try {
-				$promo_log = Service_fare_promo_log::last();
-		} catch (Exception $e) {
-				$this->response_error($e);
-		}
-		//$this->response(array('asu'));
-		
-		$promo_log = $promo_log->to_array(array('include' => array('search')));
-		$fares = array();
-		//$this->response($promo_log);
-		
-		// building the search id
-		$search_ids = array();
-		//$this->response(array('asu'));
-		
-		foreach(element('search', $promo_log) as $a_log_search) {
-			$a_search = $this->_fetch_formula(element('id', $a_log_search), $limit) ;
-			if(count($a_search['depart']['fares']) > 0)
-				foreach($a_search['depart']['fares'] as $fare)
-				array_push($fares, $fare);
-		}
-		
-		shuffle($fares);
-		$fares = array_slice($fares, 0, $limit);
-	//	$fares = array_sort($fares, 'price', SORT_ASC);
-		$this->response($fares);
-		*/
+
 		
 		$limit = ($limit = $this->get('limit')) ? $limit : 10;
 		$airlines  = array('sriwijaya', 'merpati', 'lion', 'citilink', 'batavia');
@@ -761,10 +940,6 @@ class Airlines extends REST_Controller
 				
 			}
 		}
-		
-		
-			
-		
 	}
 	public function _sc_hook_delete_item($cart_item)
 	{
@@ -774,12 +949,43 @@ class Airlines extends REST_Controller
 	public function _sc_hook_update_item($cart_item)
 	{
 		throw new Exception("Error Processing Request", 1);
-		
-		
+
 	}
-	
-	
-	
+	private function _check_worker($comp, $job, $param = null)
+	{
+		
+		if($param == null){
+			if(Airlines_comp_worker::count(
+				array(
+					'conditions' => array(
+						'airlines = ? and job = ? and status = ?',
+						strtoupper($comp), $job, 'onprogress',
+						)
+					)
+				) == 0 ){
+				return true;
+			}
+			else
+				return false;
+		}
+		else{
+			ksort($param);
+		 	$sig = implode('_', array_values($param));
+			if(Airlines_comp_worker::count(
+				array(
+					'conditions' => array(
+						'airlines = ? and job = ? and status = ? and signature =? ',
+						strtoupper($comp), $job, 'onprogress', $sig
+						)
+					)
+				) == 0 ){
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+
 	
 	
 }

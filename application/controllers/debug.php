@@ -611,10 +611,35 @@ echo "</pre>";
 		$this->rest->post('user/edit', array('user' => array('first_name' => 'Sir Zidni', 'object' => array('name' => 'address'))));
 		$this->rest->debug();
 	}
-	public function test_adding_cart()
+	public function test_date_db()
 	{
-		# code...
-	}
 	
-
+		$param = array(
+			'to' => 'CGK',
+		);
+	
+		if($this->_check_worker('sriwijaya', 'doBooking', $param))
+			echo 'complete';
+		else
+			echo 'onworking';
+		
+		
+	}
+	public function newsearch()
+	{
+		$param = array(
+			'from' => "CGK",
+			'to' => "DPS",
+			'adult' => 1,
+			'depart' => '2012-03-24',
+		);
+		$endpoint = 'service/airlines/search/'.$this->uri->assoc_to_uri($param);
+		$this->rest->post($endpoint);
+		$this->rest->debug();
+	}
+	public function testexec()
+	{
+	 $this->rest->get('service/airlines/execute_worker', array('params' => array('id' => 3, 'depart' => 'sub')));
+	$this->rest->debug();
+	}
 }
