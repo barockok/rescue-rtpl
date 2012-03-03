@@ -9,6 +9,12 @@ class ResultFareNotFound extends AirlinesExceptions{
 		$this->message = 'result fare not found for  on log id = '.$log['id'];
 	}
 }
+class DetailFareNotFound extends AirlinesExceptions{
+	function __construct($msg)
+	{
+		$this->message = $msg;
+	}
+}
 class BookingFarePriceChanged extends AirlinesExceptions{
 	var $oldPrice , $newPrice, $fareId;
 	function __construct($fare, $newPrice)

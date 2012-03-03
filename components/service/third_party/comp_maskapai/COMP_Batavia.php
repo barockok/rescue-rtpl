@@ -3,8 +3,8 @@ if (! defined('BASEPATH')) exit('No direct script access');
 
 class Batavia extends Comp_maskapai_base {
 
-	private $username = 'jkttravel';
-	private $password = '12345';
+	private $username = 'jktsystem';
+	private $password = 'net256jfa';
 	private $_login_url = 'https://222.124.141.100/MyPage/loginproses.php';
 	private $_referer_url = 'https://222.124.141.100/MyPage/logout.php';
 	private $_search_url = 'https://222.124.141.100/MyPage/booking/index.php';
@@ -156,7 +156,7 @@ class Batavia extends Comp_maskapai_base {
 				'tglBerangkatPergi' 	=> $this->convertDayMonth(element('2',$dateExplode)),
 				'blnBerangkatPergi' 	=> $this->convertDayMonth(element('1',$dateExplode)),
 				'thnBerangkatPergi' 	=> element('2',$year).element('3',$year),
-				'jmlPenumpang' 			=> $this->_opt->passengers,
+				'jmlPenumpang' 			=> $this->_opt->adult,
 				'jmlInfant'				=> 0,
 			);
 			
@@ -219,7 +219,7 @@ class Batavia extends Comp_maskapai_base {
 					$this->_opt->radio_value = $radioValue;
 					$this->_opt->class = element('0', $head);
 					//$passangerscount = $this->_opt->adult + $this->_opt->child + $this->_opt->infant;					
-					//$fPrice = ($price+($price*0.1)+5000+5500)*$this->_opt->passengers;
+					//$fPrice = ($price+($price*0.1)+5000+5500)*$this->_opt->adult;
 					$cFlightNumber =  str_replace('&nbsp;',"",$flight_number);
 					$time_depart = strtotime($t_depart);
 					$time_arrive = strtotime($t_arrive);
@@ -233,12 +233,11 @@ class Batavia extends Comp_maskapai_base {
 						't_transit_arrive'	=>	$t_transit_arive,
 						't_transit_depart'	=>	$t_transit_depart,
 						'type'				=>	$type,
-						'price'				=>	$price*$this->_opt->passengers,
+						'price'				=>	$price*$this->_opt->adult,
 						'class'				=>	element('0', $head),
 						'route'				=>	$post_data['ruteBerangkat'].$transitLocation.','.$post_data['ruteTujuan'],
-						'log_id'			=>	$this->_opt->id,
 						'arrayIndex'		=>	$j.','.$i,
-						'passangers'		=>	$this->_opt->passengers,
+						'passangers'		=>	$this->_opt->adult,
 						//'adult'				=>	$this->_opt->adult,
 						//'child'				=> 	$this->_opt->child,
 						//'infant'			=>	$this->_opt->infant,
@@ -253,11 +252,18 @@ class Batavia extends Comp_maskapai_base {
 					$data[$j][$index]['t_transit_arrive']	= $t_transit_arive;
 					$data[$j][$index]['t_transit_depart']	= $t_transit_depart;
 					$data[$j][$index]['type']				= $type;
-					$data[$j][$index]['price'] 				= $price*$this->_opt->passengers;
+					$data[$j][$index]['price'] 				= $price*$this->_opt->adult;
 					$data[$j][$index]['class']				= element('0', $head);
 					$data[$j][$index]['route']				= element('ruteBerangkat',$post_data).','.element('ruteTujuan',$post_data);
 					$data[$j][$index]['log_id']				= $this->_opt->id;				
 					$data[$j][$index]['meta_data'] 			= json_encode($meta);
+					$data[$j][$index]['route_from']			= $this->_opt->route_from;
+					$data[$j][$index]['route_to']			= $this->_opt->route_to;
+					$data[$j][$index]['date_depart']		= $this->_opt->date_depart;
+					$data[$j][$index]['adult']				= $this->_opt->adult;
+					$data[$j][$index]['child']				= $this->_opt->child;
+					$data[$j][$index]['infant']				= $this->_opt->infant;
+					$data[$j][$index]['final_price']		= 0;
 					$index ++;
 				}
 
@@ -277,14 +283,13 @@ class Batavia extends Comp_maskapai_base {
 		
 		public function doSearch($opt = array())
 		{
-			//$this->_opt->child			= 0;
-			//$this->_opt->infant			= 1;
-			//$this->_opt->adult			= 2;
+			$this->_opt->child			= 0;
+			$this->_opt->infant			= 1;
 			$this->_opt->route_from 	= 'CGK';
 			$this->_opt->route_to 		= 'PLM';
 			$this->_opt->date_depart 	= '2012-03-14';
 			$this->_opt->date_return 	= '2012-03-17';
-			$this->_opt->passengers		= 1;
+			$this->_opt->adult			= 1;
 			$this->_opt->id				= 1;
 			
 			foreach($opt as $key => $val ) $this->_opt->$key = $val;			
@@ -310,7 +315,7 @@ class Batavia extends Comp_maskapai_base {
 			return array_values($final);
 		}
 
-		function detail(){
+		function _bakup_detail(){
 			//$this->_opt->infant = 0;
 			
 			$date = explode('-',$this->_opt->date_depart);
@@ -321,7 +326,7 @@ class Batavia extends Comp_maskapai_base {
 				'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
 				'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
 				'classPergi'				=> $this->_opt->class,
-				'jmlPenumpang'				=> $this->_opt->passengers,
+				'jmlPenumpang'				=> $this->_opt->adult,
 				'jmlInfant'					=> 0,
 				'ruteBerangkat'				=> $this->_opt->route_from,
 				'ruteTujuan'				=> $this->_opt->route_to,
@@ -330,54 +335,66 @@ class Batavia extends Comp_maskapai_base {
 			
 			$url = 'https://222.124.141.100/MyPage/booking/cekHarga.php';
 			$page = $this->curl($url,$post_data,null);
-			if (!$page) {return false;}
-			$table = $page->find('div[id=centerright] form[id=cekHarga] table');
-			if (count($table)==0) {return array();}
-			$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
-			$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
-			$countData = count($ret->find('tr',2)->find('td'));
-			$flight_number = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
-			$adult_price_per_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
-			$pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',6)->find('div',0)->plaintext);
-			$iwjr =  str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',7)->find('div',0)->plaintext);
-			$another_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',9)->plaintext);
+			try {
+				
+					if (!$page) 
+						// fare_was not found ; * todo determine if this fare is actually sold old
+						throw new DetailFareNotFound();	
+					
+					$table = $page->find('div[id=centerright] form[id=cekHarga] table');
+					
+					if ( count($table) ==0 )
+						throw new DetailFareNotFound();	
+						
+					$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
+					$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
+					$countData = count($ret->find('tr',2)->find('td'));
+					$flight_number = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
+					$adult_price_per_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
+					$pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',6)->find('div',0)->plaintext);
+					$iwjr =  str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',7)->find('div',0)->plaintext);
+					$another_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',9)->plaintext);
 
-			$data[0]['passanger_type'] = 'ADULT';
-			$data[0]['price_per_pax']  = $adult_price_per_pax;
-			$data[0]['pax']			= $pax;
-			$data[0]['iwjr']		= $iwjr;
-			$data[0]['another_pax'] = $another_pax;
+					$data[0]['passanger_type'] = 'ADULT';
+					$data[0]['price_per_pax']  = $adult_price_per_pax;
+					$data[0]['pax']			= $pax;
+					$data[0]['iwjr']		= $iwjr;
+					$data[0]['another_pax'] = $another_pax;
 
-			if (element('jmlInfant',$post_data) == 0) {
-				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',5)->find('td',1)->plaintext));
-			}else{
-				$infant_price_per_pax = str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',6)->find('td',4)->plaintext);
+					if (element('jmlInfant',$post_data) == 0) {
+						$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+						$ret1->find('tr',5)->find('td',1)->plaintext));
+					}else{
+						$infant_price_per_pax = str_replace(array(",",'.00 IDR'),'',
+						$ret1->find('tr',6)->find('td',4)->plaintext);
 
-				$pax = str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',6)->find('td',6)->find('div',0)->plaintext);
+						$pax = str_replace(array(",",'.00 IDR'),'',
+						$ret1->find('tr',6)->find('td',6)->find('div',0)->plaintext);
 
-				$iwjr =  str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',6)->find('td',7)->find('div',0)->plaintext);
+						$iwjr =  str_replace(array(",",'.00 IDR'),'',
+						$ret1->find('tr',6)->find('td',7)->find('div',0)->plaintext);
 
-				$another_pax = 0;
+						$another_pax = 0;
 
-				$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
-				$ret1->find('tr',9)->find('td',1)->plaintext));
+						$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+						$ret1->find('tr',9)->find('td',1)->plaintext));
 
-				$data[1]['passanger_type'] = 'INFANT';
-				$data[1]['price_per_pax']  = $infant_price_per_pax;
-				$data[1]['pax']			= $pax;
-				$data[1]['iwjr']		= $iwjr;
-				$data[1]['another_pax'] = $another_pax;
+						$data[1]['passanger_type'] = 'INFANT';
+						$data[1]['price_per_pax']  = $infant_price_per_pax;
+						$data[1]['pax']			= $pax;
+						$data[1]['iwjr']		= $iwjr;
+						$data[1]['another_pax'] = $another_pax;
+					}
+			} catch (Exception $e) {
+				
 			}
+		
 			//$data['totalPrice']	= $cleanPrice;
 			$metaArray = json_decode(element('meta_data',$this->fare_data),1);
 			$meta = array(
 				'comapny'			=>	'BATAVIA',
 				'flight_no'			=>	$flight_number,
-				't_depart'			=>	element('t_depart',$this->fare_data),
+				't_depart'			=>	element('t_depart', $this->fare_data),
 				't_arrive'			=>	element('t_arrive',$this->fare_data),
 				't_transit_arrive'	=>	element('t_transit_arrive',$this->fare_data),
 				't_transit_depart'	=>	element('t_transit_depart',$this->fare_data),
@@ -387,33 +404,168 @@ class Batavia extends Comp_maskapai_base {
 				'route'				=>	element('route',$this->fare_data),
 				'log_id'			=>	element('log_id',$this->fare_data),
 				'arrayIndex'		=>	element('arrayIndex',$metaArray),
-				'passangers'		=>	$this->_opt->passengers,
-				//'adult'				=>	$this->_opt->adult,
-				//'child'				=> 	$this->_opt->child,
-				//'infant'			=>	$this->_opt->infant,
+				'passangers'		=>	$this->_opt->adult,
+				'adult'				=>	$this->_opt->adult,
+				'child'				=> 	$this->_opt->child,
+				'infant'			=>	$this->_opt->infant,
 				'time_depart'		=>	$this->_opt->date_depart,
 				'radio_value'		=>	$this->_opt->radio_value,
 				'price_detail'		=>	$data,
 			);
 			
-			$fare_data['id'] = element('id',$this->fare_data);
-			$fare_data['log_id'] = element('log_id',$this->fare_data);
-			$fare_data['company'] = element('company',$this->fare_data);
-			$fare_data['flight_no'] = $flight_number;
-			$fare_data['t_depart'] = element('t_depart',$this->fare_data);
-			$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
-			$fare_data['type'] = element('type',$this->fare_data);
-			$fare_data['class'] = element('class',$this->fare_data);
-			$fare_data['route'] = element('route',$this->fare_data);
-			$fare_data['t_transit_arrive'] = element('t_transit_arrive',$this->fare_data);
-			$fare_data['t_transit_depart'] = element('t_transit_depart',$this->fare_data);
-			$fare_data['price'] = $cleanPrice;
-			$fare_data['meta_data'] = json_encode($meta);
-			$fare_data['log'] = element('log',$this->fare_data);
+			$fare_data['id'] 				= element('id',$this->fare_data);
+			$fare_data['log_id'] 			= element('log_id',$this->fare_data);
+			$fare_data['company'] 			= element('company',$this->fare_data);
+			$fare_data['flight_no'] 		= $flight_number;
+			$fare_data['t_depart'] 			= element('t_depart',$this->fare_data);
+			$fare_data['t_arrive'] 			= element('t_arrive',$this->fare_data);
+			$fare_data['type'] 				= element('type',$this->fare_data);
+			$fare_data['class'] 			= element('class',$this->fare_data);
+			$fare_data['route'] 			= element('route',$this->fare_data);
+			$fare_data['t_transit_arrive'] 	= element('t_transit_arrive',$this->fare_data);
+			$fare_data['t_transit_depart'] 	= element('t_transit_depart',$this->fare_data);
+			$fare_data['price'] 			= $cleanPrice;
+			$fare_data['meta_data'] 		= json_encode($meta);
+			$fare_data['route_from'] 		= element('route_from', $this->fare_data);
+			$fare_data['route_to'] 			= element('route_to', $this->fare_data);
+			$fare_data['date_depart'] 		= element('date_depart', $this->fare_data);
+			$fare_data['adult'] 			= element('adult', $this->fare_data);
+			$fare_data['child'] 			= element('child', $this->fare_data);
+			$fare_data['infant'] 			= element('infant', $this->fare_data);
+			$fare_data['final_price']		= 1;
 			return $fare_data;
 		}
-		
-		public function getDetail($fare_data = array())
+		public function getDetail($fare_data)
+		{
+			return $this->detail($fare_data);
+		}
+		public function detail($fare_data)
+		{
+				$meta = json_decode(element('meta_data', $fare_data), 1);
+				$date = explode('-', element('date_depart', $fare_data));
+				$year = str_split($date[0]);
+				$post_data = array(
+					'flightBerangkatPergi'		=> element('radio_value', $meta),
+					'tglBerangkatPergi'			=> $this->convertDayMonth(element('2',$date)),
+					'blnBerangkatPergi'			=> $this->convertDayMonth(element('1',$date)),
+					'thnBerangkatPergi'			=> element('2',$year).element('3',$year),
+					'classPergi'				=> element('class', $fare_data),
+					'jmlPenumpang'				=> element('adult', $fare_data) + element('child', $fare_data),
+					'jmlInfant'					=> element('child', $fare_data) ,
+					'ruteBerangkat'				=> element('route_from', $fare_data),
+					'ruteTujuan'				=> element('route_to', $fare_data),
+					'ruteKembali'				=> 'kembali',
+				);
+
+				$url = 'https://222.124.141.100/MyPage/booking/cekHarga.php';
+				$page = $this->curl($url,$post_data,null);
+				try {
+
+						if (!$page) 
+							// fare_was not found ; * todo determine if this fare is actually sold old
+							throw new DetailFareNotFound();	
+
+						$table = $page->find('div[id=centerright] form[id=cekHarga] table');
+						if ( count($table) ==0 )
+
+							throw new DetailFareNotFound();	
+
+						$ret = $page->find('div[id=centerright] form[id=cekHarga] table',0);
+						$ret1 = $page->find('div[id=centerright] form[id=cekHarga] table',1);
+						$countData = count($ret->find('tr',2)->find('td'));
+						$flight_number = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
+						$adult_price_per_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
+						$pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',6)->find('div',0)->plaintext);
+						$iwjr =  str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',7)->find('div',0)->plaintext);
+						$another_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',9)->plaintext);
+
+						$data[0]['passanger_type'] = 'ADULT';
+						$data[0]['price_per_pax']  = $adult_price_per_pax;
+						$data[0]['pax']			= $pax;
+						$data[0]['iwjr']		= $iwjr;
+						$data[0]['another_pax'] = $another_pax;
+
+						if (element('jmlInfant',$post_data) == 0) {
+							$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+							$ret1->find('tr',5)->find('td',1)->plaintext));
+						}else{
+							$infant_price_per_pax = str_replace(array(",",'.00 IDR'),'',
+							$ret1->find('tr',6)->find('td',4)->plaintext);
+
+							$pax = str_replace(array(",",'.00 IDR'),'',
+							$ret1->find('tr',6)->find('td',6)->find('div',0)->plaintext);
+
+							$iwjr =  str_replace(array(",",'.00 IDR'),'',
+							$ret1->find('tr',6)->find('td',7)->find('div',0)->plaintext);
+
+							$another_pax = 0;
+
+							$cleanPrice = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',str_replace(array(",",'.00 IDR'),'',
+							$ret1->find('tr',9)->find('td',1)->plaintext));
+
+							$data[1]['passanger_type'] = 'INFANT';
+							$data[1]['price_per_pax']  = $infant_price_per_pax;
+							$data[1]['pax']			= $pax;
+							$data[1]['iwjr']		= $iwjr;
+							$data[1]['another_pax'] = $another_pax;
+						}
+				} catch (Exception $e) {
+					if($e instanceof DetailFareNotFound)
+						throw $e;
+					else{
+						if($debug)
+							return false;
+						else 
+							return $fare_data;
+					}
+				}
+
+				//$data['totalPrice']	= $cleanPrice;
+			//	$metaArray = json_decode(element('meta_data',$fare_data),1);
+				$meta = array(
+					'comapny'			=>	'BATAVIA',
+					'flight_no'			=>	$flight_number,
+					't_depart'			=>	element('t_depart', $fare_data),
+					't_arrive'			=>	element('t_arrive',$fare_data),
+					't_transit_arrive'	=>	element('t_transit_arrive',$fare_data),
+					't_transit_depart'	=>	element('t_transit_depart',$fare_data),
+					'type'				=>	element('type',$fare_data),
+					'price'				=>	$cleanPrice,
+					'class'				=>	element('class',$fare_data),
+					'route'				=>	element('route',$fare_data),
+					'log_id'			=>	element('log_id',$fare_data),
+					'arrayIndex'		=>	elemet('arrayIndex', $meta),
+					'adult'				=>	element('adult', $fare_data),
+					'child'				=> 	element('child', $fare_data),
+					'infant'			=>	element('infant', $fare_data),
+					'time_depart'		=>	element('date_depart', $fare_data),
+					'radio_value'		=>	element('radio_value', $fare_data),
+					'price_detail'		=>	json_encode($data),
+				);
+
+				$fare_data['id'] 				= element('id',$fare_data);
+				$fare_data['log_id'] 			= element('log_id',$fare_data);
+				$fare_data['company'] 			= element('company',$fare_data);
+				$fare_data['flight_no'] 		= $flight_number;
+				$fare_data['t_depart'] 			= element('t_depart',$fare_data);
+				$fare_data['t_arrive'] 			= element('t_arrive',$fare_data);
+				$fare_data['type'] 				= element('type',$fare_data);
+				$fare_data['class'] 			= element('class',$fare_data);
+				$fare_data['route'] 			= element('route',$fare_data);
+				$fare_data['t_transit_arrive'] 	= element('t_transit_arrive',$fare_data);
+				$fare_data['t_transit_depart'] 	= element('t_transit_depart',$fare_data);
+				$fare_data['price'] 			= $cleanPrice;
+				$fare_data['meta_data'] 		= json_encode($meta);
+				$fare_data['route_from'] 		= element('route_from', $fare_data);
+				$fare_data['route_to'] 			= element('route_to', $fare_data);
+				$fare_data['date_depart'] 		= element('date_depart', $fare_data);
+				$fare_data['adult'] 			= element('adult', $fare_data);
+				$fare_data['child'] 			= element('child', $fare_data);
+				$fare_data['infant'] 			= element('infant', $fare_data);
+				$fare_data['final_price']		= 1;
+				return $fare_data;
+		}
+		public function _backup_getDetail($fare_data = array())
 		{
 			/*$fare_data = array(
 				'id'		=>	7323,
@@ -443,16 +595,18 @@ class Batavia extends Comp_maskapai_base {
 				),
 			);*/
 			
-			$log = element('log',$fare_data);
+		//	$log = element('log',$fare_data);
 			$meta = json_decode(element('meta_data',$fare_data),1);
 			$this->fare_data = $fare_data;
 			
-			$this->_opt->radio_value = element('radio_value',$meta);
-			$this->_opt->class = element('class',$meta);
- 			$this->_opt->passengers = element('passangers',$meta);
-			$this->_opt->route_from = element('route_from',$log);
-			$this->_opt->route_to = element('route_to',$log);
-			$this->_opt->date_depart = element('time_depart',$log);			
+			$this->_opt->radio_value  	= element('radio_value',$meta);
+			$this->_opt->class 		  	= element('class',$meta);
+ 			$this->_opt->adult 			= element('passangers',$meta);
+			$this->_opt->route_from 	= element('route_from',$fare_data);
+			$this->_opt->route_to 		= element('route_to',$fare_data);
+			$this->_opt->date_depart 	= element('time_depart',$fare_data);	
+			$this->_opt->child 			= element('child', $fare_data);
+			$this->_opt->infant			= element('infant', $fare_data);		
 			$final = $this->detail();
 			$this->logout();
 			
@@ -791,7 +945,7 @@ class Batavia extends Comp_maskapai_base {
 			//$adult		 = element('adult',$forBooking);
 			//$child		 = element('child',$forBooking);
 			//$infant		 = element('infant',$forBoking);
-			$this->_opt->passengers = count($passangers_data);
+			$this->_opt->adult = count($passangers_data);
 
 			$this->fare_id = element('id',$fare_data);
 			$this->meta_data = $forBooking;

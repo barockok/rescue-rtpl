@@ -373,7 +373,8 @@ class Airlines extends REST_Controller
 	public function _register_worker($company, $job, $param)
 	{
 		$param = http_build_query(array('params' => $param));
-			suicide('service/airlines/execute_worker/'.$company.'/'.$job.'/?'.$param);
+		echo 'service/airlines/execute_worker/'.$company.'/'.$job.'/?'.$param;
+		suicide('service/airlines/execute_worker/'.$company.'/'.$job.'/?'.$param);
 	}
 	private function _worker_progress($company, $job, $param)
 	{
@@ -395,19 +396,24 @@ class Airlines extends REST_Controller
 		$job = $this->uri->rsegment(4);
 		$params = $this->get('params');
 		// START FETCHING
-		$worker = $this->_worker_progress($company, $job, $param);
+		$worker = $this->_worker_progress($air_comp, $job, $params);
 		try {
 			$comp 	= $this->comp_maskapai->_load($air_comp);
 			$result =  $comp->doSearch($params);
 			$comp->closing();
+			$error_log = array();
 			if(is_array($result) && count($result) > 0 ) {
-					// PUSHING RESULT to DB
 				foreach($result as $candidate_item)
 				{
 					$new_item = new Service_fare_item($candidate_item);
-					$new_item->save();
+					if(!$new_item->is_valid())
+						$error_log[] = implode(',', $new_item->errors->full_messages());
+					else
+						$new_item->save();
+					
 				}
 			}
+			$worker->log_error = implode(' | ', $error_log);
 			$worker->status = "complete";
 			$worker->save();
 		} catch (Exception $e) {
