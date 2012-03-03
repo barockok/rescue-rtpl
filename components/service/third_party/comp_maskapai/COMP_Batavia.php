@@ -3,8 +3,8 @@ if (! defined('BASEPATH')) exit('No direct script access');
 
 class Batavia extends Comp_maskapai_base {
 
-	private $username = 'jkttravel';
-	private $password = '12345';
+	private $username = 'jktsystem';
+	private $password = 'net256jfa';
 	private $_login_url = 'https://222.124.141.100/MyPage/loginproses.php';
 	private $_referer_url = 'https://222.124.141.100/MyPage/logout.php';
 	private $_search_url = 'https://222.124.141.100/MyPage/booking/index.php';
