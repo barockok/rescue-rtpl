@@ -16,9 +16,12 @@ class Airlines extends REST_Controller
 		$this->search_interval_time = 	date('Y-m-d H:i:s', strtotime('-'.$this->search_interval, strtotime(date('Y-m-d H:i:s'))));
 		
 	}
-	public function test_get()
+	public function test()
 	{
-		$this->response(array('no error'));
+		$args = func_get_args();
+		$params = urldecode(element(0, $args));
+		parse_str($params, $final_params);
+		print_r($final_params);
 	}
 	public function test2_get()
 	{
@@ -390,11 +393,15 @@ class Airlines extends REST_Controller
 		return $worker;
 	}
 
-	public function execute_worker_get()
+	public function execute_worker()
 	{
-		$air_comp = $this->uri->rsegment(3); 
-		$job = $this->uri->rsegment(4);
-		$params = $this->get('params');
+		$args = func_get_args();
+	
+		parse_str(urldecode(element(2, $args )), $params);
+		$air_comp = element(0, $args);
+		$job = element(1, $args);
+
+
 		// START FETCHING
 		$worker = $this->_worker_progress($air_comp, $job, $params);
 		try {

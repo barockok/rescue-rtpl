@@ -38,6 +38,7 @@ class REST_Controller extends MX_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+		
 		/*
 		ini_set('display_errors', 'Off');
 		set_error_handler('REST_Controller::_error_handler', E_ALL);
@@ -63,12 +64,13 @@ class REST_Controller extends MX_Controller {
 
 		// Some Methods cant have a body
 		$this->request->body = NULL;
-
+	
+		
 		switch ($this->request->method)
 		{
 			case 'get':
 				// Grab proper GET variables
-				parse_str(parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY), $get);
+				parse_str(parse_url(element('REQUEST_URI', $_SERVER), PHP_URL_QUERY), $get);
 
 				// Merge both the URI segements and GET params
 				$this->_get_args = array_merge($this->_get_args, $get);
@@ -163,6 +165,10 @@ class REST_Controller extends MX_Controller {
 	 */
 	public function _remap($object_called, $arguments)
 	{
+		if($this->input->is_cli_request()) {
+				call_user_func_array(array($this, $object_called), $arguments);
+				return;
+		}
 		$pattern = '/^(.*)\.(' . implode('|', array_keys($this->_supported_formats)) . ')$/';
 		if (preg_match($pattern, $object_called, $matches))
 		{
