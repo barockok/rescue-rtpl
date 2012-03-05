@@ -263,7 +263,7 @@ class Batavia extends Comp_maskapai_base {
 					$data[$j][$index]['adult']				= $this->_opt->adult;
 					$data[$j][$index]['child']				= $this->_opt->child;
 					$data[$j][$index]['infant']				= $this->_opt->infant;
-					$data[$j][$index]['final_price']		= 0;
+					$data[$j][$index]['price_final']		= 0;
 					$index ++;
 				}
 
@@ -432,7 +432,7 @@ class Batavia extends Comp_maskapai_base {
 			$fare_data['adult'] 			= element('adult', $this->fare_data);
 			$fare_data['child'] 			= element('child', $this->fare_data);
 			$fare_data['infant'] 			= element('infant', $this->fare_data);
-			$fare_data['final_price']		= 1;
+			$fare_data['price_final']		= 1;
 			return $fare_data;
 		}
 		public function getDetail($fare_data)

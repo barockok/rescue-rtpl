@@ -631,18 +631,55 @@ echo "</pre>";
 	public function newsearch()
 	{
 		$param = array(
-			'from' => "CGK",
-			'to' => "DPS",
+			'from' 	=> "CGK",
+			'to' 	=> "DPS",
 			'adult' => 1,
-			'depart' => '2012-03-24',
+			'depart' => '2012-03-28',
+			'return' => '2012-04-26'
 		);
 		$endpoint = 'service/airlines/search/'.$this->uri->assoc_to_uri($param);
-		$this->rest->post($endpoint);
-		$this->rest->debug();
+		$rest = $this->rest->post($endpoint, array('ex_depart' => '80966,80967', 'limit' => 1));
+		printDebug($rest);
+//		$this->rest->debug();
 	}
-	public function testexec()
+	public function maintenance()
 	{
-	 $this->rest->get('service/airlines/execute_worker', array('params' => array('id' => 3, 'depart' => 'sub')));
-	$this->rest->debug();
+		foreach(Service_fare_item::find('all') as $fare)
+			{
+			
+				$fare->archive = 'N';
+				if(!$fare->is_valid())
+					{
+						echo implode(',', $fare->errors->full_message()).'<br/>';
+						continue;
+					}
+				$fare->save();
+			}
+	}
+	public function test_query()
+	{
+		$param = array(
+			'route_from' => 'CGK',
+			'route_to'	=> 'DPS',
+			'adult'		=> 1,
+			'date_depart' => '2012-03-28',
+			'child'		=> 0,
+			'infant'	=> 0,
+		);
+		printdebug($param);
+				$query = array(
+					'conditions' => array(
+						'date_depart = ? and route_to =? and route_from = ? and adult = ? and child = ? and infant = ? and archive = ?',
+						$param['date_depart'], $param['route_to'], $param['route_from'], $param['adult'], $param['child'], $param['infant'], 'N'
+						),
+					'order' => 'price asc',
+
+				);
+		
+			$fares = Service_fare_item::find('all', $query);
+			if(count($fares) > 0)
+				printDebug($this->db_util->multiple_to_array($fares));
+			else
+				echo 'Nope';
 	}
 }
