@@ -3,6 +3,18 @@
 * 
 */
 class AirlinesExceptions extends Exception {}
+class ServiceDown extends AirlinesExceptions{
+	public function __construct($company)
+	{
+		$this->message = "$company service currently down";
+	}
+}
+class LoginFailed extends AirlinesExceptions{
+	public function __construct($company)
+	{
+		$this->message = "$company Login Fail";
+	}
+}
 class ResultFareNotFound extends AirlinesExceptions{
 	public function __construct($log)
 	{
