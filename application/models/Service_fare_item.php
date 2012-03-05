@@ -12,6 +12,10 @@ class Service_fare_item extends	ActiveRecord\Model
 		array('type'),
 		array('route')
     );
+	static $belongs_to = array(
+	array('original' , 'class_name' => 'Ext_data_airport', 'foreign_key' => 'route_from' , 'primary_key' => 'code'),
+	array('destination' , 'class_name' => 'Ext_data_airport', 'foreign_key' => 'route_to', 'primary_key' => 'code')
+	);
 	static $validates_numericality_of = array(
 	  array('price', 'greater_than' => 10000)
 	);
