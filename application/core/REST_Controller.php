@@ -244,9 +244,9 @@ class REST_Controller extends MX_Controller {
 		$data = array('error' => $data);
 		$this->response($data, 500);
 	}
-	public function response_warning($warning, $data)
+	public function response_warning($warning, $data = null)
 	{
-		$response = array_merge(array('warning' => $warning), $data);
+		$response = ( !is_null($data) and is_array($data) ) ? array_merge( array('warning' => $warning) , $data )  : array('warning' => $warning);
 		$this->response($response, 400);
 	}
 	/*
