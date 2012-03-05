@@ -210,6 +210,40 @@ class Airlines extends REST_Controller
 		$log->complete_comp = json_encode($complete);
 		$log->save();
 	}
+	public function detail_get()
+	{
+		if(!$d_id = $this->uri->rsegment(3))
+			$this->response_warning('Please provice depart id');
+		$r_id = ($r = $this->uri->rsegment(4)) ? $r : false;
+		
+		try {
+			$depart_fare = Service_fare_item::find($d_id)->to_array(array('include' => array('original', 'destination')));
+		} catch (Exception $e) {
+			$this->response_error($e);
+		}
+		if($r_id != false){
+			try {
+				$return_fare = Service_fare_item::find($r_id)->to_array(array('include' => array('original', 'destination')));
+			} catch (Exception $e) {
+				$this->response_error($e);
+			}
+			$this->response(
+					array(
+						'depart' => $depart_fare,
+						'return' => $return_fare
+					)
+				);
+			
+		}else{
+			
+			$this->response(
+					array(
+						'depart' => $depart_fare,
+					)
+				);
+			
+		}
+	}
 	public function search_post()
 	{
 		
@@ -240,16 +274,17 @@ class Airlines extends REST_Controller
 		if(!validate_date(element('depart', $params)))
 				array_push($miss_required, 'depart date is not valid');
 		if(element('return', $params) AND !validate_date(element('return', $params)))
-				array_push($miss_required, 'depart date is not valid');
+				array_push($miss_required, 'return date is not valid');
 		if(element('adult', $params) < 1)
 				array_push($miss_required, 'adult value must be greater than 0');
-				
+		/*
 		if(isset($params['child']) )
 				if($params['child'] < 1)
 					array_push($miss_required, 'child value must be greater than 0');
 		if(isset($params['infant']) )
 				if($params['infant'] < 1)
-					array_push($miss_required, 'infant value must be greater than 0');			
+					array_push($miss_required, 'infant value must be greater than 0');	
+		*/		
 		// check route
 		$route_to = Ext_data_airport::find('last', array('conditions' => array('code = ?', strtoupper(element('to', $params)))));
 		$route_from = Ext_data_airport::find('last', array('conditions' => array('code = ?', strtoupper(element('from', $params)))));
@@ -277,13 +312,15 @@ class Airlines extends REST_Controller
 			'original' 			=> Ext_data_airport::find('last', array('conditions' => array('code =?', element('from',$params))))->to_array(array('only' => array('name', 'code'))),
 			'destination' 		=> Ext_data_airport::find('last', array('conditions' => array('code =?', element('to', $params))))->to_array(array('only' => array('name', 'code'))),
 			'date_depart' 		=> element('depart', $params),
-			'date_return' 		=> element('return', $params),
 			'type'		 		=> (element('return', $params)) ? 'roundtrip' : 'oneway',
 			'adult'		 		=> element('adult', $params),
 			'child'	   			=>  element('child', $params, 0),
 			'infant'			=> element('infant', $params, 0),
 		);
 		
+		if($log_return['type'] == "roundtrip")
+			$log_return['date_return'] = element('return', $params);
+			
 		if(element('return', $params)){
 			$param_return =  array(
 				'route_from'	 	=> element('to', $params),
@@ -296,7 +333,6 @@ class Airlines extends REST_Controller
 			
 			$return_fares = $this->do_theSeacrh($param_return, $comps, $return_exclude, $limit);
 		}
-		
 		// rountrip res
 		if(element('return', $params)){
 				$this->response(array(
