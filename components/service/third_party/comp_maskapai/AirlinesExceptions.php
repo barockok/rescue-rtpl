@@ -25,6 +25,7 @@ class DetailFareNotFound extends AirlinesExceptions{
 	function __construct($msg)
 	{
 		$this->message = $msg;
+	
 	}
 }
 class BookingFarePriceChanged extends AirlinesExceptions{
