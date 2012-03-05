@@ -60,6 +60,10 @@ function suicide($endpoint='', $bgvoid = TRUE , $pre = '', $post = "")
 	}
 
 }
+function background_job($string_params)
+{
+	system("php index.php ".$string_params.' '.DEV_NULL);
+}
 function array_sort($array, $on, $order=SORT_ASC)
 {
     $new_array = array();
