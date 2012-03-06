@@ -57,7 +57,7 @@ class Debug extends MX_Controller
 				}
 			}elseif(!$this->uri->rsegment(5) AND $func == "doSearch"){
 				$fares = $fac->$func();
-				printDebug($fac->getDetail($fares[0]));
+			
 				printDebug($fares);
 				
 			}else{

@@ -22,10 +22,10 @@ class ResultFareNotFound extends AirlinesExceptions{
 	}
 }
 class DetailFareNotFound extends AirlinesExceptions{
-	function __construct($msg)
+	function __construct($fare_date )
 	{
-		$this->message = $msg;
-	
+		$this->fare_data = $fare_data;
+		$this->message = 'fare not available anymore';
 	}
 }
 class BookingFarePriceChanged extends AirlinesExceptions{

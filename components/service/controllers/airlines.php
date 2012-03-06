@@ -977,21 +977,41 @@ class Airlines extends REST_Controller
 		$fares = array_values(array_sort($fares, 'price', SORT_ASC));
 		
 		$this->response($fares);
-				
-		
 		
 	}
 	
 	public function _sc_hook_add_item($cart_item)
 	{
-		$option = ($opt = element('option', $cart_item)) ? $opt : array();
+		$option = ($opt = element('options', $cart_item)) ? $opt : array();
 		if(!element('depart_id', $option))
 			throw new Exception("Please Provide the Fare Id for Departure", 1);
 		if(!element('passengers_data', $option))
 			throw new Exception("Please Prove the Passenger data", 1);
-	//	if(!element('contact_data', $option))
-	//		throw new Exception("Please provide contact data");
+		
+		$depart_id = element('depart_id', $option);
+		$return_id = element('return_id', $option);
+		try {
+			$depart = Service_fare_item::find($depart_id);
+			$depart_comp = $this->comp_maskapai->_load($depart->company);
 			
+			$depart_book = $depart_comp->doBooking($depart->to_array()); 
+			
+			if($return_id){
+				$return = Service_fare_item::find($return_id);
+				if($depart->route_from != $return_route->route_to && $depart->route_to != $return->route_from)
+					throw new Exception("Not Valid Combination route between Depart and Return fare for Roundtrip Booking FLight");
+				
+			}
+			
+			
+		} catch (Exception $e) {
+			$this->response_error($e);
+		}
+		
+		
+		
+		
+		
 		$booking_data = array();
 		try {
 			$depart_fare = Service_fare_item::find(element('depart_id', $option));

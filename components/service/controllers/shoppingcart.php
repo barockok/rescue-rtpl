@@ -66,7 +66,7 @@ class Shoppingcart extends REST_Controller
 		try {
 			$cart = Cart::find($id);
 		} catch (Exception $e) {
-			$this->response(array('error' => $e->getMessage()));
+			$this->response_error($e);
 		}
 	
 	
