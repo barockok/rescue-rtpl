@@ -230,7 +230,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$data = array();
 		$fare = $page->find('div[id=fareDetail] div');
 		for ($i=0; $i < count($fare); $i++) { 
-			$fare_type = strtoupper(element('2',explode(' ',$fare[$i]->find('dl',0)->find('dt',0)->plaintext)));
+			$fare_type = strtolower(element('2',explode(' ',$fare[$i]->find('dl',0)->find('dt',0)->plaintext)));
 			$price_per_pax = str_replace(',','',
 			$fare[$i]->find('dl',0)->find('dd',0)->find('span[class=priceDetail]',0)->plaintext);
 			
@@ -260,7 +260,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		
 		$meta = array(
 			'id'				=> 	$this->_opt->id,
-			'log_id'			=>	$this->_opt->log_id,
+			'log_id'			=>	element('log_id',$this->fare_data),
 			'comapny'			=>	element('company',$this->fare_data),
 			't_depart'			=>	element('t_depart',$this->fare_data),
 			't_arrive'			=>	element('t_arrive',$this->fare_data),
@@ -283,8 +283,8 @@ class Sriwijaya extends Comp_maskapai_base{
 			'meta_price'		=>	$data,
 		);
 		
-		$fare_data['id'] = $this->_opt->id;
-		$fare_data['log_id'] = $this->_opt->log_id;
+		$fare_data['id']	= element('id',$this->fare_data);
+		$fare_data['log_id'] = element('log_id',$this->fare_data);
 		$fare_data['company'] = element('company',$this->fare_data);
 		$fare_data['t_depart'] = element('t_depart',$this->fare_data);
 		$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
@@ -310,7 +310,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	{
 		/*$fare_data = array(
 				'id'		=>	77757,
-				'log_id'	=>	499,
+
 	            'company' 	=> 'SRIWIJAYA',
 	            't_depart'	=> '2012-03-21 09:05',
 	            't_arrive'	=> '2012-03-21 11:20',
@@ -340,7 +340,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$this->_opt->infant = element('infant',$meta_data);
 		$this->fare_data = $fare_data;
 		$this->_opt->id = element('id',$fare_data);
-		$this->_opt->log_id = element('log_id',$fare_data);
+
 		
 		$this->login();
 		$searchResult = $this->forBooking();
@@ -730,7 +730,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->_opt->date_depart 	= element('time_depart',$forBooking);
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= element('passangers',$forBooking);
-			$this->_opt->id				= element('log_id',$forBooking);
+
 
 			//search again
 
@@ -757,7 +757,6 @@ class Sriwijaya extends Comp_maskapai_base{
 		//fordebug
 		/*$fare_data = array(
 		    'id' => '77757',
-		    'log_id' => '499',
 		    'company' => 'SRIWIJAYA',
 		    't_depart' => '2012-03-21 09:05',
 		    't_arrive' => '2012-03-21 11:20',
@@ -779,7 +778,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		        ),
 
 		    'price_final' => 1,
-		    'meta_data' => '{"id":77757,"log_id":499,"comapny":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":false,"t_transit_depart":false,"price":"782000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":false,"infant":false,"arrayIndex":"0,5","passangers":1,"time_depart":"2012-3-21","price_final":0,"radio_value":"49fc1d1c-d331-4dba-9914-98f49fa90867|0bdafba6-f892-468b-9224-f18dcb21ab48|05341759-d044-407e-9705-3da8e3795a2a","meta_price":{"ADULT":782000}}',
+		    'meta_data' => '{"id":77757,"comapny":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":false,"t_transit_depart":false,"price":"782000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":false,"infant":false,"arrayIndex":"0,5","passangers":1,"time_depart":"2012-3-21","price_final":0,"radio_value":"49fc1d1c-d331-4dba-9914-98f49fa90867|0bdafba6-f892-468b-9224-f18dcb21ab48|05341759-d044-407e-9705-3da8e3795a2a","meta_price":{"ADULT":782000}}',
 		);
 		
 		$passangers_data = array(
@@ -846,7 +845,6 @@ class Sriwijaya extends Comp_maskapai_base{
 		$this->_opt->adult	= element('adult',$fare_data);
 		$this->_opt->child	= element('child',$fare_data);
 		$this->_opt->infant = element('infant',$fare_data);
-		$this->_opt->id				= element('log_id',$fare_data);
 	
 	
 		$this->fare_id		=	element('id',$fare_data);
