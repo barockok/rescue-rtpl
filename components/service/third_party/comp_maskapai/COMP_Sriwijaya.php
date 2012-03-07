@@ -978,26 +978,22 @@ class Sriwijaya extends Comp_maskapai_base{
 		$latestUsedArray = array();
 		foreach ($loginData as $key => $value) {
 			$result = json_decode(element('result',$this->latestUsed($value)),1);
+			//print_r($result);
 			$date = element('c_date',$result);
 			if ($date == null || $date == 'i' ) {continue;}
 			$latestUsedArray[$key] = $date;
 		}
 		
 		if (count($latestUsedArray) == 0 || is_array($latestUsedArray) == false) {
-			echo 'gihiii';
 			$index = rand(0,count($loginData)-1);
 			return element($index,$loginData);
 		}else{
-			echo 'work but<br/>';
 			$newLatest = $latestUsedArray;
 			sort($latestUsedArray);
 			$index = array_search(element('0',$latestUsedArray),$newLatest);
-			echo $index.'<br/>';
 			$username = element($index,$loginData);
 			$checkFile = $this->clearCookies(element('username',$username));
 			if ($checkFile == false) {
-				echo element('username',$username);
-				echo "reading cookies done<br/>";
 				if ($index+1 == count($loginData)) {
 					$index = 0;
 					$username = element($index,$loginData);
@@ -1019,23 +1015,30 @@ class Sriwijaya extends Comp_maskapai_base{
 		for ($i=0; $i < count($arrayIndex); $i++) { 
 			$log[$i] = element($arrayIndex[$i],$this->logToArray());
 		}
-		foreach ($log as $key => $value) {
-			$c_date = element('c_date',$value);
-			$session_name = element('cookie_name',$value);
+		//print_r($log);
+		for ($i=0; $i < count($log); $i++) { 
+			$c_date = element('c_date',element($i,$log));
+			$session_name = element('cookie_name',element($i,$log));
 			$file = './components/service/third_party/comp_maskapai/cookies/'.$session_name.'.txt';
 			$interval = $this->dateInterval($c_date,date('y-m-d H:i:s'));
 			if (file_exists($file)) {
+				echo 'ada <br/>';
 				if (($interval->h >= 0) ||  ($interval->h == 0 || $interval->i >= 20)) {
 					echo 'deleting file '.$file;
 					unlink($file);
-					return true;
-				}else{
-					echo 'you cannot use this data for a while';
-					return false;
+					$flag = 1;
+				}else{	
+					$flag = 0;
 				}
 			}else{
-				return true;
-			}			
+				$flag = 1;
+			}
+
+		}
+		if ($flag = 1) {
+			return true;
+		}else{
+			return false;
 		}
 	}
 	

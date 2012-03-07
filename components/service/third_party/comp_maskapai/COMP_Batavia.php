@@ -414,8 +414,8 @@ class Batavia extends Comp_maskapai_base {
 				//$data['totalPrice']	= $cleanPrice;
 				$metaArray = json_decode(element('meta_data',$fare_data),1);
 				$meta = array(
-					'id'				=>	element('id',$fare_data);
-					'log_id'			=>	element('log_id',$fare_data);
+					'id'				=>	element('id',$fare_data),
+					'log_id'			=>	element('log_id',$fare_data),
 					'comapny'			=>	'BATAVIA',
 					'flight_no'			=>	$flight_number,
 					't_depart'			=>	element('t_depart', $fare_data),
