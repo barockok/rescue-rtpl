@@ -682,4 +682,28 @@ echo "</pre>";
 			else
 				echo 'Nope';
 	}
+	public function testnewdb()
+	{
+		$conf = array(
+			
+			'options' => array(
+				'limit' => 10,
+			),
+		);
+		$this->rest->get('db/find/uaaser/', $conf);
+		$this->rest->debug();
+	}
+	public function testdbcreate()
+	{
+		$conf = array(
+			'data' => array(
+						'code' => 'ASUH kampret',
+						'name' => 'DKI Asuh'
+						),
+		
+		);
+
+		$this->rest->post('db/update/ext_data_airline/10', $conf);
+		$this->rest->debug();
+	}
 }

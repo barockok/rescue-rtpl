@@ -1,156 +1,158 @@
 <?
-if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-class Db extends REST_Controller
+/**
+* 
+*/
+class db extends REST_Controller
 {
-	public function __construct()
+	
+	function __construct()
 	{
 		parent::__construct();
+		$this->options_avail = array(
+			'conditions', 'limit', 'offset', 'order', 'group', 'select', 'from' ,'having', 'joins',
+		);
 	}
 	public function find_get()
 	{
-		$table 	= $this->uri->rsegment(3);
-		$id 	= (!$this->uri->rsegment(4)) ? 'all' : $this->uri->rsegment(4);
+	
+		if(!$table = $this->uri->rsegment(3)) $this->response_error('no table name provide');
+		$table = ucfirst(strtolower($table));
+		if(!class_exists($table))
+			$this->response_error('there no table name '.$table);
 		
-		$option = $this->get('options');
-		$serialize = $this->get('serialize');	
-		$class_name = ucfirst($table);
-	//	try {
-			
-			$q = $class_name::find($id);		
-			
-			if($id == 'all'){
-				$res = array();
-				foreach($q as $i){	
-					if($serialize)
-						array_push($res, $i->to_array($serialize));	
-					else
-						array_push($res, $i->to_array());
-				}
-			}else{
-				if($serialize)
-					$res = $q->to_array($serialize);
-				else
-					$res = $q->to_array();
-			}
-			
-			$this->response($res, 200);
-		
-		
-		
-	/*		
-		} catch (Exception $e) {
-			$this->response(array($e->getMessage()), 500);
-		}
-		*/
-	}
-	public function find_post()
-	{
-		$table 	= $this->uri->rsegment(3);
-		$method = (!$this->uri->rsegment(4)) ? 'all' : $this->uri->rsegment(4);
-		$class_name = ucfirst($table);
-		if($this->post('options')){
-			
-			$params = elements(
-			array('conditions','order','group','select','from','having','joins', 'include', 'limit', 'offset'),
-			$this->post('options'),
-			FALSE
-			);
-			foreach($params as $key => $val ) if($val == false ) unset($params[$key]) ;
-			
-		}else{
-			$params = false;
-		}
+		$states = array('all', 'last', 'first');
+		$state = $this->uri->rsegment(4);
+		if(!$state)
+			$state = 'all';
+		if(!is_numeric($state))
+			if(!in_array($state, $states))
+				$this->response_error('unrecognize state');
+
+		$options = element('options', $this->get());
+		$serialize = element('serialize', $this->get());
 		
 		try {
+			if($options == false)
+				$db = $table::find($state);
+			else
+				$db = $table::find($state, $options);
 			
-			$q = ($params != FALSE ) ? $class_name::$method($params) : $class_name::$method() ;
-			if($params != FALSE) {
-				$param_b = $params;
+			if(!$db)
+				throw new Exception('No Result Found', 1);
 			
-				if(array_key_exists('limit', $param_b)) unset($param_b['limit']);
-				if(array_key_exists('offset', $param_b)) unset($param_b['offset']);
-			
-			}	
-			
-			$q_count = ($params != FALSE ) ? $class_name::count($param_b) : 1 ; 
-			
-			$res = array();
-			if($this->post('serialize')){
-				$serialize = elements(array('only', 'except', 'methods' , 'include', 'only_method', 'skip_instruct'), $this->post('serialize'), FALSE);
-				foreach($serialize as $key => $val ) if($val == false ) unset($serialize[$key]) ;
-			}else{
-				$serialize = false;
-			}
-			if($method == 'all'){
-			
-				$res = ($serialize != false ) ? $this->db_util->multiple_to_array($q,$serialize ) : $this->db_util->multiple_to_array($q);
-				if(count($res) < 1) $this->response(array('error' => 'no records found'), 500);
-				
-				$res = array(
-					'results' => $res,
-					'found_rows' => $q_count, 
-				);
-			}else{
-				$res = (!$serialize) ? $q : $q->to_array($serialize);
-			}
-			
-			$this->response($res, 200);
-			
+			if($serialize == false)
+				if($state != 'all')
+					$this->response($db->to_array());
+				else{
+					$this->response($this->db_util->multiple_to_array($db));
+				}
+			else
+				if($state != 'all')
+					$this->response($db->to_array($serialize));
+				else{
+					$this->response($this->db_util->multiple_to_array($db, $serialize));
+				}
 		} catch (Exception $e) {
-			$this->response($e->getMessage(), 500);
+			$this->response_error($e);
 		}
-			
+		
 	}
 	public function create_post()
 	{
-		if(! $table = $this->uri->rsegment(3) ) $this->response('no table specify', 500);
-		if( ! $data = $this->post('data', FALSE) ) $this->response('no data passed', 500);
+		if(!$table = $this->uri->rsegment(3)) $this->response_error('no table name provide');
+		$table = ucfirst(strtolower($table));
+		$state = $this->uri->rsegment(4);
+		if(!class_exists($table))
+			$this->response_error('there no table name '.$table);
 		
-		$table_name = ucfirst($table);
+		$data = $this->post('data');
+		$serialize = $this->post('searialize');
+		if(!$data)
+			$this->response_error('no data passed to create new record');
+		else if($data and !is_array($data))
+			$this->response_error('not valid type data for new db record');
+		
 		try {
-			$q = new $table_name($data);
-			if(!$q->is_valid())
-				$this->response(array('error' => $q->errors->full_messages()), 500);
+			$new = new $table($data);
+			if(!$new->is_valid())
+				$this->response_error(implode(', ', $new->errors->full_message()));
+			$new->save();
+	
+			if($serialize)
+				$this->response($new->to_array($serialize));
 			else
-				$q->save();
-			$this->response($q->to_array(),200);
+				$this->response($new->to_array());
 		} catch (Exception $e) {
-			$this->response('something not good, sorry : '.$e->getMessage(), 500);
+			$this->response_error($e);
 		}
+		
+		
 	}
 	public function update_post()
 	{
-		if(! $table = $this->uri->rsegment(3) ) $this->response('no table specify', 500);
-		if(! $id = $this->uri->rsegment(4)) $this->response('no ID provide', 500);
-		if(! $data = $this->post('data', FALSE) ) $this->response('no data passed', 500);
-		$class_name = ucfirst($table);
-		try {
 		
-			$object = $class_name::find($id);
-			$object->update_attributes($data);
-			if(!$object->is_valid()) 
-				$this->response($object->error->full_messages(), 500);
-			else
-				$object->save();
-			$this->response($object->to_array(), 200);
-			
-		} catch (Exception $e) {
-			$this->response(array('error' => true, 'message' => $e->getMessage()), 500);
-		}
-	}
-	public function delete_delete()
-	{
-		if(! $table = $this->uri->rsegment(3) ) $this->response('no table specify', 500);
-		if(! $id = $this->uri->rsegment(4)) $this->response('no ID provide', 500);
-		$class_name = ucfirst($table);
+		if(!$table = $this->uri->rsegment(3)) $this->response_error('no table name provide');
+		$table = ucfirst(strtolower($table));
+		$id = $this->uri->rsegment(4);
+		if(!class_exists($table))
+			$this->response_error('there no table name '.$table);
+		$conditions = $this->post('conditions');
+		if(!$id and !$conditions)
+			$this->response_error('no identifier record');
+		
+		$data = $this->post('data');
+		$serialize = $this->post('searialize');
+		
+		
+		if(!$data)
+				$this->response_error('no data passed to update record');
+		else if($data and !is_array($data))
+				$this->response_error('not valid type data for update db record');
+		
 		try {
-			$q = $class_name::find($id);
-			$q->delete();
-			$this->response($q->to_array(), 200);
+			if(!$id and $conditions )
+				$db = $table::find( 'last', array('conditions' => $conditions) );
+			else if( ($id and $conditions) or ($id and !$conditions) ) 
+				$db = $table::find($id);
+			
+		
+			$db->update_attributes($data);
+			if(!$db->is_valid())
+				$this->response_error(implode(', ', $db->errors->full_message()));
+			$db->save();
+			
+			if($serialize) 
+			 	$this->response($db->to_array($serialize)) ;
+			else
+			 	$this->response($db->to_array());
+			
+				
 		} catch (Exception $e) {
-			$this->response(array('error' => true, 'message' => $e->getMessage()), 500);
+			$this->response_error($e);
 		}
+		
 	}
+	private function _clean_options($options)
+	{
+		$elements = elements($this->options_avail, $options, 'nope');
+		foreach($elements as $key => $val)
+			if($val == 'nope')
+				unset($elements[$key]);
+		if(count($elements) <1)
+			return false;
 	
+		return $elements;
+	}
+	private function _build_query_option($options)
+	{
+		$options = $this->_clean_options($options);
+		
+		if($options == false)
+			return false;
+		return $options;
+			
+	}
 	
 }
+
+?>
