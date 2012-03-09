@@ -18,6 +18,11 @@ class Service_fare_item extends	ActiveRecord\Model
 	static $validates_numericality_of = array(
 	  array('price', 'greater_than' => 10000)
 	);
+	static $before_create = array('_before_create');
+	public function _before_create()
+	{
+		$this->archive = 'N';
+	}
 	
 
 

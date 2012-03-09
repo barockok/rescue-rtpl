@@ -260,7 +260,8 @@ class Batavia extends Comp_maskapai_base {
 					$data[$j][$index]['adult']				= $this->_opt->adult;
 					$data[$j][$index]['child']				= $this->_opt->child;
 					$data[$j][$index]['infant']				= $this->_opt->infant;
-					$data[$j][$index]['final_price']		= 0;			
+					$data[$j][$index]['date_depart']		= $this->_opt->date_depart;
+					$data[$j][$index]['price_final']		= 0;			
 					$data[$j][$index]['meta_data'] 			= json_encode($meta);					
 					$index ++;
 				}
@@ -281,14 +282,15 @@ class Batavia extends Comp_maskapai_base {
 		
 		public function doSearch($opt = array())
 		{
-			$this->_opt->adult			= 1;
-			$this->_opt->child			= 1;
-			$this->_opt->infant			= 1;
-			$this->_opt->route_from 	= 'CGK';
-			$this->_opt->route_to 		= 'PLM';
-			$this->_opt->date_depart 	= '2012-03-14';
-			$this->_opt->date_return 	= null;			
-
+			if(count($opt) == 0){
+				$this->_opt->adult			= 1;
+				$this->_opt->child			= 1;
+				$this->_opt->infant			= 1;
+				$this->_opt->route_from 	= 'CGK';
+				$this->_opt->route_to 		= 'PLM';
+				$this->_opt->date_depart 	= '2012-03-14';
+				$this->_opt->date_return 	= null;			
+			}
 			$this->login();
 			foreach($opt as $key => $val ) $this->_opt->$key = $val;
 			$final = $this->search();
@@ -301,25 +303,7 @@ class Batavia extends Comp_maskapai_base {
 		
 		public function getDetail($fare_data = array())
 		{
-			$fare_data = array(
-						'id'	=>	77757,
-			            'company' => 'BATAVIA',
-			            't_depart' => '2012-03-14 01:00',
-			            't_arrive' => '2012-03-14 02:00',
-			            'class' => 'E',
-			            'route' => 'CGK,PLM',
-			            't_transit_arrive' => '',
-			            't_transit_depart' => '',
-			            'price' => 231000,
-			            'flight_no' => '515',
-			            'route_from' => 'CGK',
-			            'route_to' => 'PLM',
-			            'adult' => 2,
-			            'child' => 1,
-			            'infant' => 1,
-			            'final_price' => 0,
-			            'meta_data' => '{"comapny":"BATAVIA","t_depart":"2012-03-14 01:00","t_arrive":"2012-03-14 02:00","class":"E","route":"CGK,PLM","t_transit_arrive":null,"t_transit_depart":null,"price":"231000","flight_no":"515","route_from":"CGK","rout_to":"PLM","adult":1,"child":0,"infant":1,"price_final":0,"arrayIndex":"1,4","passangers":2,"time_depart":"2012-3-14","radio_value":"29744808"}',
-			);
+		
 			$this->login();
 			$det = $this->detail($fare_data);
 			$this->logout();
@@ -453,7 +437,7 @@ class Batavia extends Comp_maskapai_base {
 				$fare_data['adult'] 			= element('adult', $fare_data);
 				$fare_data['child'] 			= element('child', $fare_data);
 				$fare_data['infant'] 			= element('infant', $fare_data);
-				$fare_data['final_price']		= 1;
+				$fare_data['price_final']		= 1;
 				$fare_data['price_meta']		= $meta_price;
 				return $fare_data;
 		}		 
@@ -518,7 +502,7 @@ class Batavia extends Comp_maskapai_base {
 
 			$post_data = array_merge($dataPassanger,$dataContact,$flightRouteInfoData,$currencyData,$maskapaiInfo);
 			$url = 'https://222.124.141.100/MyPage/booking/cekHarga.php';
-			echo $page = $this->curl($url,$post_data,null);
+			$page = $this->curl($url,$post_data,null);
 			
 			if (!$page) {return false;}
 			$table = $page->find('div[id=centerright] table tbody tr td table tbody');
@@ -554,7 +538,7 @@ class Batavia extends Comp_maskapai_base {
 			$data['meta_data']		= json_encode($this->meta_data);
 			
 			//$data['passangers']		= $this->passangers;
-			$data['final_price']	= $cleanPrice;
+			$data['price_final']	= $cleanPrice;
 			//$data['limit'] = $limit;
 			//$data['agent'] = $agent;
 			//$data['flightNumber'] = $flightNumber;
@@ -643,7 +627,7 @@ class Batavia extends Comp_maskapai_base {
 			}
 		}
 		
-		function doBooking($fare_data = array(),$passangers_data = array(),$customer_data = array()){
+		function doBooking($fare_data = array(),$passangers_data = array(),$contact_data = array()){
 			/*$fare_data = Array
 			(
 			    'id' => 77757,
@@ -661,7 +645,7 @@ class Batavia extends Comp_maskapai_base {
 			    'adult' => 2,
 			    'child' => 1,
 			    'infant' => 1,
-			    'final_price' => 1,
+			    'price_final' => 1,
 			    'meta_data' => '{"comapny":"BATAVIA","flight_no":"Y6-515 ","t_depart":"2012-03-14 01:00","t_arrive":"2012-03-14 02:00","t_transit_arrive":false,"t_transit_depart":false,"type":false,"price":"850200","class":"E","route":"CGK,PLM","arrayIndex":"1,4","adult":2,"child":1,"infant":1,"time_depart":"2012-3-14","radio_value":"29744808","price_meta":{"ADULT":264400,"INFANT":57000}}',
 			    'type' => '',
 			    'date_depart' => '',
@@ -756,8 +740,8 @@ class Batavia extends Comp_maskapai_base {
 				throw new BookingFailed($fare_data);
 			}
 			
-			if (element('final_price',$book) > element('price',$fare_data)) {
-				throw new BookingFarePriceChanged($fare_data, element('final_price',$booking));
+			if (element('price_final',$book) > element('price',$fare_data)) {
+				throw new BookingFarePriceChanged($fare_data, element('price_final',$booking));
 			}
 			return $book;
 		}

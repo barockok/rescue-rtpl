@@ -711,8 +711,8 @@ echo "</pre>";
 		
 		$item_data = array
 		(
-		    'depart_id' => 81459,
-		    'return_id' => 81009,
+		    'depart_id' => 86355,
+		    'return_id' => 86326,
 		    'passengers_data' => array
 		        (
 		            array
@@ -745,5 +745,26 @@ echo "</pre>";
 			'type' => 'airlines',
 			'options' => $item_data));
 		$this->rest->debug();
+	}
+	public function testMaskapaiSearch()
+	{
+		$maskapai = $this->uri->rsegment(3);
+		$conf = array(
+			'date_depart' => '2012-03-28',
+			'adult'       => 1,
+			'route_from'	=> 'CGK',
+			'route_to'		=> 'DPS',
+			'child'			=> 0,
+			'infant'		=> 0,
+		);
+		$this->load->library('service/comp_maskapai');
+		$fac = $this->comp_maskapai->load($maskapai);
+		try {
+			$fares = $fac->doSearch($conf);
+			$fac->closing();
+			printDebug($fares);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 	}
 }

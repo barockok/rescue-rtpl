@@ -465,7 +465,7 @@ class Airlines extends REST_Controller
 			
 		
 			$comp 	= $this->comp_maskapai->_load($air_comp);
-			$result =  $comp->doSearch($params);
+			$result =  $comp->doSearch($params['params']);
 			$comp->closing();
 			$error_log = array();
 			if(is_array($result) && count($result) > 0 ) {
