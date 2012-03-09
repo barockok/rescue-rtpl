@@ -11,7 +11,7 @@ class Airlines extends REST_Controller
 		parent::__construct();
 		$this->fetch_time_limit = 5;
 		$this->load->library('comp_maskapai');
-		$this->airlines_comp = array('citilink', 'batavia', 'garuda', 'merpati', 'sriwijaya', 'lion');
+		$this->airlines_comp = array('citilink', 'batavia',  'sriwijaya');
 		$this->archive_interval_time = 	date('Y-m-d H:i:s', strtotime('-'.$this->archive_interval, strtotime(date('Y-m-d H:i:s'))));
 		$this->search_interval_time = 	date('Y-m-d H:i:s', strtotime('-'.$this->search_interval, strtotime(date('Y-m-d H:i:s'))));
 		
@@ -389,8 +389,8 @@ class Airlines extends REST_Controller
 			if($count_comp_fares == 0 and $this->_check_worker($comp, 'search', $param))
 				array_push($assign_to_curl, $comp);
 		}
-		//if(count($assign_to_curl) > 0)
-		//	$this->_register_workers($assign_to_curl, 'doSearch', $param);
+		if(count($assign_to_curl) > 0)
+			$this->_register_workers($assign_to_curl, 'doSearch', $param);
 		
 		// howerver, currently event there or not the fare items just search and return this fucking stuff
 		if( is_null($exclude) ){
@@ -429,14 +429,19 @@ class Airlines extends REST_Controller
 	}
 	public function _register_worker($company, $job, $param)
 	{
-		$param = urlencode(http_build_query(array('params' => $param)));
-			background_job("service airlines execute_worker $company $job $param");
+		$param_url = urlencode(http_build_query(array('params' => $param)));
+		$sig = implode('_', array_values($param));
+		if(Airlines_comp_worker::last(array('conditions' => array('signature =? and status =?', $sig, 'onprogress'))))
+			return;
+		background_job("service airlines execute_worker $company $job $param_url");
 	}
 	private function _worker_progress($company, $job, $param)
 	{
 		//ksort($param);
+		
 		$sig = implode('_', array_values($param));
 	//	$sig = $param;
+		
 		$new = array(
 			'airlines' => strtolower($company),
 			'job' => $job,
@@ -458,7 +463,7 @@ class Airlines extends REST_Controller
 		try {
 			$worker = $this->_worker_progress($air_comp, $job, $params['params']);
 			
-		/*
+		
 			$comp 	= $this->comp_maskapai->_load($air_comp);
 			$result =  $comp->doSearch($params);
 			$comp->closing();
@@ -476,7 +481,7 @@ class Airlines extends REST_Controller
 			}
 			
 			$worker->log_error = implode(' | ', $error_log);
-			*/
+			
 			$worker->status = "complete";
 			$worker->save();
 		} catch (Exception $e) {

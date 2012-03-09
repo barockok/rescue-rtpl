@@ -9,7 +9,6 @@ class Service_fare_item extends	ActiveRecord\Model
 		array('company'),
 		array('t_depart'),
 		array('t_arrive'),
-		array('type'),
 		array('route')
     );
 	static $belongs_to = array(
