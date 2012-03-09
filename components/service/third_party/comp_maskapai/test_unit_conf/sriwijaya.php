@@ -1,4 +1,5 @@
 <?
+//(START) variable untuk Fungsi Search
 $conf['dosearch'] = array(
 						'route_from' 		=> 'CGK',
 						'route_to' 			=> 'DPS',
@@ -7,6 +8,10 @@ $conf['dosearch'] = array(
 						'child'				=> 0,
 						'infant'			=> 0,
 					);
+//(END) variable untuk Fungsi Search
+
+
+//(START) variable untuk Fungsi getDetail
 $conf['getdetail'] = array(
 			  			'id' 				=> '77757',
 				        'company' 			=> 'SRIWIJAYA',
@@ -28,6 +33,10 @@ $conf['getdetail'] = array(
 						'meta_data' 		=> '{"company":"SRIWIJAYA","t_depart":"2012-03-26 02:05","t_arrive":"2012-03-26 04:50","class":"E","route":"CGK,DPS","t_transit_arrive":null,"t_transit_depart":null,"price":"470000","flight_no":"SJ 260","route_from":"CGK","route_to":"DPS","adult":1,"child":0,"infant":0,"final_price":0,"arrayIndex":"1,4","radio_value":"758c7880-0903-483c-849e-e2adb702333f|fd3cdd5a-19b6-4e97-84f7-b50d0b24eede|859ff5e7-1960-444a-9f2d-4db5a96e5d38","time_depart":"2012-3-26","passangers":1}',
 						
 						);
+//(END) variable untuk Fungsi getDetail
+
+
+//(START) variable untuk Fungsi doBooking
 $conf['dobooking'] = array(
 	
 		    'fare_data' => array(
@@ -74,5 +83,6 @@ $conf['dobooking'] = array(
 
 		
 );
+//(END) variable untuk Fungsi doBooking
 
 ?>
