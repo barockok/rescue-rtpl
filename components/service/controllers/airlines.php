@@ -982,10 +982,13 @@ class Airlines extends REST_Controller
 	
 	public function _sc_hook_add_item($cart_item)
 	{
+	//	printDebug($cart_item);
 		$option = ($opt = element('options', $cart_item)) ? $opt : array();
 		if(!element('depart_id', $option))
 			throw new Exception("Please Provide the Fare Id for Departure", 1);
 		if(!element('passengers_data', $option))
+			throw new Exception("Please Prove the Passenger data", 1);
+		if(!element('contact_data', $option))
 			throw new Exception("Please Prove the Passenger data", 1);
 		
 		$depart_id = element('depart_id', $option);

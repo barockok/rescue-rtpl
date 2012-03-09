@@ -3,18 +3,6 @@
 * 
 */
 class AirlinesExceptions extends Exception {}
-class ServiceDown extends AirlinesExceptions{
-	public function __construct($company)
-	{
-		$this->message = "$company service currently down";
-	}
-}
-class LoginFailed extends AirlinesExceptions{
-	public function __construct($company)
-	{
-		$this->message = "$company Login Fail";
-	}
-}
 class ResultFareNotFound extends AirlinesExceptions{
 	public function __construct($log)
 	{
@@ -22,10 +10,9 @@ class ResultFareNotFound extends AirlinesExceptions{
 	}
 }
 class DetailFareNotFound extends AirlinesExceptions{
-	function __construct($fare_date )
+	function __construct($msg)
 	{
-		$this->fare_data = $fare_data;
-		$this->message = 'fare not available anymore';
+		$this->message = $msg;
 	}
 }
 class BookingFarePriceChanged extends AirlinesExceptions{
