@@ -16,8 +16,6 @@ class Sriwijaya extends Comp_maskapai_base{
 	function __construct() {
 		parent::__construct();
 		$this->roundTrip = false;
-		$this->_cookies_file = "./components/service/third_party/comp_maskapai/cookies/sriwijaya_airline.txt";
-		$this->login();
 	}
 	
 	function index() {}
@@ -83,9 +81,21 @@ class Sriwijaya extends Comp_maskapai_base{
 		
 	}
 	function login(){
+		//$name = $this->generateRandomString();
+		//$this->_cookies_file = './components/service/third_party/comp_maskapai/cookies/'.$name.'.txt';
+		$name = $this->createCookieFile();
+		/*$loginData = array(
+			array('username'	=>	'idbooking4'),
+			array('username'	=>	'idbooking5'),
+			array('username'	=>	'idbooking6'),
+		);*/
+		$userArary = $this->getUsername();
+		$username = element('username',$userArary);
+		
 		$this->start();
+	
 		$post_data = array(
-			'j_username' => $this->username,
+			'j_username' => $username,
 			'j_password' => $this->password,
 			
 		);
@@ -109,12 +119,15 @@ class Sriwijaya extends Comp_maskapai_base{
 		);
 		$this->_ci->my_curl->setup($conf);
 		$this->_ci->my_curl->exc();
-		
-		
-		//https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp
-	
-		
+		$data = array(
+			'username'	=>	$username,
+			'company'	=>	'Sriwijaya',
+			'cookie_name'	=>	$name,
+			'c_date'		=>	date('y-m-d H:i:s'),
+		);
+		$this->writeLogFile($data);		
 	}
+	
 	function somepage(){
 		$conf = array(
 				'url' => 'https://agent.sriwijayaair.co.id/b2b/secure/home.jsp',
@@ -128,19 +141,17 @@ class Sriwijaya extends Comp_maskapai_base{
 		echo $this->_ci->my_curl->exc();
 	}
 	function logout(){
-		
-			$conf = array(
-					'url' => 'https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp',
-					'cookiejar' 		=> $this->_cookies_file,
-					'cookiefile' 		=> $this->_cookies_file,
-					'header'		=> 0,
+		$conf = array(
+			'url' => 'https://agent.sriwijayaair.co.id/b2b/secure/logout.jsp',
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'header'		=> 0,
 					'nobody'	=> true,
-
-
-				//	'returntransfer' => 1
-				);
-			$this->_ci->my_curl->setup($conf);
-			$this->_ci->my_curl->exc();
+			//	'returntransfer' => 1
+		);
+		$this->_ci->my_curl->setup($conf);
+		$this->_ci->my_curl->exc();
+		unlink($this->_cookies_file);
 	}
 	
 	public function _search()
@@ -152,9 +163,9 @@ class Sriwijaya extends Comp_maskapai_base{
 			'to'				=> $this->_opt->route_to,
 			'departDate1' 		=> element('2',$date),
 			'departDate2'		=> $this->dateConvertMin(element('1',$date)).'-'.element('0',$date),
-			'adult' 			=> $this->_opt->passengers,
-			'child' 			=> 0,
-			'infant'			=> 0,
+			'adult' 			=> $this->_opt->adult,
+			'child' 			=> $this->_opt->child,
+			'infant'			=> $this->_opt->infant,
 			'returndaterange' 	=> 0,
 			'Submit' 			=> 'Search',
 		);
@@ -219,7 +230,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$data = array();
 		$fare = $page->find('div[id=fareDetail] div');
 		for ($i=0; $i < count($fare); $i++) { 
-			$fare_type = strtoupper(element('2',explode(' ',$fare[$i]->find('dl',0)->find('dt',0)->plaintext)));
+			$fare_type = strtolower(element('2',explode(' ',$fare[$i]->find('dl',0)->find('dt',0)->plaintext)));
 			$price_per_pax = str_replace(',','',
 			$fare[$i]->find('dl',0)->find('dd',0)->find('span[class=priceDetail]',0)->plaintext);
 			
@@ -231,12 +242,13 @@ class Sriwijaya extends Comp_maskapai_base{
 			
 			$extraCover = str_replace(',','',
 			$fare[$i]->find('dl',0)->find('dd',3)->find('span[class=priceDetail]',0)->plaintext);
+			$data[$fare_type] = $price_per_pax+$pajak+$iwjr+$extraCover;
 			
-			$data[$i]['passanger_type'] = $fare_type;
+			/*$data[$i]['passanger_type'] = $fare_type;
 			$data[$i]['price_per_pax'] = $price_per_pax;
 			$data[$i]['pajak'] = $pajak;
 			$data[$i]['iwjr'] = $iwjr;
-			$data[$i]['extra_cover'] = $extraCover;
+			$data[$i]['extra_cover'] = $extraCover;*/
 		}
 		
 		$price = str_replace(array(",","IDR"),'',
@@ -245,85 +257,92 @@ class Sriwijaya extends Comp_maskapai_base{
 		//$data['price'] = $price;
 		$metaArray = json_decode(element('meta_data',$this->fare_data),1);
 		
+		
 		$meta = array(
+			'id'				=> 	$this->_opt->id,
+			'log_id'			=>	element('log_id',$this->fare_data),
 			'comapny'			=>	element('company',$this->fare_data),
-			'flight_no'			=>	element('flight_no',$this->fare_data),
 			't_depart'			=>	element('t_depart',$this->fare_data),
 			't_arrive'			=>	element('t_arrive',$this->fare_data),
-			't_transit_arrive'	=>	element('t_transit_arrive',$this->fare_data),
-			't_transit_depart'	=>	element('t_transit_depart',$this->fare_data),
-			'type'				=>	element('type',$this->fare_data),
-			'price'				=>	$price,
 			'class'				=>	element('class',$this->fare_data),
 			'route'				=>	element('route',$this->fare_data),
-			'log_id'			=>	element('log_id',$this->fare_data),
+			't_transit_arrive'	=>	element('t_transit_arrive',$this->fare_data),
+			't_transit_depart'	=>	element('t_transit_depart',$this->fare_data),
+			'price'				=>	$price,
+			'flight_no'			=>	element('flight_no',$this->fare_data),
+			'route_from'		=>	element('route_from',$this->fare_data),
+			'route_to'			=>	element('route_to',$this->fare_data),
+			'adult'				=>	$this->_opt->adult,
+			'child'				=> 	$this->_opt->child,
+			'infant'			=>	$this->_opt->infant,
 			'arrayIndex'		=>	element('arrayIndex',$metaArray),
-			'passangers'		=>	$this->_opt->passengers,
-			//'adult'				=>	$this->_opt->adult,
-			//'child'				=> 	$this->_opt->child,
-			//'infant'			=>	$this->_opt->infant,
+			'passangers'		=>	$this->_opt->adult + $this->_opt->child + $this->_opt->infant,
 			'time_depart'		=>	$this->_opt->date_depart,
+			'price_final'		=>	0,
 			'radio_value'		=>	$this->_opt->radio_value,
-			'price_detail'		=>	$data
+			'meta_price'		=>	$data,
 		);
 		
-		$fare_data['id'] = element('id',$this->fare_data);
+		$fare_data['id']	= element('id',$this->fare_data);
 		$fare_data['log_id'] = element('log_id',$this->fare_data);
 		$fare_data['company'] = element('company',$this->fare_data);
-		$fare_data['flight_no'] = element('flight_no',$this->fare_data);
 		$fare_data['t_depart'] = element('t_depart',$this->fare_data);
 		$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
-		$fare_data['type'] = element('type',$this->fare_data);
 		$fare_data['class'] = element('class',$this->fare_data);
 		$fare_data['route'] = element('route',$this->fare_data);
 		$fare_data['t_transit_arrive'] = element('t_transit_arrive',$this->fare_data);
 		$fare_data['t_transit_depart'] = element('t_transit_depart',$this->fare_data);
 		$fare_data['price'] = $price;
+		$fare_data['flight_no'] = element('flight_no',$this->fare_data);
+		$fare_data['route_from'] = element('route_from',$this->fare_data);
+		$fare_data['route_to'] = element('route_to',$this->fare_data);
+		$fare_data['adult']	= $this->_opt->adult;
+		$fare_data['child'] = $this->_opt->child;
+		$fare_data['infant'] = $this->_opt->infant;
+		$fare_data['time_depart'] = $this->_opt->date_depart;
+		$fare_data['meta_price'] = $data;
+		$fare_data['price_final']	= 1;		
 		$fare_data['meta_data'] = json_encode($meta);
-		$fare_data['log'] = element('log',$this->fare_data);
 		return $fare_data;
 	}
 	
 	public function getDetail($fare_data = array())
 	{
 		/*$fare_data = array(
-			'id'		=>	7323,
-			'log_id'	=>	34,
-			'company'	=>	'SRIWIJAYA',
-			't_depart'	=>	'2012-03-21 09:05',
-			't_arrive'	=>	'2012-03-21 11:20',
-			'type'		=>	'depart',
-			'class'		=>	'Q',
-			'route'		=>	'CGK,MES',
-			'meta_data'	=>	 '{"company":"SRIWIJAYA","flight_no":"SJ 010","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","type":"depart","class":"Q","price":850000,"route":"CGK,MES","t_transit_arrive":null,"t_transit_depart":null,"log_id":1,"arrayIndex":"0,7","radio_value":"689e369a-f95e-47f9-b966-08f5adff60f1|ec5e26ed-cf55-4074-85ab-7a04e58ce92a|2138465f-705b-4bba-9e1c-1cbabbcc115a","time_depart":"2012-3-21","passangers":1}',
-			't_transit_arrive'	=>	'',
-			't_transit_depart'	=>	'',
-			'price'				=>	'850000',
-			'flight_no'			=>	'SJ 010',
-			'log'				=>	array(
-				'id'				=>	34,
-				'date_depart'		=>	'2012-01-31 00:00:00',
-				'date_return'		=>	'',
-				'route_from'		=>	'CGK',
-				'route_to'			=>	'MES',
-				'passangers'		=>	1,
-				'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-				'c_time'			=>	'2011-12-20 11:56:15',
-				'max_fare'			=>	5,
-				'actor'				=> 'CUS',
-			),
-		);*/
+				'id'		=>	77757,
+
+	            'company' 	=> 'SRIWIJAYA',
+	            't_depart'	=> '2012-03-21 09:05',
+	            't_arrive'	=> '2012-03-21 11:20',
+	            'class'		=> 'V',
+	            'route'		=> 'CGK,MES',
+	            'meta_data' => '{"company":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":null,"t_transit_depart":null,"price":"700000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":0,"infant":0,"final_price":0,"arrayIndex":"0,5","radio_value":"bec4aa1c-62cc-439f-9c6e-c51132660621|40611b8c-2b4b-4bf7-a483-75e78baa6738|fb9e982a-e3f1-4c01-8c6a-ab61f7f923ca","time_depart":"2012-3-21","passangers":1}',
+	            't_transit_arrive' => '',
+	            't_transit_depart' => '',
+	            'price' => '700000',
+	            'flight_no' => 'SJ 010',
+	            'route_from' => 'CGK',
+	            'route_to' 	=> 'MES',
+	            'adult' => 1,
+	            'child' => 0,
+	            'infant' => 0,
+	            'price_final' => 0
+	    );*/
 		
 		$meta_data = json_decode(element('meta_data',$fare_data),1);
-		$log = element('log',$fare_data);
 		
-		$this->_opt->route_from 	= element('route_from',$log);
-		$this->_opt->route_to 		= element('route_to',$log);
+		$this->_opt->route_from 	= element('route_from',$fare_data);
+		$this->_opt->route_to 		= element('route_to',$fare_data);
 		$this->_opt->date_depart 	= element('time_depart',$meta_data);
 		$this->_opt->date_return 	= null;
-		$this->_opt->passengers 	= element('passangers',$meta_data);
-		$this->_opt->id		= element('log_id',$meta_data);
+		$this->_opt->adult = element('adult',$meta_data);
+		$this->_opt->child = element('child',$meta_data);
+		$this->_opt->infant = element('infant',$meta_data);
 		$this->fare_data = $fare_data;
+		$this->_opt->id = element('id',$fare_data);
+
+		
+		$this->login();
 		$searchResult = $this->forBooking();
 		$arrayIndex = element('arrayIndex',$meta_data);
 		$newMeta = array();
@@ -403,7 +422,7 @@ class Sriwijaya extends Comp_maskapai_base{
 					$ttdepart = date("Y-m-d h:i",$time_transit_depart);
 				}
 				$nprice = str_replace(',','',$price).'000';
-				$fp = $nprice*$this->_opt->passengers;
+				$fp = $nprice;
 				$activeCell = $cell[$i]->find('div input',$j)->getAttribute('value');
 				$time_depart = strtotime($dateFormated.' '.$t_depart);
 				
@@ -413,41 +432,50 @@ class Sriwijaya extends Comp_maskapai_base{
 
 				$meta = array(
 					'company'				=> 	'SRIWIJAYA',
-					'flight_no'				=> 	$flight_number,
 					't_depart'				=>	date("Y-m-d h:i",$time_depart),
 					't_arrive'				=>	date("Y-m-d h:i",$time_arrive),
-					'type'					=>	$type,
 					'class'					=>	$clas,
-					'price'					=>	$fp,
 					'route'					=>	$route_from.$route_transit.','.$route_arr,
 					't_transit_arrive'		=>	$ttarrive,
 					't_transit_depart'		=>	$ttdepart,
-					'log_id'				=>	$this->_opt->id,
+					'price'					=>	$fp,
+					'flight_no'				=> 	$flight_number,
+					'route_from'			=>	$route_from,
+					'route_to'				=>	$route_arr,
+					'adult'					=>	$this->_opt->adult,
+					'child'					=>	$this->_opt->child,
+					'infant'				=>	$this->_opt->infant,
+					'final_price'			=>	0,
 					'arrayIndex'			=>	$i.','.$j,
 					'radio_value'			=>	$activeCell,
 					'time_depart'			=>	$dateFormated,
-					'passangers'			=>	$this->_opt->passengers,
-					//'adult'					=>	$this->_opt->adult,
-					//'child'					=>	$this->_opt->child,
-					//'infant'				=>	$this->_opt->infant,
-					//'detail'				=>	$detail,
+					'passangers'			=>	$this->_opt->adult + $this->_opt->child + $this->_opt->infant,
+					
+					
 				);
 
 				$data[$index][$j]['company'] 				= 'SRIWIJAYA';
-				$data[$index][$j]['flight_no']				= $flight_number;
-				$data[$index][$j]['t_depart'] 				= date("Y-m-d h:i",$time_depart)	;
+				$data[$index][$j]['t_depart'] 				= date("Y-m-d h:i",$time_depart);
 				$data[$index][$j]['t_arrive']				= date("Y-m-d h:i",$time_arrive);
-				$data[$index][$j]['type'] 					= $type;
 				$data[$index][$j]['class'] 					= $clas;
-				$data[$index][$j]['price'] 					= $fp;
 				$data[$index][$j]['route'] 					= $route_from.$route_transit.','.$route_arr;
+				$data[$index][$j]['meta_data']				= json_encode($meta);
 				$data[$index][$j]['t_transit_arrive'] 		= $ttarrive;
 				$data[$index][$j]['t_transit_depart'] 		= $ttdepart;
-				$data[$index][$j]['log_id']					= $this->_opt->id;
-				$data[$index][$j]['meta_data']				= json_encode($meta);
+				$data[$index][$j]['price'] 					= $fp;
+				$data[$index][$j]['flight_no']				= $flight_number;
+				$data[$index][$j]['route_from']				= $route_from;
+				$data[$index][$j]['route_to']				= $route_arr;
+				$data[$index][$j]['adult']					= $this->_opt->adult;
+				$data[$index][$j]['child']					= $this->_opt->child;
+				$data[$index][$j]['infant']					= $this->_opt->infant;
+				$data[$index][$j]['price_final']			= 0;
+				//$data[$index][$j]['price_meta']				= array();
+				
 			}
 			$index++;
 		}
+		//return $data;
 		
 		$final = array();
 		$i  = 0;
@@ -502,17 +530,42 @@ class Sriwijaya extends Comp_maskapai_base{
 		}*/
 		
 		$ip = 1;
+		$ipAdult = 1;
+		$ipChild = 1;
+		$ipInfant = 1;
 		foreach ($this->passangers as $key => $value) {
-			$passangerData['adult.title.'.$ip] 					= element('title',$value);
-			$passangerData['adult.name.'.$ip] 					= element('name',$value);
-			$passangerData['adult.id.'.$ip]						= element('no_id',$value);
-			$passangerData['adult.specialRequestSelect.'.$ip]	= '';
-			$ip++;
+			if (element('type',$value) == 'adult') {
+				
+				$passangerData['adult.title.'.$ipAdult] 			= element('title',$value);
+				$passangerData['adult.name.'.$ipAdult] 				= element('name',$value);
+				$passangerData['adult.id.'.$ipAdult]				= element('no_id',$value);
+				$passangerData['adult.specialRequestSelect.'.$ipAdult]	= '';
+				$ipAdult++;
+			}else if(element('type',$value) == 'child'){
+				$birth = explode('-',element('birthday',$value));
+				$passangerData['child.title.'.$ipChild] 					= element('title',$value);
+				$passangerData['child.name.'.$ipChild] 					= element('name',$value);
+				$passangerData['child.id.'.$ipChild]						= "<Identity No>";
+				$passangerData['child.specialRequestSelect.'.$ipChild]	= '';
+				$passangerData['child.dateofbirth.'.$ipChild]			= element('2',$birth);
+				$passangerData['child.monthofbirth.'.$ipChild]			= $this->dateConvertMin(element('1',$birth));
+				$passangerData['child.yearofbirth.'.$ipChild]			= element('1',$birth);
+				$ipChild++;
+			}else if(element('type',$value) == 'infant'){
+				$birth = explode('-',element('birthday',$value));
+				$passangerData['infant.name.'.$ip] 					= element('name',$value);
+				$passangerData['infant.id.'.$ip]					= "<Identity No>";
+				$passangerData['infant.dateofbirth.'.$ip]			= element('2',$birth);
+				$passangerData['infant.monthofbirth.'.$ip]			= $this->dateConvertMin(element('1',$birth));
+				$passangerData['infant.yearofbirth.'.$ip]			= element('0',$birth);
+				$passangerData['infant.assocSelect.'.$ip]			= 1;
+				$ipInfant++;
+			}
 		}
 		
 		$contactData = array(
-			'contactcustomer.name'			=>	element('f_name',$this->contact).' '.element('l_name',$this->contact),
-			'contactcustomer.phone'			=>	$this->contact['user_detail']['phone'],
+			'contactcustomer.name'			=>	element('name',$this->contact),
+			'contactcustomer.phone'			=>	$this->contact['phone'],
 			'contactcustomer.otherphone'	=>	'<Other Phone>',
 		);
 		
@@ -526,8 +579,7 @@ class Sriwijaya extends Comp_maskapai_base{
 				'procceedType'			=>	'Book'			
 		);
 		
-		$post_data = array_merge($this->data,$passangerData,$contactData,$Agentdata);
-		
+		$post_data = array_merge($this->data,$passangerData,$contactData,$Agentdata);		
 		$conf = array(
 			'url' 				=> $this->_booking_url,
 			'post' 				=> true,
@@ -581,11 +633,12 @@ class Sriwijaya extends Comp_maskapai_base{
 		$limit_time = explode(',',$limit);
 		$dateLimit = explode('-',$limit_time[0]);
 		$flghtnum = str_split($flightNumber,6);
-		$data['booking_number'] 	=	$bookingCode;
 		$data['fare_id']			=	$this->fare_id;
+		$data['booking_number'] 	=	$bookingCode;
 		$data['meta_data']			=	json_encode($this->meta_data);
-		$data['passangers']			=	$this->passangers;
-		$data['final_price']		=	$price;
+		
+		//$data['passangers']			=	$this->passangers;
+		//$data['final_price']		=	$price;
 		//$data['limit'] 			=	$limit_time[0].' '.str_replace(' (GMT+0700)','',$limit_time[1]);
 		//$data['bookingDate']	=	$bookingDate;
 		//$data['status']			=	$status;
@@ -619,7 +672,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	}
 	
 	function closing(){
-		$this->logOut();
+		$this->logout();
 	}
 	
 	public function doSearch($opt = array())
@@ -629,11 +682,12 @@ class Sriwijaya extends Comp_maskapai_base{
 		$this->_opt->route_to 		= 'MES';
 		$this->_opt->date_depart 	= '2012-03-21';
 		$this->_opt->date_return 	= NULL;
-		$this->_opt->passengers 	= 1;
-		//$this->_opt->adult = 1;
-		//$this->_opt->child = 0;
-		//$this->_opt->infant = 0;
-		$this->_opt->id		= 1;		
+		//$this->_opt->passengers 	= 1;
+		$this->_opt->adult = 1;
+		$this->_opt->child = 0;
+		$this->_opt->infant = 0;
+		$this->_opt->id		= 1;
+		$this->login();
 		foreach($opt as $key => $val ){$this->_opt->$key = $val;}
 			
 		if ($this->_opt->date_return) {
@@ -647,14 +701,12 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->roundTrip = true;
 			
 			$result2 = (is_array($rs2 = $this->search())) ? $rs2 : array();
-			$this->logOut();
 			//print_r(array_merge($result1,$result2));
 			$final = array_merge($result1,$result2);
 		}else{
 			$final = $this->search();
-			$this->logOut();
 		}
-		
+		$this->logout();
 		if (is_array($final) == false || count($final) == 0) {
 			throw new ResultFareNotFound($opt);
 		}
@@ -665,34 +717,7 @@ class Sriwijaya extends Comp_maskapai_base{
 	function preBooking($fare_data){
 		//public function doBooking(){
 			//$getMeta = $this->doSearch();
-			/*$fare_data = array(
-				'id'		=>	7323,
-				'log_id'	=>	34,
-				'company'	=>	'SRIWIJAYA',
-				't_depart'	=>	'2011-12-31 10:05',
-				't_arrive'	=>	'2011-12-31 10:45',
-				'type'		=>	'depart',
-				'class'		=>	'T',
-				'route'		=>	'CGK,TKG',
-				'meta_data'	=>	 '{"company":"SRIWIJAYA","flight_no":"SJ 014","t_depart":"2012-03-21 06:50","t_arrive":"2012-03-21 09:05","type":"depart","class":"W","price":"1602000","route":"CGK,MES","t_transit_arrive":null,"t_transit_depart":null,"log_id":1,"arrayIndex":"5,14","radio_value":"a8535db1-5ecc-4ee5-b78c-b3bf9684e315|6fe6ebff-01af-4a64-b645-ef896350dfab|ed664f2a-24bc-480d-bf16-904617af45ee","time_depart":"2012-3-21","passangers":1,"adult":1,"child":0,"infant":0,"detail":{"0":{"passanger_type":"ADULT","price_per_pax":"1440909","pajak":"144091","iwjr":"5000","extra_cover":"12000"},"price":"1602000"}}',
-				't_transit_arrive'	=>	'',
-				't_transit_depart'	=>	'',
-				'price'				=>	'392000',
-				'flight_no'			=>	'SJ 096',
-				'log'				=>	array(
-					'id'				=>	34,
-					'date_depart'		=>	'2012-01-28 00:00:00',
-					'date_return'		=>	'',
-					'route_from'		=>	'CGK',
-					'route_to'			=>	'DPS',
-					'passangers'		=>	1,
-					'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-					'c_time'			=>	'2011-12-20 11:56:15',
-					'max_fare'			=>	5,
-					'actor'				=> 'CUS',
-				),
-			);*/
-
+			
 			$forBooking = json_decode($fare_data['meta_data'],1);
 			//$route = explode(',',$forBooking['route']);
 			$log = element('log',$fare_data);
@@ -705,7 +730,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->_opt->date_depart 	= element('time_depart',$forBooking);
 			$this->_opt->date_return 	= NULL;
 			$this->_opt->passengers 	= element('passangers',$forBooking);
-			$this->_opt->id				= element('log_id',$forBooking);
+
 
 			//search again
 
@@ -716,146 +741,115 @@ class Sriwijaya extends Comp_maskapai_base{
 
 			$arrayIndex = $this->multidimensional_search($meta,array('arrayIndex' => $forBooking['arrayIndex']));
 			if ($arrayIndex=='nothing') {
-				$this->logout();
 				return false;
 			}else{
 				$price = $meta[$arrayIndex-1]['price'];
 				if ($price > $forBooking['price']) {
-					$this->logout();
 					return $price;
 				}else{
-					$this->logout();
 					return true;
 				}
 			}
 	}
 	
 	//function doBooking(){
-	function doBooking($fare_data=array(),$passangers_data=array(),$customer_data=array()){
+	function doBooking($fare_data=array(),$passangers_data=array(),$contact_data=array()){
 		//fordebug
 		/*$fare_data = array(
-			'id'		=>	7323,
-			'log_id'	=>	34,
-			'company'	=>	'SRIWIJAYA',
-			't_depart'	=>	'2012-03-21 09:05',
-			't_arrive'	=>	'2012-03-21 11:20',
-			'type'		=>	'depart',
-			'class'		=>	'Q',
-			'route'		=>	'CGK,MES',
-			'meta_data'	=>	 '{"comapny":"SRIWIJAYA","flight_no":"SJ 010","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","t_transit_arrive":false,"t_transit_depart":false,"type":"depart","price":"952000","class":"Q","route":"CGK,MES","log_id":34,"arrayIndex":"0,7","passangers":1,"time_depart":"2012-3-21","radio_value":"ade2804b-9211-4ff3-8231-36d63118cf4e|b590c16f-ecc3-4f62-978f-829fdbc50b18|101784f4-1727-45dc-a100-2c999132b279","price_detail":[{"passanger_type":"ADULT","price_per_pax":"850000","pajak":"85000","iwjr":"5000","extra_cover":"12000"}]}',
-			't_transit_arrive'	=>	'',
-			't_transit_depart'	=>	'',
-			'price'				=>	'952000',
-			'flight_no'			=>	'SJ 010',
-			'log'				=>	array(
-				'id'				=>	34,
-				'date_depart'		=>	'2012-01-31 00:00:00',
-				'date_return'		=>	'',
-				'route_from'		=>	'CGK',
-				'route_to'			=>	'MES',
-				'passangers'		=>	1,
-				'comp_include'		=>	'["Sriwijaya","Garuda","Merpati","Batavia","Citilink"]',
-				'c_time'			=>	'2011-12-20 11:56:15',
-				'max_fare'			=>	5,
-				'actor'				=> 'CUS',
-			),
-		);*/
+		    'id' => '77757',
+		    'company' => 'SRIWIJAYA',
+		    't_depart' => '2012-03-21 09:05',
+		    't_arrive' => '2012-03-21 11:20',
+		    'class' => 'V',
+		    'route' => 'CGK,MES',
+		    't_transit_arrive' => '',
+		    't_transit_depart' => '',
+		    'price' => 782000,
+		    'flight_no' => 'SJ 010',
+		    'route_from' => 'CGK',
+		    'route_to' => 'MES',
+		    'adult' => 1,
+		    'child' => 0,
+		    'infant' => 0, 
+		    'time_depart' => '2012-3-21',
+		    'meta_price' => array
+		        (
+		        	'ADULT' => 782000,
+		        ),
+
+		    'price_final' => 1,
+		    'meta_data' => '{"id":77757,"comapny":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":false,"t_transit_depart":false,"price":"782000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":false,"infant":false,"arrayIndex":"0,5","passangers":1,"time_depart":"2012-3-21","price_final":0,"radio_value":"49fc1d1c-d331-4dba-9914-98f49fa90867|0bdafba6-f892-468b-9224-f18dcb21ab48|05341759-d044-407e-9705-3da8e3795a2a","meta_price":{"ADULT":782000}}',
+		);
 		
-		/*$passangers_data = array(
+		$passangers_data = array(
 			array(
-					'title' 			=>	'Mr',
 					'name' 				=>	'Zidni Mubarock',
 					'no_id'				=>	'3671081902880001',
-
+					'title' 			=>	'Mr',
+					'gender'			=>	'M',
+					'birthday'			=> 	'1988-01-19',
+					'type'				=>	'adult',
 			),
 			array(
-					'title' 			=>	'Mr',
-					'name' 				=>	'Fauzan Qadri',
+					'name' 				=>	'Zidni Mubarock',
 					'no_id'				=>	'3671081902880001',
+					'title' 			=>	'Mr',
+					'gender'			=>	'M',
+					'birthday'			=> 	'1988-01-19',
+					'type'				=>	'adult',
 			),
-		);*/
-		
-		
-		/*$passangers_data = array(
-			'ADULT'	=>	
-				array(
-					array(
-						'title' 			=>	'Mr',
-						'name' 				=>	'Zidni Mubarock',
-						'no_id'				=>	'3671081902880001',
-					),
-					array(
-						'title' 			=>	'Mrs',
-						'name' 				=>	'Zidni Mubarock',
-						'no_id'				=>	'3671081902880001',
-					),
-				),				
+			array(
+					'name' 				=>	'Zidni Mubarock',
+					'no_id'				=>	'3671081902880001',
+					'title' 			=>	'Mr',
+					'gender'			=>	'M',
+					'birthday'			=> 	'2007-01-19',
+					'type'				=>	'child',					
+			),
+			array(
+					'name' 				=>	'Zidni Mubarock',
+					'no_id'				=>	'3671081902880001',
+					'title' 			=>	'Mr',
+					'gender'			=>	'M',
+					'birthday'			=> 	'2011-01-19',
+					'type'				=>	'infant',
+			),
+		);
 				
-			'CHILD'	=>	
-				array(
-					array(
-						'title' 			=>	'Mstr',
-						'name' 				=>	'Zidni Mubarock',
-						'no_id'				=>	'3671081902880001',
-					),
-				),
-			'INFANT'	=>	
-				array(
-					array(
-						'title' 			=>	'Mr',
-						'name' 				=>	'Zidni Mubarock',
-						'no_id'				=>	'3671081902880001',
-					),
-				),
-		);*/
-		
-		
-		
-		/*$customer_data = array(
-			'f_name'	=>	'Zidni',
-			'l_name'	=>	'Mubarok',
-			'email'		=>	'zidmubarock@gmail.com',
-			'password'	=>	'aca9fd21ff5e08cf88a3929ef5c4f346',
-			'role_id'	=>	1,
-			'c_time'	=>	'2011-12-11 21:04:04',
-			'm_time'	=>	'',
-			'status'	=>	'active',
-			'actv_key'	=>	'',
-
-			'user_detail'	=> 	array(
-				'user_id'	=>	26,
-				//'no_id'		=>	'3671081902880001'
-				'phone'		=>	'0215579315134',
-				'mobile'	=>	'0215579315134',
-				'address'	=>	'jalan anggrek no',
-				'gender'	=>	'M',
-								
-			),
-			
+		$contact_data = Array
+		(
+			'name' => 'Zidni Mubarock',
+		    'no_id' => '6429364294293',
+		    'title' => 'Mr',
+		    'gender' => 'M',
+		    'birthday' => '1988-01-19',
+		    'phone' => '2342342234',
+		    'mobile' => '32382398232',
+		    'email' => 'me@mail.com',
 		);*/
 		
 		$this->passangers	=	$passangers_data;
-		$this->contact = $customer_data;
+		$this->contact = $contact_data;
+		
 		$forBooking = json_decode($fare_data['meta_data'],1);
 		$route = explode(',',$forBooking['route']);
 		$log = element('log',$fare_data);
-		$route_from = element('route_from',$log);
-		$route_to = element('route_to',$log);
+		$route_from = element('route_from',$fare_data);
+		$route_to = element('route_to',$fare_data);
 	
 		$this->_opt->route_from 	= $route_from;
 		$this->_opt->route_to 		= $route_to;
 		$this->_opt->date_depart 	= element('time_depart',$forBooking);
 		$this->_opt->date_return 	= NULL;
 		$this->_opt->passengers 	= element('passangers',$forBooking);
-		//$this->_opt->adult	= element('adult',$forBooking);
-		//$this->_opt->child	= element('child',$forBooking);
-		//$this->_opt->infant = element('infant',$forBooking);
-		$this->_opt->id				= element('log_id',$forBooking);
+		$this->_opt->adult	= element('adult',$fare_data);
+		$this->_opt->child	= element('child',$fare_data);
+		$this->_opt->infant = element('infant',$fare_data);
 	
 	
 		$this->fare_id		=	element('id',$fare_data);
 		$this->meta_data	=	$forBooking;
-	
+		$this->login();
 		$aSearch = $this->forBooking();
 					
 		for ($i=0; $i < count($aSearch); $i++) { 
@@ -880,7 +874,6 @@ class Sriwijaya extends Comp_maskapai_base{
 	}
 	
 	function research(){
-		$this->login();
 		if ($this->_opt->date_return) {
 			$result1 = $this->search();
 			
@@ -892,12 +885,10 @@ class Sriwijaya extends Comp_maskapai_base{
 			$this->roundTrip = true;
 			
 			$result2 = $this->search();
-			$this->logOut();
 			//print_r(array_merge($result1,$result2));
 			$final = array_merge($result1,$result2);
 		}else{
 			$final = $this->search();
-			$this->logOut();
 		}
 		return array_values($final);
 	}
@@ -917,5 +908,144 @@ class Sriwijaya extends Comp_maskapai_base{
 
 		  return 'nothing';
 	}
+	
+	function generateRandomString(){
+		$string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+		$stringLength = strlen($string);
+		$wordLength = 8;
+		$result = '';
+		for ($i=0; $i <= $wordLength; $i++) { 
+			$index = mt_rand(0,$stringLength-1);
+			$result .= $string[$index];
+		}
+		return $result;
+	}
+	
+	function createCookieFile(){
+		$name = $this->generateRandomString();
+		$this->_cookies_file = './components/service/third_party/comp_maskapai/cookies/'.$name.'.txt';
+		return $name;
+	}
+	
+	function writeLogFile($data){
+		$file = './components/service/third_party/comp_maskapai/cookies/log.txt';
+		$fp = fopen($file,'a');
+		fwrite($fp,"\n".json_encode($data));
+	}
+	
+	function logToArray(){
+		$file = './components/service/third_party/comp_maskapai/cookies/log.txt';
+		$page = join("",file("$file"));
+		$kw = explode("\n", $page);
+		$index = 0;
+		$data = array();
+		for($i=1;$i<count($kw);$i++){
+			$data[$index] = json_decode(element($i,$kw),1);
+			$index++;			
+		}
+		return $data;
+	}
+	
+	function latestUsed($searched){
+		//$searched = array('username'	=>	'idbooking4');
+		$data = $this->logToArray();
+		$index = 0;
+		$keyArray = array();
+		foreach ($data as $key => $value) { 
+	    	$exists = true; 
+	    	foreach ($searched as $skey => $svalue) {
+				$exists = ($exists && IsSet($data[$key][$skey]) && $data[$key][$skey] == $svalue);
+	    	} 
+	    	if($exists){
+				$keyArray[$index] = $key;
+				$index++;
+			}			
+	  	}
+ 		$indexForLast = element(count($keyArray)-1,$keyArray);
+		$return = array(
+			'result'	=>	json_encode(element($indexForLast,$data)),
+			'arrayIndex'	=>	json_encode($keyArray),
+		);
+		return $return;
+	}
+		
+	function getUsername(){
+		$loginData = array(
+			array('username'	=>	'idbooking4', 'company'	=> 'Sriwijaya'),
+			array('username'	=>	'idbooking5', 'company'	=> 'Sriwijaya'),
+			array('username'	=>	'idbooking6', 'company'	=> 'Sriwijaya'),
+		);
+		$latestUsedArray = array();
+		foreach ($loginData as $key => $value) {
+			$result = json_decode(element('result',$this->latestUsed($value)),1);
+			//print_r($result);
+			$date = element('c_date',$result);
+			if ($date == null || $date == 'i' ) {continue;}
+			$latestUsedArray[$key] = $date;
+		}
+		
+		if (count($latestUsedArray) == 0 || is_array($latestUsedArray) == false) {
+			$index = rand(0,count($loginData)-1);
+			return element($index,$loginData);
+		}else{
+			$newLatest = $latestUsedArray;
+			sort($latestUsedArray);
+			$index = array_search(element('0',$latestUsedArray),$newLatest);
+			$username = element($index,$loginData);
+			$checkFile = $this->clearCookies(element('username',$username));
+			if ($checkFile == false) {
+				if ($index+1 == count($loginData)) {
+					$index = 0;
+					$username = element($index,$loginData);
+				}else{
+					$username = element($index,$loginData);
+				}
+			}
+			
+			return $username;
+		}
+	}
+	
+	function clearCookies($username){
+ 		//$username = element('username',$this->getUsername());
+		$data = array('username'	=>	$username, 'company'	=> 'Sriwijaya');
+		$array = $this->latestUsed($data);
+		$arrayIndex = json_decode(element('arrayIndex',$array),1);
+		$log = array();
+		for ($i=0; $i < count($arrayIndex); $i++) { 
+			$log[$i] = element($arrayIndex[$i],$this->logToArray());
+		}
+		//print_r($log);
+		for ($i=0; $i < count($log); $i++) { 
+			$c_date = element('c_date',element($i,$log));
+			$session_name = element('cookie_name',element($i,$log));
+			$file = './components/service/third_party/comp_maskapai/cookies/'.$session_name.'.txt';
+			$interval = $this->dateInterval($c_date,date('y-m-d H:i:s'));
+			if (file_exists($file)) {
+				echo 'ada <br/>';
+				if (($interval->h >= 0) ||  ($interval->h == 0 || $interval->i >= 20)) {
+					echo 'deleting file '.$file;
+					unlink($file);
+					$flag = 1;
+				}else{	
+					$flag = 0;
+				}
+			}else{
+				$flag = 1;
+			}
 
+		}
+		if ($flag = 1) {
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function dateInterval($datein,$dateout){
+		$date1 = new DateTime($datein);
+		$date2 = new DateTime($dateout);
+		$interval = $date2->diff($date1);
+		return $interval;
+	}	
 }

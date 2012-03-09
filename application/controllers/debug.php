@@ -57,7 +57,7 @@ class Debug extends MX_Controller
 				}
 			}elseif(!$this->uri->rsegment(5) AND $func == "doSearch"){
 				$fares = $fac->$func();
-				printDebug($fac->getDetail($fares[0]));
+			
 				printDebug($fares);
 				
 			}else{
@@ -681,5 +681,69 @@ echo "</pre>";
 				printDebug($this->db_util->multiple_to_array($fares));
 			else
 				echo 'Nope';
+	}
+	public function testnewdb()
+	{
+		$conf = array(
+			
+			'options' => array(
+				'limit' => 10,
+			),
+		);
+		$this->rest->get('db/find/uaaser/', $conf);
+		$this->rest->debug();
+	}
+	public function testdbcreate()
+	{
+		$conf = array(
+			'data' => array(
+						'code' => 'ASUH kampret',
+						'name' => 'DKI Asuh'
+						),
+		
+		);
+
+		$this->rest->post('db/update/ext_data_airline/10', $conf);
+		$this->rest->debug();
+	}
+	public function testCar()
+	{
+		
+		$item_data = array
+		(
+		    'depart_id' => 81459,
+		    'return_id' => 81009,
+		    'passengers_data' => array
+		        (
+		            array
+		                (
+		                    'title' => 'Mr',
+		                    'gender' => 'M',
+		                    'name' => 'Zidni Mubarock',
+		                    'no_id' => '2362863528',
+		                    'type' => 'adult',
+		                )
+
+		        ),
+
+		    'contact_data' => array
+		        (
+		           	'name' => 'Zidni Mubarock',
+		            'email' =>  'zidmubarock@gmail.com',
+		            'mobile' => '086465765',
+		            'phone' => '617917791',
+		        )
+
+		);
+		$this->rest->api_key('dff8ef74f6602e67e7d317d1d73d9317', 'X-CUSTOMER-KEY');
+		$cart = $this->rest->post('service/shoppingcart/create', array('currency' => 'IDR'));
+		$this->rest->api_key('abc');
+		$this->rest->api_key('dff8ef74f6602e67e7d317d1d73d9317', 'X-CUSTOMER-KEY');
+		$this->rest->post('service/shoppingcart/add_item/'.$cart->id, array(
+			'name' => 'Booking Flight',
+			'qty'	=> 1,
+			'type' => 'airlines',
+			'options' => $item_data));
+		$this->rest->debug();
 	}
 }

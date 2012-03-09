@@ -8,12 +8,13 @@ class Shoppingcart extends REST_Controller
 	function __construct()
 	{
 		parent::__construct();
+		$this->customer = CustomerSession::getModel();
 	}
 	public function create_post()
 	{
 		
 		$data = $this->post();
-		$data['user_id'] = CustomerSession::getModel()->id;
+		$data['user_id'] = $this->customer->id;
 	//	$this->response($data);
 		try {
 			$cart  = new Cart($data);
@@ -41,6 +42,7 @@ class Shoppingcart extends REST_Controller
 			$this->response(array('error' => $e->getMessage()));
 		}
 	}
+	
 	public function update_post()
 	{
 			
@@ -62,11 +64,11 @@ class Shoppingcart extends REST_Controller
 	public function add_item_post()
 	{
 		$id = $this->uri->rsegment(3);
-	
+		if(!$id) $this->response_error('No ID Cart Provide');
 		try {
 			$cart = Cart::find($id);
 		} catch (Exception $e) {
-			$this->response(array('error' => $e->getMessage()));
+			$this->response_error($e);
 		}
 	
 	
