@@ -19,9 +19,15 @@ class Service_fare_item extends	ActiveRecord\Model
 	  array('price', 'greater_than' => 10000)
 	);
 	static $before_create = array('_before_create');
+	static $before_update = array('_before_update');
 	public function _before_create()
 	{
 		$this->archive = 'N';
+	
+	}
+	public function _before_update()
+	{
+	//	$this->price_meta = json_encode($this->price_meta);
 	}
 	
 

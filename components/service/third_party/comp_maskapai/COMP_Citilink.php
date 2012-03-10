@@ -483,7 +483,6 @@ class Citilink extends Comp_maskapai_base {
 		$metaArray = json_decode(element('meta_data',$this->fare_data),1);
 		$meta = array(
 			'id'				=> element('id',$this->fare_data),
-			'log_id'			=>	element('log_id',$this->fare_data),
 			'comapny'			=>	element('company',$this->fare_data),
 			't_depart'			=>	element('t_depart',$this->fare_data),
 			't_arrive'			=>	element('t_arrive',$this->fare_data),
@@ -506,7 +505,6 @@ class Citilink extends Comp_maskapai_base {
 		);
 		
 		$fare_data['id']		= element('id',$this->fare_data);
-		$fare_data['log_id']	= element('log_id',$this->fare_data);
 		$fare_data['company'] = element('company',$this->fare_data);
 		$fare_data['t_depart'] = element('t_depart',$this->fare_data);
 		$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
@@ -529,26 +527,7 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	public function getDetail($fare_data = array()){
-		/*$fare_data = Array( 
-		   		'company' => 'CITILINK',
-		        't_depart' => '2012-03-21 05:20',
-		        't_arrive' => '2012-03-21 07:35',
-		        'class' => 'K',
-		        'route' => 'CGK,MES',
-		        'meta_data' => '{"company":"CITILINK","flight_no":"GA040","t_depart":"2012-03-21 05:20","t_arrive":"2012-03-21 07:35","t_transit_depart":null,"t_transit_arrive":null,"type":"depart","class":"K","price":"947000.00","route":"CGK,MES","radio_value":"{5B68272E-283A-4FE1-9571-C7CD85B46A89}|{9A68EF3F-5F0C-11DF-8E35-18A905E04790}||","arrayIndex":1,"time_depart":"2012-03-21","passangers":2,"adult":2,"child":0,"infant":0}',
-		        't_transit_depart' => '', 
-		        't_transit_arrive' => '',
-		        'price' => '947000.00',
-		        'flight_no' => 'GA040',
-		        'route_from' => 'CGK',
-		        'route_to' => 'MES',
-		        'adult' => '2',
-		        'child' => '1',
-		        'infant' => '1',
-		        'price_final' => '0',
-		);*/
-		
-		
+				
 		$meta_data = json_decode(element('meta_data',$fare_data),1);
 		$log = element('log',$fare_data);
 		
@@ -843,81 +822,7 @@ class Citilink extends Comp_maskapai_base {
 	}
 	
 	function doBooking($fare_data = array(),$passangers_data = array(),$contact_data = array()){
-		/*$fare_data = Array
-		(
-		    'id' => 77757,
-		    'company' => 'CITILINK',
-		    't_depart' => '2012-03-21 05:20',
-		    't_arrive' => '2012-03-21 07:35',
-		    'class'	 => 'K',
-		    'route' => 'CGK,MES',
-		    't_transit_arrive'	 =>	'', 
-		    't_transit_depart'	 =>	'', 
-		    'price' => 2996845,
-		    'flight_no'	=> 'GA040',
-		    'route_to'	 => 'MES',
-		    'route_from' => 'CGK',
-		    'adult'	 => 2,
-		    'child'	 => 1,
-		    'infant' => 1,
-		    'price_final' => 1,
-		    'meta_data' => '{"comapny":"CITILINK","t_depart":"2012-03-21 05:20","t_arrive":"2012-03-21 07:35","class":"K","route":"CGK,MES","t_transit_arrive":false,"t_transit_depart":false,"price":2996845,"flight_no":"GA040","route_from":"CGK","route_to":"MES","adult":"2","child":"1","infant":"1","arrayIndex":1,"passangers":4,"time_depart":"2012-03-21","radio_value":"{5B68272E-283A-4FE1-9571-C7CD85B46A89}|{9A68EF3F-5F0C-11DF-8E35-18A905E04790}||","price_meta":{"ADULT":1048700,"CHD":788275,"INF":111170}}',
-		    'price_meta' => array
-		        (
-		            'ADULT' => 1048700,
-		            'CHD' => 788275,
-		            'INF' => 111170,
-		        ),
-
-		);
-		
-		$passangers_data = array(
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'1988-01-19',
-					'type'				=>	'adult',
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'1988-01-19',
-					'type'				=>	'adult',
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'2007-01-19',
-					'type'				=>	'child',					
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'2011-01-19',
-					'type'				=>	'infant',
-			),
-		);
 				
-		$contact_data = Array
-		(
-			'name' => 'Zidni Mubarock',
-		    'no_id' => '6429364294293',
-		    'title' => 'Mr',
-		    'gender' => 'M',
-		    'birthday' => '1988-01-19',
-		    'phone' => '2342342234',
-		    'mobile' => '32382398232',
-		    'email' => 'me@mail.com',
-		);*/
-		
 		$this->passangers = $passangers_data;
 		$this->contact = $contact_data;
 	

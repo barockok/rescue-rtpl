@@ -260,7 +260,6 @@ class Sriwijaya extends Comp_maskapai_base{
 		
 		$meta = array(
 			'id'				=> 	$this->_opt->id,
-			'log_id'			=>	element('log_id',$this->fare_data),
 			'comapny'			=>	element('company',$this->fare_data),
 			't_depart'			=>	element('t_depart',$this->fare_data),
 			't_arrive'			=>	element('t_arrive',$this->fare_data),
@@ -284,7 +283,6 @@ class Sriwijaya extends Comp_maskapai_base{
 		);
 		
 		$fare_data['id']	= element('id',$this->fare_data);
-		$fare_data['log_id'] = element('log_id',$this->fare_data);
 		$fare_data['company'] = element('company',$this->fare_data);
 		$fare_data['t_depart'] = element('t_depart',$this->fare_data);
 		$fare_data['t_arrive'] = element('t_arrive',$this->fare_data);
@@ -308,26 +306,6 @@ class Sriwijaya extends Comp_maskapai_base{
 	
 	public function getDetail($fare_data = array())
 	{
-		/*$fare_data = array(
-				'id'		=>	77757,
-
-	            'company' 	=> 'SRIWIJAYA',
-	            't_depart'	=> '2012-03-21 09:05',
-	            't_arrive'	=> '2012-03-21 11:20',
-	            'class'		=> 'V',
-	            'route'		=> 'CGK,MES',
-	            'meta_data' => '{"company":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":null,"t_transit_depart":null,"price":"700000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":0,"infant":0,"final_price":0,"arrayIndex":"0,5","radio_value":"bec4aa1c-62cc-439f-9c6e-c51132660621|40611b8c-2b4b-4bf7-a483-75e78baa6738|fb9e982a-e3f1-4c01-8c6a-ab61f7f923ca","time_depart":"2012-3-21","passangers":1}',
-	            't_transit_arrive' => '',
-	            't_transit_depart' => '',
-	            'price' => '700000',
-	            'flight_no' => 'SJ 010',
-	            'route_from' => 'CGK',
-	            'route_to' 	=> 'MES',
-	            'adult' => 1,
-	            'child' => 0,
-	            'infant' => 0,
-	            'price_final' => 0
-	    );*/
 		
 		$meta_data = json_decode(element('meta_data',$fare_data),1);
 		
@@ -753,81 +731,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			}
 	}
 	
-	//function doBooking(){
 	function doBooking($fare_data=array(),$passangers_data=array(),$contact_data=array()){
-		//fordebug
-		/*$fare_data = array(
-		    'id' => '77757',
-		    'company' => 'SRIWIJAYA',
-		    't_depart' => '2012-03-21 09:05',
-		    't_arrive' => '2012-03-21 11:20',
-		    'class' => 'V',
-		    'route' => 'CGK,MES',
-		    't_transit_arrive' => '',
-		    't_transit_depart' => '',
-		    'price' => 782000,
-		    'flight_no' => 'SJ 010',
-		    'route_from' => 'CGK',
-		    'route_to' => 'MES',
-		    'adult' => 1,
-		    'child' => 0,
-		    'infant' => 0, 
-		    'time_depart' => '2012-3-21',
-		    'meta_price' => array
-		        (
-		        	'ADULT' => 782000,
-		        ),
-
-		    'price_final' => 1,
-		    'meta_data' => '{"id":77757,"comapny":"SRIWIJAYA","t_depart":"2012-03-21 09:05","t_arrive":"2012-03-21 11:20","class":"V","route":"CGK,MES","t_transit_arrive":false,"t_transit_depart":false,"price":"782000","flight_no":"SJ 010","route_from":"CGK","route_to":"MES","adult":1,"child":false,"infant":false,"arrayIndex":"0,5","passangers":1,"time_depart":"2012-3-21","price_final":0,"radio_value":"49fc1d1c-d331-4dba-9914-98f49fa90867|0bdafba6-f892-468b-9224-f18dcb21ab48|05341759-d044-407e-9705-3da8e3795a2a","meta_price":{"ADULT":782000}}',
-		);
-		
-		$passangers_data = array(
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'1988-01-19',
-					'type'				=>	'adult',
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'1988-01-19',
-					'type'				=>	'adult',
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'2007-01-19',
-					'type'				=>	'child',					
-			),
-			array(
-					'name' 				=>	'Zidni Mubarock',
-					'no_id'				=>	'3671081902880001',
-					'title' 			=>	'Mr',
-					'gender'			=>	'M',
-					'birthday'			=> 	'2011-01-19',
-					'type'				=>	'infant',
-			),
-		);
-				
-		$contact_data = Array
-		(
-			'name' => 'Zidni Mubarock',
-		    'no_id' => '6429364294293',
-		    'title' => 'Mr',
-		    'gender' => 'M',
-		    'birthday' => '1988-01-19',
-		    'phone' => '2342342234',
-		    'mobile' => '32382398232',
-		    'email' => 'me@mail.com',
-		);*/
 		
 		$this->passangers	=	$passangers_data;
 		$this->contact = $contact_data;

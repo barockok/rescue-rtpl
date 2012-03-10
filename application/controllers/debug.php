@@ -767,4 +767,21 @@ echo "</pre>";
 			echo $e->getMessage();
 		}
 	}
+	public function metaPrice()
+	{
+		/*
+		$fare = Service_fare_item::find('last');
+	
+		$fare->price_meta = json_encode(array('adult' => 1652761));
+		$fare->save();
+		printDebug($fare->to_array());
+		*/
+	//	echo json_encode($)
+	}
+	public function testBook()
+	{
+		
+		$this->rest->get('service/airlines/book/86655/86689');
+		$this->rest->debug();
+	}
 }

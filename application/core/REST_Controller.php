@@ -235,19 +235,19 @@ class REST_Controller extends MX_Controller {
 		call_user_func_array(array($this, $controller_method), $arguments);
 	}
 
-	public function response_error($data)
+	public function response_error($data, $code = 500)
 	{
 		if($data instanceof Exception){
 			$data = RTException::handler($data);
 		}
 			
 		$data = array('error' => $data);
-		$this->response($data, 500);
+		$this->response($data, $code);
 	}
-	public function response_warning($warning, $data = null)
+	public function response_warning($warning, $data = null, $code = 400)
 	{
 		$response = ( !is_null($data) and is_array($data) ) ? array_merge( array('warning' => $warning) , $data )  : array('warning' => $warning);
-		$this->response($response, 400);
+		$this->response($response, $code);
 	}
 	/*
 	 * response
