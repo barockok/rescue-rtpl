@@ -4,8 +4,8 @@
 
 .tiket.com	TRUE	/	FALSE	1332970101	device[type]	x
 .tiket.com	TRUE	/	FALSE	0	tiketsession	m68cs4lt3a9eeac27h0hjin3l7
-.tiket.com	TRUE	/	FALSE	1361914240	userlang	en
-.tiket.com	TRUE	/	FALSE	1330379901	usercurrency	IDR
-.tiket.com	TRUE	/	FALSE	2663348480	searchresult	http%3A%2F%2Fwww.tiket.com%2F%2Fsearch%2Fhotel%3Fq%3DBandung%26startdate%3D2012-03-26%26enddate%3D2012-03-31%2B00%253A00%253A00%26room%3D1%26adult%3D1%26child%3D0%26uid%3Dcity%253A165
-.tiket.com	TRUE	/	FALSE	2663348480	hotelsearch	%7B%22q%22%3A%22Bandung%22%2C%22uid%22%3A%22city%3A165%22%2C%22startdate%22%3A%222012-03-26%22%2C%22enddate%22%3A%222012-03-31%22%2C%22night%22%3A5%2C%22room%22%3A%221%22%2C%22adult%22%3A%221%22%2C%22child%22%3A0%7D
+.tiket.com	TRUE	/	FALSE	1362937684	userlang	en
+.tiket.com	TRUE	/	FALSE	1331403484	usercurrency	IDR
+.tiket.com	TRUE	/	FALSE	2665395368	searchresult	http%3A%2F%2Fwww.tiket.com%2F%2Fsearch%2Fhotel%3Fq%3DHorison%2BBandung%2BHotel%26startdate%3D2012-03-26%26enddate%3D2012-03-29%2B00%253A00%253A00%26room%3D1%26adult%3D1%26child%3D0%26uid%3Dbusiness%253A83
+.tiket.com	TRUE	/	FALSE	2665395368	hotelsearch	%7B%22q%22%3A%22Horison+Bandung+Hotel%22%2C%22uid%22%3A%22business%3A83%22%2C%22startdate%22%3A%222012-03-26%22%2C%22enddate%22%3A%222012-03-29%22%2C%22night%22%3A3%2C%22room%22%3A%221%22%2C%22adult%22%3A%221%22%2C%22child%22%3A0%7D
 www.tiket.com	FALSE	/	FALSE	0	AWSELB	832FFD750A383AB1E91F9D698DF2CCB44FA65E38C5CECD1063CCD20E11E4B05F28D31B64A9BE16EF08826F6688774A4392DBA30817D547F063F10B41BB7A75AD73F853A48A

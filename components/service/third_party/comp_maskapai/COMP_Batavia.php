@@ -67,7 +67,7 @@ class Batavia extends Comp_maskapai_base {
 				$conf = array_merge($header,$conf);
 			}
 			$this->_ci->my_curl->setup($conf);
-			echo $exc = $this->_ci->my_curl->exc();
+			$exc = $this->_ci->my_curl->exc();
 			$res_info = $this->_ci->my_curl->res_info();
 			if ($res_info->http_code == 302) {
 				$this->curl($res_info->url,null,null);
@@ -355,7 +355,7 @@ class Batavia extends Comp_maskapai_base {
 						$defaultCurr = $formCekHarga->find('input[name=defaultCurr]',0)->getAttribute('value');
 						
 						$countData = count($ret->find('tr',2)->find('td'));
-						$flight_number = preg_replace(array('/\s{2,}/', '/[\t\n]/'),'',$ret->find('tr',2)->find('td',5)->plaintext);
+						$flight_number = str_replace('&nbsp;','', $ret->find('tr',2)->find('td',5)->plaintext);
 						$adult_price_per_pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',4)->plaintext);
 						$pax = str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',6)->find('div',0)->plaintext);
 						$iwjr =  str_replace(array(",",'.00 IDR'),'',$ret1->find('tr',2)->find('td',7)->find('div',0)->plaintext);

@@ -780,8 +780,8 @@ echo "</pre>";
 	}
 	public function testBook()
 	{
-		
-		$this->rest->get('service/airlines/book/86655/86689');
+		#87474&book%5Breturn%5D=
+		$this->rest->get('service/airlines/book/87474/87518');
 		$this->rest->debug();
 	}
 }

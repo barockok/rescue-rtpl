@@ -18,7 +18,7 @@ class LoginFailed extends AirlinesExceptions{
 class ResultFareNotFound extends AirlinesExceptions{
 	public function __construct($log)
 	{
-		$this->message = 'result fare not found for  on log id = '.$log['id'];
+		$this->message = "result fare not found ". $log['route_from'] ." ".$log['route_to']." to ".$log['date_return'];
 	}
 }
 class DetailFareNotFound extends AirlinesExceptions{

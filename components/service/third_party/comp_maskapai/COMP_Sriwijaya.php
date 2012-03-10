@@ -279,7 +279,7 @@ class Sriwijaya extends Comp_maskapai_base{
 			'time_depart'		=>	$this->_opt->date_depart,
 			'price_final'		=>	0,
 			'radio_value'		=>	$this->_opt->radio_value,
-			'meta_price'		=>	$data,
+			'price_meta'		=>	$data,
 		);
 		
 		$fare_data['id']	= element('id',$this->fare_data);
@@ -298,7 +298,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$fare_data['child'] = $this->_opt->child;
 		$fare_data['infant'] = $this->_opt->infant;
 		$fare_data['date_depart'] = $this->_opt->date_depart;
-		$fare_data['meta_price'] = json_encode($data);
+		$fare_data['price_meta'] = json_encode($data);
 		$fare_data['price_final']	= 1;		
 		$fare_data['meta_data'] = json_encode($meta);
 		return $fare_data;
