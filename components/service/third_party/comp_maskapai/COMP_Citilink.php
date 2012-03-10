@@ -359,6 +359,7 @@ class Citilink extends Comp_maskapai_base {
 			$data[$i]['child']				= $this->_opt->child;
 			$data[$i]['infant']				= $this->_opt->child;
 			$data[$i]['price_final']		= 0;			
+			$data[$i]['date_depart']		= $this->_opt->date_depart;
 		}
 		return $data;
 	}
@@ -841,7 +842,7 @@ class Citilink extends Comp_maskapai_base {
 		return $this->payleter();
 	}
 	
-	function doBooking($fare_data = array(),$passangers_data = array(),$customer_data = array()){
+	function doBooking($fare_data = array(),$passangers_data = array(),$contact_data = array()){
 		/*$fare_data = Array
 		(
 		    'id' => 77757,
