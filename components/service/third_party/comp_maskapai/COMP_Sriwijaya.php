@@ -298,7 +298,7 @@ class Sriwijaya extends Comp_maskapai_base{
 		$fare_data['child'] = $this->_opt->child;
 		$fare_data['infant'] = $this->_opt->infant;
 		$fare_data['date_depart'] = $this->_opt->date_depart;
-		$fare_data['meta_price'] = $data;
+		$fare_data['meta_price'] = json_encode($data);
 		$fare_data['price_final']	= 1;		
 		$fare_data['meta_data'] = json_encode($meta);
 		return $fare_data;

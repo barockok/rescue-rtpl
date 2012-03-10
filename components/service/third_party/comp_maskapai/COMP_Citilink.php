@@ -521,7 +521,7 @@ class Citilink extends Comp_maskapai_base {
 		$fare_data['infant'] = $this->_opt->infant;
 		$fare_data['price_final'] = 1;
 		$fare_data['meta_data'] = json_encode($meta);
-		$fare_data['price_meta'] = $price_meta;
+		$fare_data['price_meta'] = json_encode($price_meta);
 		$this->backToResult();
 		return $fare_data;
 	}
@@ -611,8 +611,8 @@ class Citilink extends Comp_maskapai_base {
 					'passenger_type_rcd'		=>	element('PassengerType',element($i,$passid)),
 					'employee_number'			=>	'',
 					'title_rcd'					=>	strtoupper($title).'|'.$gender,
-					'lastname'					=>	strtoupper($name[1]),
-					'firstname'					=>	strtoupper($name[0]),
+					'lastname'					=>	strtoupper(element('1',$name)),
+					'firstname'					=>	strtoupper(element('0',$name)),
 					'nation'					=>	'ID',
 					'documenttype'				=>	$id,
 					'documentnumber'			=>	$idNumber,

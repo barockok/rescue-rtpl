@@ -67,7 +67,7 @@ class Batavia extends Comp_maskapai_base {
 				$conf = array_merge($header,$conf);
 			}
 			$this->_ci->my_curl->setup($conf);
-			$exc = $this->_ci->my_curl->exc();
+			echo $exc = $this->_ci->my_curl->exc();
 			$res_info = $this->_ci->my_curl->res_info();
 			if ($res_info->http_code == 302) {
 				$this->curl($res_info->url,null,null);
@@ -473,7 +473,7 @@ class Batavia extends Comp_maskapai_base {
 				$fare_data['child'] 			= element('child', $fare_data);
 				$fare_data['infant'] 			= element('infant', $fare_data);
 				$fare_data['price_final']		= 1;
-				$fare_data['price_meta']		= $meta_price;
+				$fare_data['price_meta']		= json_encode($meta_price);
 				$fare_data['meta_data'] 		= json_encode($meta);
 				
 				return $fare_data;
