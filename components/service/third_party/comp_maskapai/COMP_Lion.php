@@ -88,18 +88,6 @@ class Lion extends Comp_maskapai_base {
 		$res = $this->_ci->my_curl->exc();		
 	}
 	
-	
-		
-	public function doSearch($opt=array()){				
-		foreach($opt as $key => $val) $this->_opt->$key = $val;
-		$fare_result = $this->src_flight();
-				
-		if($fare_result == null) 
-			throw new ResultNotFound();
-		else 
-			return $fare_result;
-	}
-	
 	function getDetail($flight_data){
 		$this->login();
 		
@@ -162,33 +150,30 @@ class Lion extends Comp_maskapai_base {
 		$price = str_replace(',','',str_get_html($res)->find('td[id=tdAmtTotal]',0)->plaintext);				
 		
 		$flight_data['price'] = $price;
-		
-		return $flight_data;
 		$this->logout();
+		return $flight_data;
+		
+	}
+		
+	public function doSearch($opt=array()){				
+		foreach($opt as $key => $val) $this->_opt->$key = $val;
+		$fare_result = $this->src_flight();
+				
+		if($fare_result == null) 
+			throw new ResultNotFound();
+		else 
+			return $fare_result;
 	}
 	
-	function src_flight(){
-		$depart_flight = array();
-		$return_flight = array();
-		if($this->_opt->date_return!=null){
-			$depart_flight = $this->src('depart');
-			
-			//swap route
-			$temp = $this->_opt->route_from;
-			$this->_opt->route_from = $this->_opt->route_to;
-			$this->_opt->route_to = $temp;
-			
-			//change date
-			$this->_opt->date_depart = $this->_opt->date_return;
-			
-			$return_flight = $this->src('return');
-			
-		}else{			
-			$depart_flight = $this->src('depart');
-		}
 		
+	function src_flight(){
+		$depart_flight = array();				
+
+		$this->login();	//login before search fare		
+		$depart_flight = $this->src('depart');		
 		$this->logout(); //logout after search fare
-		return array_merge($depart_flight, $return_flight);
+		
+		return $depart_flight;
 	}
 	
 	function format_date(){
@@ -242,7 +227,7 @@ class Lion extends Comp_maskapai_base {
 	}
 	
 	function preSearch(){
-		$this->login();
+		
 		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=53298', false);
 		$start =  $this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx', false);		
 		$vKey = str_get_html($start)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
@@ -293,7 +278,7 @@ class Lion extends Comp_maskapai_base {
 		return $res;
 	}
 
-	function src($flight_type){		
+	function src(){		
 								
 		$final_data = array();
 		$dom = str_get_html($this->preSearch());
@@ -346,8 +331,7 @@ class Lion extends Comp_maskapai_base {
 				$seat_available = $class_cell->find('label',0)->plaintext;
 				
 				//define return variable
-				$final_data[$idx]=array(
-					//'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
+				$final_data[$idx]=array(					
 				 	'company' => 'LION',					
 				 	't_depart' => $t_depart,//depart from origin location
 				 	't_arrive' => $t_arrive,
