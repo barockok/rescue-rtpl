@@ -6,13 +6,14 @@ class Lion extends Comp_maskapai_base {
 	function __construct(){
 		parent::__construct();
 		ini_set('memory_limit', '120M');
-		$this->_cookies_file = realpath('./components/service/third_party/comp_maskapai/cookies/lion_air.txt');
+		$this->_cookies_file = realpath('./components/service/third_party/comp_maskapai/cookies/lion_air.txt');		
 		$this->login_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->src_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step1.aspx';
 		$this->_start_url = 'https://agent.lionair.co.id/LionAirAgentsPortal/Default.aspx';
 		$this->_refer2_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx';
 		$this->step2_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step2Availability.aspx';
+		$this->book_url = 'https://agent.lionair.co.id/LionAirAgentsIBE/Step3NoTicketing.aspx';
 		$this->username = 'smmsatu';
 		$this->password = 'sukses2011';
 		$this->_ci->load->library('my_curl');
@@ -35,6 +36,7 @@ class Lion extends Comp_maskapai_base {
 		return $exc;
 	}
 	
+	
 	function sp(){
 		$this->login();
 		$this->topage('https://agent.lionair.co.id/LionAirAgentsIBE/OnlineBooking.aspx?consID=53298', false);
@@ -45,6 +47,7 @@ class Lion extends Comp_maskapai_base {
 	function start(){
 		return str_get_html($this->topage($this->_start_url, false));
 	}
+	
 	
 	function login(){
 		$start = $this->start();
@@ -58,7 +61,7 @@ class Lion extends Comp_maskapai_base {
 			'__EVENTVALIDATION'				=> $vVal,
 			'txtLoginName' 					=> $this->username,
 			'txtPassword' 					=> $this->password,
-			'chkRememberMe' 				=> 'on',
+			'chkRememberMe' 				=> 'off',
 			'NameReqExtend_ClientState' 	=> '',
 			'PasswordReqExtend_ClientState' => ''
 		);
@@ -85,26 +88,83 @@ class Lion extends Comp_maskapai_base {
 		$res = $this->_ci->my_curl->exc();		
 	}
 	
+	
 		
-	public function doSearch($opt=array()){		
-		//$this->_opt->date_depart =  '2012-01-25';
-		$this->_opt->date_depart =  '2012-04-20';
-		$this->_opt->date_return =  NULL;
-		$this->_opt->adult = 1;
-		$this->_opt->child = 1;
-		$this->_opt->infant = 0;
-		$this->_opt->route_from = 'CGK';
-		$this->_opt->route_to = 'MES';
-		$this->_opt->id = 1;
-		$this->_opt->max_fare = 5;		
-
+	public function doSearch($opt=array()){				
 		foreach($opt as $key => $val) $this->_opt->$key = $val;
 		$fare_result = $this->src_flight();
 				
 		if($fare_result == null) 
-			throw new ResultFareNotFound($log);
+			throw new ResultNotFound();
 		else 
 			return $fare_result;
+	}
+	
+	function getDetail($flight_data){
+		$this->login();
+		
+		$meta_data = json_decode($flight_data['meta_data']);
+		
+		$post_data = array(
+			'ScriptManager1' => 'upnlTotalTripCost|btnPriceSelection',
+			'__EVENTTARGET' => 'btnPriceSelection',
+			'__EVENTARGUMENT' => '', 
+			'__LASTFOCUS' => '',			
+			'txtUpdateInsurance' => 'Yes',
+			'Insurance$txtInsPostbackRequired' => 'no',
+			'txtPricingResponse' => '',
+			'txtOutFBCsUsed' => '',
+			'txtInFBCsUsed' => '',
+			'txtTaxBreakdown' => '',
+			'UcFlightSelection$TripType' => 'rbOneWay',
+			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',			
+			'UcFlightSelection$txtSelOri' => $flight_data['route_from'],
+			'UcFlightSelection$txtOri' => $flight_data['route_from'],
+			'UcFlightSelection$ddlDepMonth' => date('M Y', strtotime($flight_data['t_depart'])),//'Apr 2012',
+			'UcFlightSelection$ddlDepDay' => date('d', strtotime($flight_data['t_depart'])),//'20',
+			'UcFlightSelection$ddlADTCount' => $flight_data['adult'],
+			'UcFlightSelection$txtSelDes' => $flight_data['route_to'],
+			'UcFlightSelection$txtDes' => $flight_data['route_to'],
+			'UcFlightSelection$ddlRetMonth' => date('M Y', strtotime($flight_data['t_depart'])),//'Apr 2012',
+			'UcFlightSelection$ddlRetDay' => date('d', strtotime($flight_data['t_depart'])),//'20',
+			'UcFlightSelection$ddlCNNCount' => $flight_data['child'],
+			'UcFlightSelection$ddlINFCount' => $flight_data['infant'],
+			'UcFlightSelection$txtDepartureDate' => date('d M Y', strtotime($flight_data['t_depart'])),//'Apr 2012',,
+			'UcFlightSelection$txtReturnDate' => date('M Y', strtotime($flight_data['t_depart'])),//'21 Apr 2012',
+			'txtOBNNCellID' => $meta_data->cellID,
+			'txtIBNNCellID' => 'oneway',
+			'txtOBNNRowID' => $meta_data->rowID,									
+			'txtIBNNRowID' => '',
+			'txtUserSelectedOneway' => '',
+			'__ASYNCPOST' => true,
+		);
+								
+		$conf = array(
+			'url' 				=> $this->step2_url,
+			'timeout'			=> 150,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'followlocation'	=> true,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'post'				=> true,
+			'referer' 			=> $this->_refer2_url,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> http_build_query($post_data , NULL, '&'),
+			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+		);
+		
+		$this->_ci->my_curl->setup($conf);
+		$res  = $this->_ci->my_curl->exc();
+		
+		$price = str_replace(',','',str_get_html($res)->find('td[id=tdAmtTotal]',0)->plaintext);				
+		
+		$flight_data['price'] = $price;
+		
+		return $flight_data;
+		$this->logout();
 	}
 	
 	function src_flight(){
@@ -195,7 +255,7 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$TripType' => 'rbOneWay',
 			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
 			'UcFlightSelection$txtSelOri' => $this->_opt->route_from,
-			'UcFlightSelection$txtOri' => $this->_opt->route_from,
+			'UcFlihtSelection$txtOri' => $this->_opt->route_from,
 			'UcFlightSelection$ddlDepMonth' => $this->dep_month, //Nov 2011
 			'UcFlightSelection$ddlDepDay' => $this->dep_day, //17
 			'UcFlightSelection$ddlADTCount' => $this->_opt->adult,
@@ -206,28 +266,7 @@ class Lion extends Comp_maskapai_base {
 			'UcFlightSelection$txtDepartureDate' => $this->dep_date,  //17 Nov 2011
 			'UcFlightSelection$txtReturnDate' => $this->dep_date,
 		);
-						
-		/*$post_data = array(
-			'__EVENTTARGET' =>  'UcFlightSelection$lbSearch',
-			'__EVENTARGUMENT' => '',
-			'__VIEWSTATE' => $vKey,
-			'UcFlightSelection$TripType' => 'rbOneWay',
-			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
-			'UcFlightSelection$txtSelOri' => 'BDJ',
-			'UcFlightSelection$txtOri' => 'Banjarmasin (BDJ)',
-			'UcFlightSelection$ddlDepMonth' => 'Mar 2012',
-			'UcFlightSelection$ddlDepDay' => '16',
-			'UcFlightSelection$ddlADTCount' => '2',
-			'UcFlightSelection$txtSelDes' => 'SUB',
-			'UcFlightSelection$txtDes' => 'Surabaya (SUB)',
-			'UcFlightSelection$ddlCNNCount' => '0',
-			'UcFlightSelection$ddlINFCount' => '0',
-			'UcFlightSelection$txtDepartureDate' => '16 Mar 2012',
-			'UcFlightSelection$txtReturnDate' => '24 Mar 2012',			
-				);*/
-		//print_r($post_data);
-		
-		
+					
 		$conf = array(
 			'url' 				=> $this->src_url,
 			'timeout'			=> 150,
@@ -254,9 +293,7 @@ class Lion extends Comp_maskapai_base {
 		return $res;
 	}
 
-	function src($flight_type){
-		
-
+	function src($flight_type){		
 								
 		$final_data = array();
 		$dom = str_get_html($this->preSearch());
@@ -303,213 +340,56 @@ class Lion extends Comp_maskapai_base {
 				$arr_time = $arr_time_b.":".$arr_time_a;
 				$t_arrive = date('Y-m-d H:i:s',strtotime($this->_opt->date_depart." ".$arr_time));
 				
-				$fare_class = substr($class_cell->find('span',0)->getAttribute('title'),0,1);
+				$class = substr($class_cell->find('span',0)->getAttribute('title'),0,3);
+				$fare_class = substr($class,0,1);
 				$flight_no = $sel_text[1];
 				$seat_available = $class_cell->find('label',0)->plaintext;
 				
 				//define return variable
 				$final_data[$idx]=array(
 					//'pre_meta_fare' => array('cell' => $cellID , 'row' => $rowID),
-				 	'price' => $this->getPrice($vKey,$cellID,$rowID),
-					'company' => 'LION',
-					't_depart' => $t_depart,	//depart from origin location
-					't_transit_arrive' => '', //arrive in transit airport
-					't_transit_depart' => '', //depart from transit airport
-					't_arrive' => $t_arrive,
-					'type' => $flight_type, //depart or return
+				 	'company' => 'LION',					
+				 	't_depart' => $t_depart,//depart from origin location
+				 	't_arrive' => $t_arrive,
 					'class' => $fare_class,
-					'flight_no' => $flight_no,
-					'log_id' => $this->_opt->id,					
-					'route' => $route,
+				 	'route' => $route,					
 					'meta_data' => json_encode(array(
 						'seat_available' => $seat_available,
 						'flight_number_transit' => '',
 						'rowID' => $rowID,
 						'cellID' => $cellID,
-						'passenger' => $this->_opt->adult					
-					))
+						'passenger' => $this->_opt->adult +	$this->_opt->child + $this->_opt->infant,
+						'txtOutFBCsUsed' => $class,
+					)),
+					't_transit_arrive' => '', //arrive in transit airport
+					't_transit_depart' => '', //depart from transit airport
+					'price' => $this->getPrice($vKey,$cellID,$rowID),					
+					'flight_no' => $flight_no,					
+					'created_at' => '',
+					'updated_at' => '',
+					'route_from' => $this->_opt->route_from,
+					'route_to' => $this->_opt->route_to,
+					'adult' => $this->_opt->adult,
+					'child' => $this->_opt->child,
+					'infant' => $this->_opt->infant,					
+					'price_final' => 1,
+					'price_meta' => array(
+						'adult' => '',
+						'infant' => '',
+						'child' => ''
+					),
+					
 				);												
+				
 				$idx++;
 				if($idx==($this->_opt->max_fare)) break;
 			}																			
 		}
-		return $final_data;			
-		// FINAL PRICE is HERE					
-		//return $this->simultant_fetch_price($final_data, $vKey);
+		return $final_data;					
 	}
-	public function continously_fetch_price($pre_fare_data, $key)
-	{
-		if(is_array($pre_fare_data) && count($pre_fare_data) > 0 ){
-			$limit = count($pre_fare_data);
-			for ($i=0; $i < $limit; $i++) { 
-					$prefare_meta = element('pre_meta_fare' , $pre_fare_data[$i] );
-					$dirty_curl_opt = $this->_prepare_price($vKey, element('cell', $prefare_meta), element('row', $prefare_meta ));
-					// covert to curl option constant
-					$clean_curl_opt = array();
-					foreach($dirty_curl_opt as $key => $value){
-						$name = constant('CURLOPT_'.strtoupper($key));
-						$val  = $value;
-						$clean_curl_opt[$name] = $val;
-					}
-
-					// declare the subprocsee curll 
-					${'getting_fare_'.$i} = curl_init();
-					// Flag as dynamic variable in loop
-					$sub_curl = ${'getting_fare_'.$i};
-					// adding clean option
-					curl_setopt_array($sub_curl, $clean_curl_opt);
-					$res = curl_exec($sub_curl);
-					curl_close($sub_curl);
-					$pre_fare_data[$i]['price'] = $this->_clean_price($res) ;
-					// remove pre_meta_fare
-					unset($pre_fare_data[$i]['pre_meta_fare']);
-					$this->insert_fare($pre_fare_data[$i]);
-					
-			}
-			return array('0');
-		}
-		return array();
-	}
-	public function simultant_fetch_price($pre_fare_data, $vKey)
-	{
-		if(is_array($pre_fare_data) && count($pre_fare_data) > 0 ){
-			$limit = count($pre_fare_data);
-			
-			############# Preparation ###############
-			for ($i=0; $i < $limit; $i++) { 
-				$prefare_meta = element('pre_meta_fare' , $pre_fare_data[$i] );
-				$dirty_curl_opt = $this->_prepare_price($vKey, element('cell', $prefare_meta), element('row', $prefare_meta ));
-				// covert to curl option constant
-				$clean_curl_opt = array();
-				foreach($dirty_curl_opt as $key => $value){
-					$name = constant('CURLOPT_'.strtoupper($key));
-					$val  = $value;
-					$clean_curl_opt[$name] = $val;
-				}
-				
-				// declare the subprocsee curll 
-				${'getting_fare_'.$i} = curl_init();
-				// Flag as dynamic variable in loop
-				$sub_curl = ${'getting_fare_'.$i};
-				// adding clean option
-				curl_setopt_array($sub_curl, $clean_curl_opt);
-			}
-			############# Declare Master Curl 	###############
-			$master_process = curl_multi_init();
-			
-			############# Add sub process to master ###############
-			for ($i=0; $i < $limit ; $i++) { 
-				$sub = 	${'getting_fare_'.$i};
-				curl_multi_add_handle($master_process,$sub);
-			}
-			
-			######### execute the all pros with master parallely ###############
-			$active = null;
-
-			do {
-			    $mrc = curl_multi_exec($master_process, $active);
-			} while ($mrc == CURLM_CALL_MULTI_PERFORM);
-
-			while ($active && $mrc == CURLM_OK) {
-			    if (curl_multi_select($master_process) != -1) {
-			        do {
-			            $mrc = curl_multi_exec($master_process, $active);
-			        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-			    }
-			}
-			
-			##### remove all sub processs from master #######
-			for ($i=0; $i < $limit ; $i++) { 
-				$sub = 	${'getting_fare_'.$i};
-				curl_multi_remove_handle($master_process, $sub);
-			}
-			
-			##### EXTRACt EACH RESULt ###/
-			$whole_result = array();
-			for ($i=0; $i < $limit; $i++) { 
-				$sub = 	${'getting_fare_'.$i};
-				array_push($whole_result, curl_multi_getcontent($sub));
-			}
-			
-			#### CLOSING MASTER PROCESS #####
-			curl_multi_close($master_process);
-			
-			### place the price base on this index ###
-			for ($i=0; $i < $limit; $i++) { 
-				$pre_fare_data[$i]['price'] = $this->_clean_price($whole_result[$i]) ;
-				// remove pre_meta_fare
-				unset($pre_fare_data[$i]['pre_meta_fare']);
-			}
-			
-			return $pre_fare_data;
-			
-		}else{
-			return array();
-		}
-	}
-	private function _clean_price($raw_result = null)
-	{
-		if(!is_string($raw_result) || $raw_result == null ) return '0';
-		
-		$raw_result;
-		
-		return str_replace(',','',str_get_html($raw_result)->find('td[id=tdAmtTotal]',0)->plaintext);
-	}
-	private function _prepare_price($vKey=null,$cellID,$rowID)
-	{
-		$post_data = array(
-			'ScriptManager1' => 'upnlTotalTripCost|btnPriceSelection',
-			'__EVENTTARGET' => 'btnPriceSelection',
-			'__EVENTARGUMENT' => '', 
-			'__LASTFOCUS' => '',
-			//'__VIEWSTATE' => $vKey,
-			'txtUpdateInsurance' => 'Yes',
-			'Insurance$txtInsPostbackRequired' => 'no',
-			'txtPricingResponse' => '',
-			'txtOutFBCsUsed' => '',
-			'txtInFBCsUsed' => '',
-			'txtTaxBreakdown' => '',
-			'UcFlightSelection$TripType' => 'rbOneWay',
-			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
-			'UcFlightSelection$txtSelOri' => $this->_opt->route_from,//'BDJ',
-			'UcFlightSelection$txtOri' => $this->_opt->route_from,//'Banjarmasin (BDJ)',
-			'UcFlightSelection$ddlDepMonth' => $this->dep_month,//'Mar 2012',
-			'UcFlightSelection$ddlDepDay' => $this->dep_day,//'16',
-			'UcFlightSelection$ddlADTCount' => $this->_opt->adult,//2,
-			'UcFlightSelection$txtSelDes' => $this->_opt->route_to,//'SUB',
-			'UcFlightSelection$txtDes' => $this->_opt->route_to,//'Surabaya (SUB)',
-			'UcFlightSelection$ddlRetMonth' => $this->dep_month,//'Mar 2012',
-			'UcFlightSelection$ddlRetDay' => $this->dep_day,//'17',
-			'UcFlightSelection$ddlCNNCount' => $this->_opt->child,
-			'UcFlightSelection$ddlINFCount' => $this->_opt->infant,
-			'UcFlightSelection$txtDepartureDate' => $this->dep_date,//'16 Mar 2012',
-			'UcFlightSelection$txtReturnDate' => $this->dep_date,//'17 Mar 2012',
-			'txtOBNNCellID' => $cellID,
-			'txtIBNNCellID' => 'oneway',
-			'txtOBNNRowID' => $rowID,
-			'txtIBNNRowID' => '',
-			'txtUserSelectedOneway' => '',
-			'__ASYNCPOST' => true,
-		);
-		
-		$conf = array(
-			'url' 				=> $this->step2_url,
-			'timeout'			=> 150,
-			'header'			=> 1,
-			'nobody'			=> false,
-			'followlocation'	=> true,
-			'cookiejar' 		=> $this->_cookies_file,
-			'cookiefile' 		=> $this->_cookies_file,
-			'returntransfer'	=> 1,
-			'post'				=> true,
-			'referer' 			=> $this->_refer2_url,
-			'SSL_VERIFYPEER'	=> 0,
-			'ssl_verifyhost'	=> 0,
-			'postfields' 		=> http_build_query($post_data , NULL, '&'),
-			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
-		);
-		return $conf;
-	}
+	
+	
+	
 	function getPrice($vKey=null,$cellID,$rowID){		
 		$post_data = array(
 			'ScriptManager1' => 'upnlTotalTripCost|btnPriceSelection',
@@ -546,7 +426,7 @@ class Lion extends Comp_maskapai_base {
 			'__ASYNCPOST' => true,
 		);
 				
-		
+				
 		$conf = array(
 			'url' 				=> $this->step2_url,
 			'timeout'			=> 150,
@@ -572,9 +452,196 @@ class Lion extends Comp_maskapai_base {
 		return $price;
 		
 	}	
-	
-	function doBook(){
 		
+	function preBook($flight_data){
+				
+		$meta_data = json_decode($flight_data['meta_data']);
+												
+		$post_data = array(			
+			'__EVENTARGUMENT' => '', 
+			'__LASTFOCUS' => '',
+			'__VIEWSTATE' => '',
+			'txtUpdateInsurance' => '',
+			'Insurance$rblInsurance' => 'Yes',
+			'Insurance$txtInsPostbackRequired' => 'no',
+			'txtPricingResponse' => 'OK',
+			'txtOutFBCsUsed' => $meta_data->txtOutFBCsUsed,
+			'txtInFBCsUsed' => '',
+			'txtTaxBreakdown' => '',
+			'lbContinue.x' => '84',
+			'lbContinue.y' => '9',
+			'UcFlightSelection$TripType' => 'rbOneWay',
+			'UcFlightSelection$DateFlexibility' => 'rbMustTravel',
+			'UcFlightSelection$txtSelOri' => $flight_data['route_from'],
+			'UcFlightSelection$txtOri' => $flight_data['route_from'],
+			'UcFlightSelection$ddlDepMonth' => date('M Y', strtotime($flight_data['t_depart'])),//'Apr 2012',
+			'UcFlightSelection$ddlDepDay' => date('d', strtotime($flight_data['t_depart'])),//'20',
+			'UcFlightSelection$ddlADTCount' => $flight_data['adult'],
+			'UcFlightSelection$txtSelDes' => $flight_data['route_to'],
+			'UcFlightSelection$txtDes' => $flight_data['route_to'],
+			'UcFlightSelection$ddlCNNCount' => $flight_data['child'],
+			'UcFlightSelection$ddlINFCount' => $flight_data['infant'],
+			'UcFlightSelection$txtDepartureDate' => date('d M Y', strtotime($flight_data['t_depart'])),//'Apr 2012',,
+			'UcFlightSelection$txtReturnDate' => date('M Y', strtotime($flight_data['t_depart'])),//'21 Apr 2012',
+			'txtOBNNCellID' => $meta_data->cellID,
+			'txtIBNNCellID' => 'oneway',
+			'txtOBNNRowID' => $meta_data->rowID,
+			'txtIBNNRowID' => '',
+			'txtUserSelectedOneway' => '',
+				);
+						
+		
+		
+		$conf = array(
+			'url' 				=> $this->step2_url,
+			'timeout'			=> 150,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'followlocation'	=> true,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'post'				=> true,
+			'referer' 			=> $this->_refer2_url,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> http_build_query($post_data , NULL, '&'),
+			'useragent'			=> 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:6.0.2) Gecko/20100101 Firefox/6.0.2',
+		);
+		
+		$this->_ci->my_curl->setup($conf);
+		$res  = $this->_ci->my_curl->exc();
+		
+		$this->vKeyPreBook = str_get_html($res)->find('input[id=__VIEWSTATE]', 0)->getAttribute('value');
+		$price = null;
+		$price = str_replace(',','',str_get_html($res)->find('td[id=tdAmtTotal]',0)->plaintext);
+		
+		if($price == null){
+			$message = 'fare not found , its sold out , perhaps :)';
+				throw new BookingFailed($flight_data, $message);
+		}				
+		
+		if($price>$flight_data['price']){
+			$flight_data['price'] = $price;
+			throw new BookingFarePriceChanged($flight_data,$price);
+		}else if($price<=$flight_data['price']){
+			return 1;
+		}else{
+			return FALSE;
+		}
+				
+	}
+	
+	function doBook($flight_data,$passenger_data,$contact_data){
+		$this->login();
+		$preBookResult = $this->preBook($flight_data);		
+		if($preBookResult==FALSE){
+			$message = 'fare not found , its sold out , perhaps :)';
+				throw new BookingFailed($flight_data, $message);
+		}
+					
+		$contact_name =  explode(' ',$contact_data['name'],2);
+		$contact_fname = $contact_name[0];
+		$contact_lname = $contact_name[1];
+		
+		$country_code =  substr($contact_data['mobile'],0,2);
+		$area_code = substr($contact_data['mobile'],2,3);
+						
+		$post_data = array(
+			'__EVENTTARGET' => 'lbContinue',
+			'__EVENTARGUMENT' => '',
+			'__VIEWSTATE' => $this->vKeyPreBook,
+			'ContactTitle' => $contact_data['title'],
+			'ContactFirstName' => $contact_fname,
+			'ContactLastName' => $contact_lname,
+			'txtAddress1' => '', 
+			'txtAddress2' => '',
+			'ddlCountry' => 'ID',
+			'txtCity' => '',
+			'txtPostCode' => '',
+			'txtCountryCode1' => $country_code, //'62',
+			'txtAreaCode1' => $area_code, //'856',
+			'txtPhoneNumber1' => '97586581',
+			'ddlOriNumber' => 'M',
+			'txtCountryCode3'=> '',
+			'txtPhoneNumber3' => '',
+			'txtEmailAddress1' => 'smmandiri@gmail.com',
+			'txtEmailAddress2' => 'smmandiri@gmail.com',
+			'chkSpecialOffers' => 'on',
+			'txtRemark' => '',
+			'AcceptFareConditions' => 'on',
+			'InsuranceDeclaration$chkTermsRead' => 'on',
+			'FlightInfo' => '',
+			'AXTotal' => '',
+			'DCTotal' => '',
+			'OtherTotal' => '',
+			'nameMismatch' => '',		
+		);
+		
+		$total_pax = $flight_data['adult'] + $flight_data['child'] + $flight_data['infant'];
+		$airline = substr($flight_data['flight_no'],0,2); //airline
+		
+		for($i=0;$i<$total_pax;$i++){
+			$j = $i+1;
+			
+			$pax_name = explode(' ',$passenger_data[$i]['name'],2);
+			$pax_fname = $pax_name[0]; //first name
+			$pax_lname = $pax_name[1]; //last name
+			
+			$pax = array(
+				'NameBlock'.$j.'$ddlTitle' => $passenger_data[$i]['title'],
+				'NameBlock'.$j.'$txtFirstName' => $pax_fname,
+				'NameBlock'.$j.'$txtLastName' => $pax_lname,
+				'NameBlock'.$j.'$ddlAirline' => $airline,
+				'NameBlock'.$j.'$ddlSpecRequest' => 'NA',
+				'NameBlock'.$j.'$txtFFNo' => '',
+				'NameBlock'.$j.'$ddlMealRequest' =>'No Preference'
+					);
+			
+			if($passenger_data[$i]['type']!='adult'){
+				$additional_pax = array(
+					'NameBlock'.$j.'$ddlDOBDay' => date('d', strtotime($passenger_data[$i]['birthday'])),
+					'NameBlock'.$j.'$ddlDOBMonth' => date('M', strtotime($passenger_data[$i]['birthday'])),
+					'NameBlock'.$j.'$ddlDOBYear' => date('Y', strtotime($passenger_data[$i]['birthday'])),
+						);					
+				$pax = array_merge($pax,$additional_pax);
+				
+				if($passenger_data[$i]['gender']=='M'){
+					$pax['NameBlock'.$j.'$ddlTitle'] = 'Mstr';
+				}else{
+					$pax['NameBlock'.$j.'$ddlTitle'] = 'Miss';
+				}
+			}
+			
+			if($passenger_data[$i]['type']=='infant'){
+				$pax['NameBlock'.$j.'$ddlMealRequest'] = 'BBML';
+			}
+						
+			$post_data = array_merge($post_data,$pax);
+		}
+				
+								
+		$conf = array(
+			'url' 				=> $this->book_url,
+			'timeout'			=> 150,
+			'header'			=> 1,
+			'nobody'			=> false,
+			'followlocation'	=> true,
+			'cookiejar' 		=> $this->_cookies_file,
+			'cookiefile' 		=> $this->_cookies_file,
+			'returntransfer'	=> 1,
+			'post'				=> true,
+			'referer' 			=> $this->_refer2_url,
+			'SSL_VERIFYPEER'	=> 0,
+			'ssl_verifyhost'	=> 0,
+			'postfields' 		=> http_build_query($post_data , NULL, '&'),
+			'useragent'			=> 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11',
+		);				
+		
+		$this->_ci->my_curl->setup($conf);
+		$res  = $this->_ci->my_curl->exc();
+			
+		return $res;
 	}
 	
 	function logout(){
