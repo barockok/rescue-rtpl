@@ -62,7 +62,9 @@ class Comp_tiketcom
 		$this->ci->acurl->option('cookiejar', $this->_cookie_file);
 		$this->ci->acurl->option('cookiefile', $this->_cookie_file);
 		$res = $this->ci->acurl->execute();
-		
+	
+	//	$this->ci->acurl->debug();
+	//	return;
 	//	$this->ci->acurl->debug();
 	//	$res =  $this->ci->acurl->simple_get($this->do_search_ep, $opt);
 		//return http_build_query($opt);
@@ -85,7 +87,7 @@ class Comp_tiketcom
 			
 			$a_res = array(
 				'id' 		=> $this->encrypt($id),
-				'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h3', 0)->plaintext),
+				'name' 		=> cleanup_string($item->find('[class=itemarea] [class=itemDetail] h2', 0)->plaintext),
 				'img' 		=> $this->_encrypt_img_path(
 					$item->find('[class=itemarea] [class=itemimg] a img', 0)->getAttribute('src')
 					),
@@ -96,7 +98,7 @@ class Comp_tiketcom
 					$item->find('[class=itemarea] [class=itemDetail] a[href*=maps.google.com]', 0)->getAttribute('href')
 					),
 				'identifier_path' => $this->_extract_path_identifier(
-					$item->find('[class=itemarea] [class=itemDetail] h3 a', 0)->getAttribute('href')
+					$item->find('[class=itemarea] [class=itemDetail] h2 a', 0)->getAttribute('href')
 					),		
 			);
 			$address = $item->find('div.itemDetail', 0);
@@ -128,7 +130,8 @@ class Comp_tiketcom
 					);
 			$opt['uid'] = 'business:'.$this->decrypt($id_encrypt);
 			$url  = $this->_tiketcom_url.'/'.$this->decrypt($path_identifier);
-			$page = str_get_html($this->ci->acurl->simple_get($url, $opt));
+			$res = $this->ci->acurl->simple_get($url, $opt);
+			$page = str_get_html($res);
 			$data = array();
 			$data['id'] = $id_encrypt;
 			$data['path_identifier'] = $path_identifier;
@@ -139,8 +142,8 @@ class Comp_tiketcom
 				$mainimage = $page->find('div[class=mainimage]', 0);
 				$number_rooms = filter_var(str_replace('Number of Rooms :', '',$mainimage->find('div.detail p.room', 0)->plaintext) , FILTER_SANITIZE_NUMBER_INT);
 				$price = substr($mainimage->find('div.book h3 span.currency', 0)->getAttribute('rel'), 0 , -3);
-				$data['name'] 			= $mainimage->find('h2.hotelname span[itemprop=name]', 0)->plaintext;
-				$data['star'] 			= substr($mainimage->find('h2.hotelname span[class*=star]', 0)->plaintext, 0,1);
+				$data['name'] 			= $mainimage->find('h1.hotelname span[itemprop=name]', 0)->plaintext;
+				$data['star'] 			= substr($mainimage->find('h1.hotelname span[class*=star]', 0)->plaintext, 0,1);
 				$data['address'] 		= $mainimage->find('div.detail p[class=street] span.[itemprop=address]', 0)->plaintext;
 				$data['start_price'] 	= filter_var($price, FILTER_SANITIZE_NUMBER_INT);
 				$data['number_of_rooms']= $number_rooms;
@@ -219,7 +222,7 @@ class Comp_tiketcom
 				
 				for ($i=0; $i < count($class); $i++) { 
 
-					$className = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] div[class=roomDesc] h4 a',0)->plaintext;
+					$className = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] div[class=roomDesc] h2 a',0)->plaintext;
 					
 					$picvar = $i."_L.s.jpg";
 					$classPic = $class[$i]->find('div[class=roomWrapper] div[class=roomlist] a img[class=thumb]',0)->getAttribute('src');
