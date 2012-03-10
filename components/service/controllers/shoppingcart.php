@@ -63,6 +63,7 @@ class Shoppingcart extends REST_Controller
 	}
 	public function add_item_post()
 	{
+		
 		$id = $this->uri->rsegment(3);
 		if(!$id) $this->response_error('No ID Cart Provide');
 		try {
@@ -71,17 +72,27 @@ class Shoppingcart extends REST_Controller
 			$this->response_error($e);
 		}
 	
-	
+		$exceptions = FALSE;
 		try {
 			$post = $this->post();
 			$post['cart_id'] = $cart->id;
 			$post = $this->_hook_caller(element('type', $post), 'add_item', $post);
+			if(isset($post['exceptions']))
+			{
+					$execptions = $post['exceptions'];
+					unset($post['exceptions']);
+			}
+			
 			$new_item = Cart_item::create($post);
 			
 			if(!$new_item->is_valid())
 				throw new Exception(implode(',', $new_item->errors->full_messages()));
 			$new_item->save();
-			$this->response($new_item->to_array(array('include' => array('cart'))));
+			if($exception != FALSE)
+				$this->response($new_item->to_array(array('include' => array('cart'))));
+			else
+				$this->response_warning($exception, $new_item->to_array(array('include' => array('cart'))));
+	
 		} catch (Exception $e) {
 			$this->response_error($e);
 		}

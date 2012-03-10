@@ -22,6 +22,7 @@ class BookingFarePriceChanged extends AirlinesExceptions{
 		$this->oldPrice = $fare['price'];
 		$this->newPrice = $newPrice;
 		$this->message = 'Price change for Fare Items id '.$fare['id'];
+		$this->fare_data = $fare;
 	}
 }
 class BookingFailed extends AirlinesExceptions{
@@ -32,6 +33,7 @@ class BookingFailed extends AirlinesExceptions{
 		$this->message 	= ($message == null) ? 'Booking Failed for fare id ='.$fare['id'] : $message;
 		$this->fareData = $fare;
 		$this->fareId 	= $fare['id'];	
+		
 	}
 }
 

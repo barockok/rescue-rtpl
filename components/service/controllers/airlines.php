@@ -572,36 +572,155 @@ class Airlines extends REST_Controller
 			$this->response_error($e);
 		}
 	}
+	public function book_get()
+	{
+		if(!$d_id = $this->uri->rsegment(3))
+			$this->response_warning('Please provice depart id');
+		$r_id = ($r = $this->uri->rsegment(4)) ? $r : false;
+		
+		$detail_depart = false; $detail_return = false;
+		try {
+		
+			$depart_fare 	= Service_fare_item::find($d_id);
+			$d_fare			= $depart_fare->to_array() ;
+			$d_comp 		= $this->comp_maskapai->load($d_fare['company']);
+			$new_d_fare 	= $d_comp->getDetail($d_fare);	
+			$depart_fare->update_attributes($new_d_fare);
+			$depart_fare->save();
+			$detail_depart = true;	
+		} catch (Exception $e) {
+			if($e instanceof DetailFareNotFound){
+				$depart_fare->delete();
+				$detail_depart = false;	
+			}
+			else {
+				$this->response_error($e);
+			}		
+
+		}
+		
+		if($r_id != false){
+		
+			try {
+
+				$return_fare 	= Service_fare_item::find($r_id);
+			
+				$r_fare			= $return_fare->to_array();
+				$r_comp 		= ($r_fare['company'] == $d_fare['company']) ? $d_comp : $this->comp_maskapai->load($r_fare['company']);
+				$new_r_fare 	= $r_comp->getDetail($r_fare);	
+				$return_fare->update_attributes($new_r_fare);
+				$return_fare->save();
+				$detail_return = true;	
+			} catch (Exception $e) {
+				if($e instanceof DetailFareNotFound){
+					$return_fare->delete();
+					$detail_return = false;	
+				}
+				else {
+					$this->response_error($e);
+				}		
+
+			}
+		
+			if($return_fare->route_from != $depart_fare->route_to and $return_fare->route_to != $depart_fare->route_from)
+			$this->response_warning('Return and Depart not match');
+	
+		
+			if($detail_return == false and $detail_depart == true)
+				$this->response_warning('return Fare Not Avail');
+			else if($detail_return == true and $detail_depart == false)
+				$this->response_warning('depart Fare Not Avail');
+			else if($detail_return == false and $detail_depart == false)
+				$this->response_error('All fare not Avail');
+			
+			$tmp_data = array(
+				'options' => array(
+					'depart_id' => $d_id,
+					'return_id' => $r_id,
+					),
+			);
+			
+			$_tmp_data = new Temp_object(
+										array(
+											'object'	=> json_encode($tmp_data),
+										)
+									);
+								
+			$_tmp_data->save();
+			$this->response($_tmp_data->to_array(array('only' => array('token'))));
+		}else{
+			if($detail_depart == false)
+				$this->response_warning('depart Fare Not Avail', 450);
+			$tmp_data = array(
+				'options' => array(
+					'depart_id' => $d_id,
+					),
+			);
+
+			$_tmp_data = new Temp_object(
+										array(
+											'object'	=> json_encode($tmp_data),
+										)
+									);
+
+			$_tmp_data->save();
+			$this->response($_tmp_data->to_array(array('only' => array('token'))));
+		}
+	} 
 	public function book_post()
 	{
 	
+		$option = ($opt = $this->post() ) ? $opt : array();
+		
+		if(!element('depart_id', $option))
+			throw new Exception("Please Provide the Fare Id for Departure", 1);
+		if(!element('passengers_data', $option))
+			throw new Exception("Please Prove the Passenger data", 1);
+		if(!element('contact_data', $option))
+			throw new Exception("Please Prove the Passenger data", 1);
+		
+		$depart_id = element('depart_id', $option);
+		$return_id = element('return_id', $option);
 		try {
-			$fare = Service_fare_item::find($this->input('fare_id'));
-			$fare_data = $fare->to_array(array('include' => array('log')));
+			$depart = Service_fare_item::find($depart_id);
+			if($return_id){
+				$return = Service_fare_item::find($return_id);
+				if($depart->route_from != $return_route->route_to && $depart->route_to != $return->route_from)
+					throw new Exception("Not Valid Combination route between Depart and Return fare for Roundtrip Booking FLight");
+			}
+			// execution Book
+			$booking_data = array();
+			# declare execption
+			$booking_exceptions = array();
+			# departure
+			try {
+				$depart_book = $this->comp_maskapai->load($depart->company);
+				$booking_data['depart'] = $depart_book->doBooking($depart->to_array(), element('passengers_data', $option), element('contact_data', $option));
+			} catch (Exception $e) {
+				$execept = $this->_bookingExceptionHandler($e);
+				array_push($booking_exceptions, $execept);
+			}
+
+			# returning
+			if($return != FALSE){
+					try {
+						$return_book = $this->comp_maskapai->load($return->company);
+						$booking_data['return'] = $return_book->doBooking($return->to_array(), element('passengers_data', $option), element('contact_data', $option));
+					} catch (Exception $e) {
+						$execept = $this->_bookingExceptionHandler($e);
+						array_push($booking_exceptions, $execept);
+					}
+			}
+
+			$cart_return['options']['booking_data'] = $booking_data;
+			$cart_return['options'] = json_encode($cart_return['options']);
+			if(count($booking_exceptions) > 0)
+				$cart_return['exceptions'] = $booking_exceptions;
+
+			return $cart_return;
+			
 		} catch (Exception $e) {
-			$this->response('there is no valid fare with id posted' ,500);
-		}
-		
-		$this->load->library('comp_maskapai');
-		$maskapai = $this->comp_maskapai->load( element('company', $fare_data) );
-		$book = $maskapai->doBooking($fare_data, $passengers_data, $customer_data);
-		
-		switch (TRUE) {
-			case (is_numeric($book)):
-				// price change ..
-				// update selected fare price
-				$fare->price = $book;
-				$fare->save();
-				// need tobe rebook
-				$this->response(array('info' => 'price change', 'new_price' => $fare->price ), 500);
-				break;
-			case(is_array($book)):
-				// book success
-				
-				break;
-			default:
-				// book failed
-				break;
+			$this->response_error($e);
 		}
 
 	}
@@ -818,147 +937,9 @@ class Airlines extends REST_Controller
 	
 	}
 
-	public function search_promo_post()
-	{
-		if(!$post = $this->post('src')) $this->response_error('Please Provide the variable');
-		// check first in db that all ready have one;
-		$log = Service_fare_promo_log::find('last',
-			array('conditions' => 
-				array(
-					'original = ? and destination = ? and start_date = ? and end_date = ?', 
-					element('original', $post ),
-					element('destination', $post),
-					element('start_date', $post),
-					element('end_date', $post)
-					) 
-				)
-			);
-			
-			if($log){
-				$promo_log = $log->to_array(array('include' => array('destination_airport', 'departure_airport')));
-				$this->response($promo_log);
-			}
-		
-		// if not found , so create new one
-		
-		try {
-			$log = new Service_fare_promo_log($post);
-			if(!$log->is_valid()) $this->response_error($log->errors->full_messages());
-			$log->save();
-			$promo_log = $log->to_array(array('include' => array('destination_airport', 'departure_airport')));
-			// exceute promo
-			$this->_execute_promo($promo_log);
-			
-			$this->response($promo_log);
-			
-		} catch (Exception $e) {
-			$this->response_error($e);
-		}
-		
-	}
-	public function search_promo_get()
-	{
-		$id = $this->uri->rsegment(3);
-		$limit = ($limit = $this->get('limit')) ? $limit : 3;
-		try {
-			$promo_log = Service_fare_promo_log::find($id);
-		} catch (Exception $e) {
-			$this->response_error($e);
-		}
-		
-		$promo_log = $promo_log->to_array(array('include' => array('search')));
-		$fares = array();
-		foreach(element('search', $promo_log) as $a_log_search){
-			$raw = $this->_retrive_oneway_result($a_log_search);
-			foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
-		}
-		// sort by price
-		$fares = array_sort($fares, 'price', SORT_ASC);
-		// limited result
-		$fares = array_slice($fares, 0, $limit);
-		
-		$this->response($fares);
-		
-	}
-	private function _execute_promo($promo_log = array())
-	{
-		$formated_start_date = show_date(element('start_date', $promo_log), 'Y-m-d');
-		$formated_end_date = show_date(element('end_date', $promo_log), 'Y-m-d');		
-		for($i = 0 ; $i < element('count_day', $promo_log) ; $i++ ){
-			$depart_date = date('Y-m-d', strtotime('+'.$i.' day', strtotime($formated_start_date))) ;
-			$search_log = array(
-				'date_depart' 	=> $depart_date,
-				'route_from' 	=> element('original', $promo_log),
-				'route_to'    	=> element('destination', $promo_log),
-				'passengers'	=> 1,
-				'comp_include'  => 'batavia,garuda,merpati,sriwijaya,lion',
-				'max_fare'		=>  5,
-				'actor'			=>  element('actor', $promo_log),
-				'src_promo_id' => element('id', $promo_log),
-				
-			);
-			$log_search = new Service_fare_log($search_log);
-			if(!$log_search->is_valid()){
-				//	$this->response($log->errors->full_messages(), 500);
-				}else{
-				$log_search->save();
-			}
-			
-			suicide('service/airlines/process_promo_search/'.element('id', $promo_log).'/'.$log_search->id);
-			
-		}
-	}
-	public function process_promo_search_get()
-	{
-		$promo_id = $this->uri->rsegment(3);
-		$log_id   = $this->uri->rsegment(4);
-		
-		try {
-			$promo = Service_fare_promo_log::find($promo_id);
-		} catch (Exception $e) {
-			// create log
-			exit();
-		}
-		
-		suicide('service/airlines/process_search/'.$log_id, FALSE);
-		// falg this as coplete
-		// calculate percentage
-		$current = $promo->status;
-		$total = $promo->count_day;
-		$a_value = ((1*100)/$total);
-		$promo->status = $current+$a_value;
-		$promo->save();
-	
-	}
-	public function _last_promo_get()
-	{
-		
-		$limit = ($limit = $this->get('limit')) ? $limit : 100;
-		try {
-				$promo_log = Service_fare_promo_log::last();
-		} catch (Exception $e) {
-				$this->response_error($e);
-		}
-
-		$promo_log = $promo_log->to_array(array('include' => array('search')));
-		$fares = array();
-		foreach(element('search', $promo_log) as $a_log_search){
-				$raw = $this->_retrive_oneway_result($a_log_search);
-				foreach(element('fares', element('depart', $raw)) as $fare) array_push($fares, $fare);
-		}
-			// sort by price
-		$fares = array_sort($fares, 'price', SORT_ASC);
-			// limited result
-		$fares = array_slice($fares, 0, $limit);
-
-		$this->response($fares);
-	}
-	
 	public function last_promo_get()
 	{
-	
 
-		
 		$limit = ($limit = $this->get('limit')) ? $limit : 10;
 		$airlines  = array('sriwijaya', 'merpati', 'lion', 'citilink', 'batavia');
 		$fares = array();
@@ -987,6 +968,7 @@ class Airlines extends REST_Controller
 	
 	public function _sc_hook_add_item($cart_item)
 	{
+		$cart_return = $cart_item;
 	//	printDebug($cart_item);
 		$option = ($opt = element('options', $cart_item)) ? $opt : array();
 		if(!element('depart_id', $option))
@@ -998,20 +980,49 @@ class Airlines extends REST_Controller
 		
 		$depart_id = element('depart_id', $option);
 		$return_id = element('return_id', $option);
+		
+		# default flag, its mean, there is no fare return requested to book
+		$return = FALSE;
+	
 		try {
 			$depart = Service_fare_item::find($depart_id);
-			$depart_comp = $this->comp_maskapai->_load($depart->company);
-			
-			$depart_book = $depart_comp->doBooking($depart->to_array()); 
-			
 			if($return_id){
 				$return = Service_fare_item::find($return_id);
 				if($depart->route_from != $return_route->route_to && $depart->route_to != $return->route_from)
 					throw new Exception("Not Valid Combination route between Depart and Return fare for Roundtrip Booking FLight");
-				
 			}
 			
+			// execution Book
+			$booking_data = array();
+			# declare execption
+			$booking_exceptions = array();
+			# departure
+			try {
+				$depart_book = $this->comp_maskapai->load($depart->company);
+				$booking_data['depart'] = $depart_book->doBooking($depart->to_array(), element('passengers_data', $option), element('contact_data', $option));
+			} catch (Exception $e) {
+				$execept = $this->_bookingExceptionHandler($e);
+				array_push($booking_exceptions, $execept);
+			}
 			
+			# returning
+			if($return != FALSE){
+					try {
+						$return_book = $this->comp_maskapai->load($return->company);
+						$booking_data['return'] = $return_book->doBooking($return->to_array(), element('passengers_data', $option), element('contact_data', $option));
+					} catch (Exception $e) {
+						$execept = $this->_bookingExceptionHandler($e);
+						array_push($booking_exceptions, $execept);
+					}
+			}
+			
+			$cart_return['options']['booking_data'] = $booking_data;
+			$cart_return['options'] = json_encode($cart_return['options']);
+			if(count($booking_exceptions) > 0)
+				$cart_return['exceptions'] = $booking_exceptions;
+			
+			return $cart_return;
+
 		} catch (Exception $e) {
 			$this->response_error($e);
 		}
@@ -1082,7 +1093,29 @@ class Airlines extends REST_Controller
 				return false;
 		}
 	}
-
+	public function _bookingExceptionHandler($e)
+	{
+			
+			switch (true) {
+				case ($e instanceof BookingFailed):
+					return array('error' => 'Booking Fail Permanently,');
+					break;
+				case ($e instanceof BookingFarePriceChanged):
+					
+					// update price
+					$fare = Service_fare_item::find(element('id', $e->fare_data));
+					$fare->update_attributes($e->fare_data);
+					$this->response_warning('Price Change', $fare->to_array(array('include' => array('original', 'destination'))));
+					return array(
+						'warning' => 'Price Change',
+						'warning_data' =>  $fare->to_array( array('include' => array('original', 'destination') ))
+					);
+					break;
+				default:
+					return array('error' => 'Booking Fail Permanently,');
+					break;
+			}
+	}
 	
 	
 }
