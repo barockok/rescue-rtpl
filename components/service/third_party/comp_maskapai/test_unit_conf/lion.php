@@ -3,11 +3,11 @@
 $conf['dosearch'] = array(
 						'route_from' 		=> 'CGK',
 						'route_to' 			=> 'MES',
-						'date_depart'		=> '2012-03-26',
-						'date_return'		=> null,
+						'date_depart'		=> '2012-03-26',						
 						'adult'				=> 1,
 						'child'				=> 0,
 						'infant'			=> 0,
+						'max_fare'			=> 5
 					);
 //(END) variable untuk Fungsi Search
 
